@@ -1,0 +1,617 @@
+---
+title: "Julia Package Development"
+subtitle: "From script to LabRegistry"
+author: "Nicolas Jacquin"
+date: today
+format:
+  revealjs:
+    theme: dark
+    highlight-style: github-dark
+    self-contained: true
+    scrollable: true
+execute:
+  echo: true
+  eval: false
+  cache: false
+---
+
+# Why package your code?
+
+## The usual lifecycle
+
+You write a useful script. Someone asks for it.
+
+```
+/home/nicolas/scripts/kmer_utils.jl   # v1
+/home/nicolas/scripts/kmer_utils2.jl  # "fixed"
+/home/nicolas/scripts/kmer_utils_FINAL.jl
+/home/nicolas/scripts/kmer_utils_FINAL2.jl
+```
+
+
+
+A Julia **package** gives you:
+
+- Reproducible environments (`Project.toml` + `Manifest.toml`)
+- A versioned, installable artifact
+- A test suite
+- Automatic dependency resolution
+- One-line install from LabRegistry for anyone in the lab
+
+
+
+## Do this now
+
+Before we start run this in your Julia REPL:
+
+```{julia}
+import Pkg
+
+Pkg.Registry.add(
+    Pkg.RegistrySpec(url="https://github.com/lemieux-lab/LabRegistry")
+)
+```
+
+
+
+Verify it worked:
+
+```{julia}
+Pkg.Registry.status()
+# Should list both "General" and "LabRegistry"
+```
+
+
+
+Once this is done, any lab package installs like any other:
+
+```{julia}
+Pkg.add("NMacros")
+Pkg.add("Dabus")
+```
+
+This is the **main take-away of the workshop** everything else is context for how we got here.
+
+
+
+## What we will cover (~90 min)
+
+| Block | Topic | Time |
+|---|---|---|
+| 1 | Package anatomy & `Pkg.generate` | 15 min |
+| 2 | Modules, exports, docstrings | 20 min |
+| 3 | Testing with `Test.jl` | 15 min |
+| 4 | Versioning & `Project.toml` | 10 min |
+| 5 | Local registries & LabRegistry | 20 min |
+| 6 | Live exercise | 10 min |
+
+
+
+# Block 1: Package anatomy
+
+## Generating a package
+
+```{julia}
+# In the Julia REPL
+import Pkg
+Pkg.generate("MyTool")
+```
+
+This creates:
+
+```
+MyTool/
+├── Project.toml
+└── src/
+    └── MyTool.jl
+```
+
+That's the whole skeleton. Everything else is convention.
+
+
+
+## `Project.toml` : the identity card
+
+```toml
+name = "MyTool"
+uuid = "3b4e0e42-..."   # generated automatically
+authors = ["Nicolas Jacquin <nicolas.jacquin@umontreal.ca>"]
+version = "0.1.0"
+
+[deps]
+Statistics = "10745b16-..."
+```
+
+- **`uuid`**: never edit by hand, generated once
+- **`version`**: follows SemVer : we'll come back to this
+- **`[deps]`**: only *direct* dependencies go here
+
+
+
+## Adding dependencies properly
+
+```{julia}
+# Always add deps from inside the package environment
+cd("MyTool")
+
+import Pkg
+Pkg.activate(".")        # activate MyTool's environment
+Pkg.add("DataFrames")   # adds to Project.toml + pins in Manifest.toml
+```
+
+Never manually edit `[deps]` : let `Pkg` handle the UUIDs.
+
+`Manifest.toml` is the full lockfile (exact versions of the entire dep tree). Commit it for scripts, `.gitignore` it for libraries.
+
+
+
+## The `src/` directory
+
+```
+MyTool/
+├── Project.toml
+├── Manifest.toml
+└── src/
+    ├── MyTool.jl      # entry point : must match package name
+    └── submodule.jl   # any split you want
+```
+
+`MyTool.jl` is the only file Julia loads automatically. Everything else must be `include`d from it.
+
+
+
+# Block 2: Modules, exports, docstrings
+
+## Module structure
+
+```{julia}
+# src/MyTool.jl
+module MyTool
+
+using Statistics          # re-exported stdlib
+import DataFrames: DataFrame  # scoped import
+
+include("submodule.jl")  # pulled in here
+
+export kmer_count, encode_aa
+
+# ... function definitions
+
+end # module
+```
+
+`using` vs `import`:
+
+- `using Foo` brings all of `Foo`'s exports into scope
+- `import Foo: bar` gives explicit, surgical access : prefer this in library code to avoid name collisions
+
+
+
+## `export` controls your public API
+
+```{julia}
+module MyTool
+
+# public API
+export kmer_count, encode_aa
+
+# internal : users can still call MyTool._hash_kmer() but it's a hint
+function _hash_kmer(seq::AbstractString)
+    # ...
+end
+
+function kmer_count(seq::AbstractString, k::Int)
+    # ...
+end
+
+end
+```
+
+Anything not exported is still accessible with `MyTool._hash_kmer()`. Exports define the *intended* interface.
+
+
+
+## Docstrings : not optional
+
+```{julia}
+"""
+    kmer_count(seq, k) -> Dict{String, Int}
+
+Count all k-mers of length `k` in amino acid sequence `seq`.
+
+# Arguments
+- `seq::AbstractString`: single-letter AA sequence
+- `k::Int`: k-mer length, must satisfy `1 ≤ k ≤ length(seq)`
+
+# Examples
+julia> kmer_count("ACDEFG", 2)
+Dict("AC" => 1, "CD" => 1, "DE" => 1, "EF" => 1, "FG" => 1)
+"""
+function kmer_count(seq::AbstractString, k::Int)
+    counts = Dict{String, Int}()
+    for i in 1:(length(seq) - k + 1)
+        mer = seq[i:i+k-1]
+        counts[mer] = get(counts, mer, 0) + 1
+    end
+    return counts
+end
+```
+
+`?kmer_count` in the REPL renders this. Documenter.jl can build HTML docs from it.
+
+
+
+## Live: build a minimal module
+
+```{julia}
+# src/MyTool.jl
+module MyTool
+
+export greet
+
+"""
+    greet(name) -> String
+Return a greeting string.
+"""
+greet(name::AbstractString) = "Hello from MyTool, $name!"
+
+end
+```
+
+Load it:
+```{julia}
+Pkg.activate(".")
+using MyTool
+greet("lab")   # "Hello from MyTool, lab!"
+?greet         # renders the docstring
+```
+
+
+
+# Block 3: Testing
+
+## `test/runtests.jl`
+
+```
+MyTool/
+├── Project.toml
+├── src/
+│   └── MyTool.jl
+└── test/
+    └── runtests.jl
+```
+
+```{julia}
+# test/runtests.jl
+using MyTool
+using Test
+
+@testset "kmer_count" begin
+    counts = kmer_count("AACD", 2)
+    @test counts["AA"] == 1
+    @test counts["AC"] == 1
+    @test length(counts) == 3
+end
+
+@testset "edge cases" begin
+    @test_throws ArgumentError kmer_count("A", 5)
+    @test isempty(kmer_count("", 2))
+end
+```
+
+
+
+## Running tests
+
+```{julia}
+# From inside the package environment
+Pkg.test("MyTool")
+
+# Or from the Pkg REPL (] prompt)
+# ] test
+```
+
+Output:
+```
+Test Summary:  | Pass  Total
+kmer_count     |    3      3
+edge cases     |    2      2
+```
+
+Tests are also run automatically by CI if you set up GitHub Actions (out of scope today, but `PkgTemplates.jl` wires this up for you).
+
+
+
+## Test-only dependencies
+
+Test deps go in `[extras]` + `[targets]`, not `[deps]`:
+
+```toml
+# Project.toml
+[extras]
+Test = "8dfed614-..."
+
+[targets]
+test = ["Test"]
+```
+
+This keeps `Test.jl` out of your users' dependency graph.
+
+
+
+## `@testset` nesting : keep it organized
+
+```{julia}
+@testset "MyTool.jl" begin
+
+    @testset "encoding" begin
+        @test encode_aa('A') == 0x01
+        @test encode_aa('G') == 0x07
+    end
+
+    @testset "counting" begin
+        s = "ACGACG"
+        c = kmer_count(s, 2)
+        @test c["AC"] == 2
+        @test c["CG"] == 2
+    end
+
+end
+```
+
+Nesting gives granular failure reports. Outer `@testset` never short-circuits on inner failure.
+
+
+
+# Block 4: Versioning
+
+## SemVer in Julia
+
+`MAJOR.MINOR.PATCH` : Julia's `Pkg` enforces this strictly.
+
+| Change type | Bump |
+|---|---|
+| Breaking API change | MAJOR (1.x.x → 2.0.0) |
+| New exported function | MINOR (1.1.x → 1.2.0) |
+| Bug fix, internal refactor | PATCH (1.1.0 → 1.1.1) |
+
+
+
+Special rule for `0.x.y`: **MINOR bumps are breaking**. This is intentional : it gives you room to stabilize an API before committing to 1.0.
+
+
+
+## What counts as breaking?
+
+Breaking:
+
+- Removing or renaming an exported function
+- Changing argument types in a way that errors existing call sites
+- Changing return type
+
+Not breaking:
+
+- Adding a new exported function
+- Adding an optional keyword argument with a default
+- Fixing incorrect behavior (even if someone depended on the bug)
+
+When in doubt: bump MINOR, document in `CHANGELOG.md`.
+
+
+
+## Compat bounds
+
+```toml
+# Project.toml
+[compat]
+julia = "1.9"
+DataFrames = "1"
+```
+
+- Tells `Pkg` what versions you've tested against
+- Without this, `Pkg` will warn and LabRegistry will reject the release
+- Use `^` semantics: `"1"` means `>=1.0, <2.0`
+
+Run `Pkg.compat()` interactively to set these from the REPL.
+
+
+
+# Block 5: LabRegistry
+
+## What is a local registry?
+
+Julia's general registry (General) is the public one at `github.com/JuliaRegistries/General`. A **local registry** works the same way but is hosted privately.
+
+LabRegistry lives at:
+`https://github.com/lemieux-lab/LabRegistry`
+
+It indexes package name → git URL + versions, so `Pkg` can resolve `Pkg.add("NMacros")` without the package being on General.
+
+
+
+## Adding LabRegistry to your Julia install
+
+```{julia}
+import Pkg
+Pkg.Registry.add(
+    Pkg.RegistrySpec(url="https://github.com/lemieux-lab/LabRegistry")
+)
+```
+
+After this, any package registered there installs like any other:
+
+```{julia}
+Pkg.add("NMacros")
+Pkg.add("Dabus")
+```
+
+Do this once per machine/cluster node. On the HPC, add it to your `startup.jl`.
+
+
+
+## Registering your package : `LocalRegistry.jl`
+
+```{julia}
+# One-time setup
+Pkg.add("LocalRegistry")
+```
+
+Your package must be:
+
+1. In a git repository with at least one commit
+2. Hosted somewhere the lab can reach (GitHub lemieux-lab org, or IRIC GitLab)
+3. Have a valid `Project.toml` with `name`, `uuid`, `version`, `[compat]`
+
+
+
+## The registration workflow
+
+```{julia}
+using LocalRegistry
+
+# First release
+register(
+    "MyTool",
+    registry="/path/to/LabRegistry",   # local clone already on this machine
+    repo="https://github.com/lemieux-lab/MyTool.git"
+)
+```
+
+This:
+
+1. Reads your `Project.toml`
+2. Creates a `Registry.toml` entry + version file in `LabRegistry`
+3. Commits to LabRegistry (you then push the LabRegistry clone)
+
+For subsequent versions: bump `version` in `Project.toml`, tag the commit, then `register()` again : no `repo` arg needed.
+
+
+
+## Step-by-step checklist
+
+```
+[ ] Package in git repo, clean working tree
+[ ] version bumped in Project.toml
+[ ] [compat] entries filled
+[ ] Pkg.test() passes
+[ ] git tag v0.2.0 (match Project.toml)
+[ ] git push --tags
+[ ] register("MyTool", registry="/path/to/LabRegistry")
+[ ] cd ~/LabRegistry && git push
+```
+
+Anyone in the lab can then:
+```{julia}
+Pkg.add("MyTool")  # resolves from LabRegistry
+```
+
+
+
+## What LabRegistry looks like on disk
+
+```
+LabRegistry/
+├── Registry.toml          # index of all packages
+└── packages/
+    └── M/
+        └── MyTool/
+            ├── Package.toml   # name, uuid, repo URL
+            └── Versions.toml  # version → git tree SHA
+```
+
+`LocalRegistry.jl` manages all of this. You never edit these files by hand.
+
+
+
+## `PkgTemplates.jl` : skip the boilerplate
+
+```{julia}
+using PkgTemplates
+
+t = Template(;
+    user="lemieux-lab",
+    authors=["Nicolas"],
+    julia=v"1.9",
+    plugins=[
+        Git(; ssh=true),
+        GitHubActions(),
+        Readme(),
+        License(; name="MIT"),
+        Tests(),
+        CompatHelper(),
+        TagBot(),
+    ]
+)
+
+t("MyTool")
+```
+
+Generates the full structure + CI + auto-compat PRs. Worth using for anything non-trivial.
+
+
+
+# Block 6: Live exercise
+
+## Build & register a package in 10 minutes
+
+**Goal**: register a minimal package in LabRegistry.
+
+Steps:
+
+1. `Pkg.generate("Lab$(yourname)")` 
+2. Add one exported function with a docstring
+3. Write one `@testset`, make it pass
+4. Set `[compat]` for julia
+5. Init a git repo, commit
+6. `register("Lab$(yourname)", registry="/path/to/LabRegistry")`
+
+
+
+Stretch: add a dependency (`Pkg.add`), use it in your function, verify the dep appears in `Project.toml`.
+
+
+
+## Common pitfalls
+
+| Error | Cause | Fix |
+|---|---|---|
+| `uuid` mismatch | Edited `Project.toml` by hand | Let `Pkg` manage it |
+| `Package not found` | LabRegistry not added | `Pkg.Registry.add(...)` |
+| `not a git repo` | Forgot `git init` | `git init && git add . && git commit` |
+| `[compat] missing` | Registry rejects unbound deps | Fill `[compat]` for all deps |
+| Dirty working tree | Uncommitted changes | `git commit` before `register()` |
+
+
+
+# Recap
+
+## What you now know
+
+- **Package anatomy**: `Project.toml`, `src/`, `test/`
+- **Module design**: `export`, `import`, scoping
+- **Docstrings**: Julia doc convention, accessible with `?`
+- **Testing**: `@testset`, edge cases, test-only deps
+- **Versioning**: SemVer, compat bounds, what counts as breaking
+- **LabRegistry**: `LocalRegistry.jl` workflow, one-line install for lab members
+
+
+
+Rule of thumb: if you've `include`d a file more than once across different projects, it belongs in a package.
+
+
+
+## Resources
+
+- [Pkg.jl docs](https://pkgdocs.julialang.org/) : canonical reference
+- [LocalRegistry.jl](https://github.com/GunnarFarneback/LocalRegistry.jl)
+- [PkgTemplates.jl](https://github.com/JuliaCI/PkgTemplates.jl)
+- [SemVer spec](https://semver.org/)
+- LabRegistry: `github.com/lemieux-lab/LabRegistry`
+
+```{julia}
+# To get started right now:
+import Pkg
+Pkg.Registry.add(
+    Pkg.RegistrySpec(url="https://github.com/lemieux-lab/LabRegistry")
+)
+```
