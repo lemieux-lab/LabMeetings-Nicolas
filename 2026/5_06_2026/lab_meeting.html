@@ -1388,7 +1388,7 @@ Job KCT_tcga_40_samples:
 </section>
 <section id="build-strategy-key-design-choices" class="slide level2">
 <h2>Build Strategy · Key Design Choices</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href></a><span class="co"># Memory estimated dynamically: 5 GB/sample, capped at 1800 GB (oni&#39;s limit)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href></a><span class="co"># Memory estimated dynamically: 5 GB/sample, capped at 1800 GB (oni&#39;s limit - 200GB for safety)</span></span>
 <span id="cb20-2"><a href></a><span class="fu">_compute_mem_gb()</span> <span class="kw">{</span></span>
 <span id="cb20-3"><a href></a>    <span class="bu">local</span> <span class="va">mem</span><span class="op">=</span><span class="va">$((</span> <span class="va">total</span> <span class="op">*</span> <span class="dv">5</span> <span class="va">))</span></span>
 <span id="cb20-4"><a href></a>    <span class="bu">echo</span> <span class="va">$((</span> <span class="va">mem</span> <span class="op">&gt;</span> <span class="va">MAX_MEM_GB</span> <span class="op">?</span> <span class="va">MAX_MEM_GB</span> <span class="op">:</span> <span class="va">mem</span> <span class="va">))</span></span>
@@ -1547,10 +1547,6 @@ Job KCT_tcga_40_samples:
 <tr class="even">
 <td><strong>Near</strong></td>
 <td>aeTSA extraction pipeline: join RichKCT against mass-spec peptide table</td>
-</tr>
-<tr class="odd">
-<td><strong>Key analysis</strong></td>
-<td>Filter aeTSA candidates by biotype (protein_coding vs. intergenic)</td>
 </tr>
 </tbody>
 </table>

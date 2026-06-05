@@ -435,7 +435,7 @@ Job KCT_tcga_40_samples:
 ## Build Strategy · Key Design Choices
 
 ```bash
-# Memory estimated dynamically: 5 GB/sample, capped at 1800 GB (oni's limit)
+# Memory estimated dynamically: 5 GB/sample, capped at 1800 GB (oni's limit - 200GB for safety)
 _compute_mem_gb() {
     local mem=$(( total * 5 ))
     echo $(( mem > MAX_MEM_GB ? MAX_MEM_GB : mem ))
@@ -512,7 +512,6 @@ write_kct(kct, joinpath(output_dir, "..._[$(next_total)_samples]_neokct.kct"))
 | **Now** | Continue TCGA production run with `build_kct_tcga.sh` |
 | **Near** | Serialize and load RichKCT (V2.0 binary format) |
 | **Near** | aeTSA extraction pipeline: join RichKCT against mass-spec peptide table |
-| **Key analysis** | Filter aeTSA candidates by biotype (protein_coding vs. intergenic) |
 
 ---
 
