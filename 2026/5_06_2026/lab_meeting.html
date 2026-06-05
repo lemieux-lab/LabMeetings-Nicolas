@@ -1267,9 +1267,10 @@ k-mer in intergenic only         → 0b001 = 1</code></pre>
                match     match  match → biotype from gidx assigned to KCT position
                     ↑  ↑
                   KCT advance   gidx advance (k-mer only in reference, ignored)</code></pre>
-<p>Unmatched KCT k-mers keep the default <code>INTERGENIC_MASK</code> (pool[1]) assigned at initialization. k-mers only in the reference are silently skipped (left-join). <em>Note: No longer true with outer join. Again, on high sample KCTs this is should be the same</em></p>
+<p>Unmatched KCT k-mers keep the default <code>INTERGENIC_MASK</code> (pool[1]) assigned at initialization. k-mers only in the reference are silently skipped (left-join).</p>
+<p><em>Note: No longer true with outer join. Again, on high sample KCTs this is should be the same</em></p>
 <div class="fragment">
-<p>This is the right semantics: if a k-mer appears in the RNA-Seq data but has no match in the reference transcriptome, it is <strong>intergenic by definition</strong>.</p>
+<p>Semantics: if a k-mer appears in the RNA-Seq data but has no match in the reference transcriptome, it is <strong>intergenic by definition</strong>.</p>
 </div>
 </section>
 <section id="biotype-query-api" class="slide level2">

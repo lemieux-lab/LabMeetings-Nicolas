@@ -297,11 +297,12 @@ Both `kct.seqs` and `gidx.seqs` are sorted `DeltaArray`s. The merge walk is a st
 
 Unmatched KCT k-mers keep the default `INTERGENIC_MASK` (pool[1]) assigned at initialization.
 k-mers only in the reference are silently skipped (left-join).
+
 _Note: No longer true with outer join. Again, on high sample KCTs this is should be the same_
 
 . . .
 
-This is the right semantics: if a k-mer appears in the RNA-Seq data but has no match in the reference transcriptome, it is **intergenic by definition**.
+Semantics: if a k-mer appears in the RNA-Seq data but has no match in the reference transcriptome, it is **intergenic by definition**.
 
 ---
 
