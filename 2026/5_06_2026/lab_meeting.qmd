@@ -449,8 +449,8 @@ _compute_mem_gb() {
 |---|---|
 | `--seed-kct FILE` | Resume from a pre-built KCT; sample count parsed from `[N_samples]` filename pattern |
 | `--target N` | Total samples to build; chain auto-stops at target |
-| `--batch-size N` | Samples per job (default: 20); tune for memory/walltime trade-off |
-| Memory cap | 1800 GB = oni's max; at ~5 GB/sample, that covers ~360 samples at full allocation |
+| `--batch-size N` | Samples per job (default: 20) |
+| Memory cap | 1800 GB = oni's max (-200GB for safety); at ~5 GB/sample, that covers ~360 samples at full allocation |
 | Crash recovery | Each job saves before submitting the next; re-run from the last checkpoint |
 
 . . .
