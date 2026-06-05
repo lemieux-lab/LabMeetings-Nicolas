@@ -5,6 +5,7 @@
     <summary><h3>2026<h3></summary>
     <li><a href = https://lemieux-lab.github.io/LabMeetings-Nicolas/2026/10_04_2026/lab_meeting.html> 10 April 2026</a></li>
     <li><a href = https://lemieux-lab.github.io/LabMeetings-Nicolas/2026/1_05_2026/lab_meeting.html> 1 May 2026</a></li>
+    <li><a href = https://lemieux-lab.github.io/LabMeetings-Nicolas/2026/5_06_2026/lab_meeting.html> 5 June 2026</a></li>
 </details>
 
 <details>

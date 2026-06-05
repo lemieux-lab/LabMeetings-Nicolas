@@ -1,0 +1,521 @@
+---
+title: "K-meromics Progress Report"
+author: "Nicolas Jacquin"
+date: today
+format:
+  revealjs:
+    width: 1920
+    height: 1080
+    margin: 0.05
+    theme: dark
+    highlight-style: monokai
+    slide-number: true
+    embed-resources: true
+    transition: slide
+    footer: "Lab Meeting · Nicolas Jacquin"
+    scrollable: true
+---
+
+# V2.0 · RichKCT: Biotype-Annotated K-mer Tables {background-color="#1a1a2e"}
+
+NeoKCT Progress · June 2026
+
+---
+
+## Recap: Where V1.4 Stood
+
+V1.4 table (42 TCGA samples, 1.15B k-mers) in flat CSR layout with delta-encoded k-mer sequences:
+
+```julia
+struct NeoKCT{K, Ab, C}
+    seqs::DeltaArray          # delta-encoded sorted k-mer bit-reps : ~4 bytes/k-mer
+    n_cids::Vector{UInt16}    # CID count per k-mer
+    flat_cids::Vector{UInt32} # all PackedArray word IDs
+    counts::PackedArray{UInt32}
+    idx::Pair{...}            # 4-prefix bucket index (~160k buckets)
+    samples::Base.RefValue{Int64}
+end
+```
+
+The table knows how many times each k-mer appears in each sample.
+
+. . .
+
+**What it doesn't know:** _where in the genome does this k-mer come from?_
+
+We want to keep data that doesn't map onto the reference genome, but having the reference information is still useful.
+
+---
+
+## The Goal: Biotype Annotation
+
+For aeTSA discovery, not all k-mers are equal.
+
+. . .
+
+A k-mer from a **protein-coding transcript** behaves differently from one in a **lncRNA**, a **pseudogene**, or from a region with **no annotation at all**.
+
+. . .
+
+:::: {.columns}
+::: {.column width="50%"}
+The idea: annotate each k-mer in the KCT with a **biotype bitmask** derived from a reference transcriptome.
+
+```
+k-mer MAEKFW   →   protein_coding | lncRNA
+k-mer QTYVNS   →   protein_coding
+k-mer DKLPAC   →   intergenic
+```
+
+A k-mer appearing in multiple biotype classes accumulates **all their bits** (via OR).
+A k-mer with no annotation gets `intergenic` (bit 0).
+:::
+::: {.column width="50%"}
+```
+Bitmask layout (UInt64, 1-indexed biotype_names):
+
+bit 0 = intergenic     (INTERGENIC_MASK = 1)
+bit 1 = lncRNA
+bit 2 = protein_coding
+bit 3 = pseudogene
+...
+
+k-mer in protein_coding + lncRNA → 0b110 = 6
+k-mer in protein_coding only     → 0b100 = 4
+k-mer in intergenic only         → 0b001 = 1
+```
+:::
+::::
+
+---
+
+## GenomicIndex · Design
+
+`GenomicIndex` is a standalone k-mer table built from a **reference FASTA + annotation**.
+It mirrors the `NeoKCT` lookup structure, but replaces counts with biotype bitmasks.
+
+```julia
+struct GenomicIndex{K, Ab}
+    seqs::DeltaArray                                         # sorted reference k-mers
+    biotype_ids::Vector{UInt16}                              # one per k-mer, index into pool
+    pool::Vector{UInt64}                                     # deduplicated bitmasks
+    idx::Pair{Base.RefValue{Int64}, Vector{UnitRange{Int64}}} # same prefix-bucket index as NeoKCT
+    biotype_names::Vector{String}                            # biotype_names[b] = name for bit b-1
+end
+```
+
+. . .
+
+**Two-level indirection for space efficiency:**
+
+Instead of storing one `UInt64` bitmask per k-mer (8 bytes × n_kmers_ref), store a `UInt16` index per k-mer (2 bytes) into a small `pool` of **deduplicated** bitmasks.
+
+In practice, the number of distinct biotype combinations is tiny (dozens) even across millions of reference k-mers.
+
+---
+
+## GenomicIndex · Build Pipeline
+
+Input: Ensembl transcript FASTA (`cdna.all.fa`) + GTF or GFF3 annotation.
+
+```
+┌──────────────────────────────────────────────────────────────────────────┐
+│  1. Parse annotation → Dict{transcript_id → biotype_name}               │
+│     GTF:  "transcript" lines, `transcript_biotype` attribute             │
+│     GFF3: "transcript"/"mRNA" lines, `biotype` attribute + ID stripping  │
+│                                                                           │
+│  2. Stream transcript FASTA:                                              │
+│     - Extract biotype from FASTA header (transcript_biotype:...) or      │
+│       fall back to the annotation dict                                    │
+│     - k-merize the transcript (same K as KCT, DNA → AA translation)      │
+│     - For each k-mer: kmer_masks[k_bits] |= (1 << bit_pos)               │
+│       (accumulate across transcripts via OR)                              │
+│     - Skip transcripts with N's or shorter than K                        │
+│                                                                           │
+│  3. Sort k-mers, build BiotypLayer pool, DeltaArray-encode seqs          │
+│  4. Compute prefix-bucket index (same as NeoKCT)                         │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+Supports `.fa`, `.fa.gz`, `.gtf`, `.gtf.gz`, `.gff3`, `.gff3.gz`.
+
+---
+
+## GenomicIndex · Build Code
+
+```julia
+function _build_genomic_index_data(fasta_path, annotation_path, K)
+    tid_to_biotype = _parse_transcript_biotypes(annotation_path)  # format-dispatched
+
+    # Build stable ordered biotype list; intergenic is always first (bit 0).
+    seen_biotypes = Set(values(tid_to_biotype))
+    biotype_names = vcat(["intergenic"], sort!(collect(seen_biotypes)))
+    biotype_index = Dict(name => i for (i, name) in enumerate(biotype_names))
+
+    kmer_masks = Dict{UInt64, UInt64}()
+
+    for rec in stream(fasta_path)
+        rec isa FastaRecord || continue
+        isempty(rec.sequence) || 'N' in rec.sequence && continue
+        biotype = _header_biotype(rec.header)  # try FASTA header first
+        if isnothing(biotype)
+            tid = _header_tid(rec.header)      # fall back to annotation dict
+            biotype = get(tid_to_biotype, tid, "intergenic")
+        end
+        bit = UInt64(1) << (biotype_index[biotype] - 1)
+
+        for kmer in k_merize(LongSequence{DNAAlphabet{2}}(rec.sequence), K=K)
+            aa_kmer = translate(kmer)
+            isnothing(aa_kmer) && continue
+            kmer_masks[aa_kmer.data[1]] = get(kmer_masks, aa_kmer.data[1], UInt64(0)) | bit
+        end
+    end
+    return sort!(collect(keys(kmer_masks))), [kmer_masks[k] for k in sorted_kmers], biotype_names
+end
+```
+
+`|=` on collision: a k-mer in both `protein_coding` and `lncRNA` gets both bits set.
+
+---
+
+## BiotypLayer · Internment Pool
+
+`BiotypLayer` is the per-KCT biotype annotation structure. It's built once and carried inside a `RichKCT`.
+
+```julia
+struct BiotypLayer
+    ids::Vector{UInt16}         # one per k-mer, 1-based index into pool
+    pool::Vector{UInt64}        # deduplicated bitmasks; pool[1] always == INTERGENIC_MASK
+    biotype_names::Vector{String}
+end
+```
+
+The pool is built incrementally using `_intern_mask!`:
+
+```julia
+function _intern_mask!(pool::Vector{UInt64}, index::Dict{UInt64, UInt16}, mask::UInt64)::UInt16
+    return get!(index, mask) do
+        push!(pool, mask)
+        UInt16(length(pool))
+    end
+end
+```
+
+A `Dict{UInt64, UInt16}` deduplicates on the fly. The first call for a given bitmask pushes it into `pool` and returns its index; subsequent calls return the cached index.
+
+. . .
+
+**Why this matters:** 1.15B k-mers × `UInt16` = **2.3 GB**. The same data in raw `UInt64` masks = **9.2 GB**.
+The pool will have dozens of entries regardless of table size.
+
+---
+
+## RichKCT · Struct
+
+`RichKCT` wraps a `NeoKCT` and a `BiotypLayer` under a common `AbstractKCT` interface.
+
+```julia
+struct RichKCT{K, Ab, C} <: AbstractKCT{K, Ab}
+    kct::NeoKCT{K, Ab, C}
+    biotypes::BiotypLayer
+    version::Float64             # RICH_VERSION = 2.0
+end
+```
+
+All existing `NeoKCT` operations are **delegated** unchanged:
+
+```julia
+Base.findfirst(rich::RichKCT, key) = findfirst(rich.kct, key)
+assemble_count_vector(rich::RichKCT, i) = assemble_count_vector(rich.kct, i)
+find_shared_words(rich::RichKCT) = find_shared_words(rich.kct)
+compute_index!(rich::RichKCT; kwargs...) = compute_index!(rich.kct; kwargs...)
+```
+
+. . .
+
+`getindex` is enriched: it returns a `kmer => (; counts, biotype)` named tuple:
+
+```julia
+function Base.getindex(rich::RichKCT, i::Integer)
+    kmer, counts = rich.kct[i]
+    return kmer => (; counts, biotype = biotype_mask(rich.biotypes, i))
+end
+```
+
+`biotype_mask(rich.biotypes, i)` = `rich.biotypes.pool[rich.biotypes.ids[i]]` : a single `UInt64`.
+
+---
+
+## RichKCT · Building from NeoKCT + GenomicIndex
+
+`add_biotypes` performs a **left-join** on k-mer bit-reps via a single O(n+m) sorted merge walk:
+
+```julia
+function add_biotypes(kct::NeoKCT{K,Ab,C}, gidx::GenomicIndex{K,Ab}) where {K, Ab, C}
+    pool = UInt64[INTERGENIC_MASK]
+    index_map = Dict{UInt64, UInt16}(INTERGENIC_MASK => UInt16(1))
+    ids = fill(UInt16(1), length(kct.seqs))   # all k-mers default to intergenic
+
+    kct_iter  = iterate(kct.seqs)
+    gidx_iter = iterate(gidx.seqs)
+    i = 1; j = 1
+
+    while !isnothing(kct_iter) && !isnothing(gidx_iter)
+        kct_val,  kct_state  = kct_iter
+        gidx_val, gidx_state = gidx_iter
+        if kct_val == gidx_val
+            ids[i] = _intern_mask!(pool, index_map, get_biotype_mask(gidx, j))
+            kct_iter  = iterate(kct.seqs, kct_state); i += 1
+            gidx_iter = iterate(gidx.seqs, gidx_state); j += 1
+        elseif kct_val < gidx_val
+            kct_iter = iterate(kct.seqs, kct_state); i += 1  # unmatched KCT k-mer → stays intergenic
+        else
+            gidx_iter = iterate(gidx.seqs, gidx_state); j += 1  # k-mer only in reference, skip
+        end
+    end
+    return RichKCT{K,Ab,C}(kct, BiotypLayer(ids, pool, gidx.biotype_names))
+end
+```
+
+**One pass. No hash lookups for the join itself.** Both `DeltaArray` iterators advance at O(1) amortised.
+
+---
+
+## RichKCT · Sorted Merge Correctness
+
+Both `kct.seqs` and `gidx.seqs` are sorted `DeltaArray`s. The merge walk is a standard merge-sort style intersection:
+
+```
+    KCT seqs:   [A, B,    D, E, F, ...]
+    gidx seqs:  [A,    C, D,    F, ...]
+                 ↑         ↑    ↑
+               match     match  match → biotype from gidx assigned to KCT position
+                    ↑  ↑
+                  KCT advance   gidx advance (k-mer only in reference, ignored)
+```
+
+Unmatched KCT k-mers keep the default `INTERGENIC_MASK` (pool[1]) assigned at initialization.
+k-mers only in the reference are silently skipped.
+
+. . .
+
+This is the right semantics: if a k-mer appears in the RNA-Seq data but has no match in the reference transcriptome, it is **intergenic by definition**.
+
+---
+
+## Biotype Query API
+
+```julia
+# Get biotype bitmask for k-mer at position i
+biotype_mask(rich.biotypes, i)::UInt64
+
+# Check a specific biotype
+has_biotype(rich.biotypes, i, "protein_coding")::Bool
+
+# List all biotype names that apply
+biotype_names_for(rich.biotypes, i)::Vector{String}
+
+# Direct getindex: named tuple with counts + biotype
+kmer, data = rich[i]
+data.counts    # Vector of counts across samples
+data.biotype   # UInt64 bitmask
+```
+
+---
+
+## Modularity Refactor · In Progress
+
+The current `NeoKCT` file is a monolith. We're breaking it into three orthogonal components:
+
+:::: {.columns}
+::: {.column width="33%"}
+**KmerTable**
+
+DeltaArray of sorted k-mer bit-reps + prefix-bucket binary search index.
+
+Handles: storage, lookup, iteration, serialization of the k-mer sequence.
+
+```julia
+struct KmerTable{K, Ab}
+    seqs::DeltaArray
+    idx::...
+end
+```
+:::
+::: {.column width="33%"}
+**CountTable**
+
+PackedArray + `n_cids` + `flat_cids` CSR layout.
+
+Handles: storing and retrieving per-sample bit-packed counts. All the CID/word logic lives here.
+
+```julia
+struct CountTable{C}
+    n_cids::Vector{UInt16}
+    flat_cids::Vector{UInt32}
+    counts::PackedArray{UInt32}
+    samples::Base.RefValue{Int64}
+end
+```
+:::
+::: {.column width="33%"}
+**BiotypLayer**
+
+Already standalone (see previous slides).
+
+Pool-deduplicated bitmasks. Parallel to the k-mer sequence in any KCT variant.
+
+```julia
+struct BiotypLayer
+    ids::Vector{UInt16}
+    pool::Vector{UInt64}
+    biotype_names::Vector{String}
+end
+```
+:::
+::::
+
+. . .
+
+`NeoKCT` = `KmerTable` + `CountTable`.  `RichKCT` = `KmerTable` + `CountTable` + `BiotypLayer`.
+`GenomicIndex` = `KmerTable` + `BiotypLayer` (no counts).
+
+---
+
+## Modularity Refactor · Motivation
+
+Today, `NeoKCT.jl` handles k-mer storage, count packing, index computation, sort, push, and serialization in one file. Separation makes each component independently testable and reusable.
+
+| What changes | Why |
+|---|---|
+| `KmerTable` extracted | Reused identically by `NeoKCT`, `RichKCT`, and `GenomicIndex` |
+| `CountTable` extracted | CID/word logic no longer tangled with k-mer logic |
+| `BiotypLayer` is already isolated | `GenomicIndex` and `RichKCT` share the same struct and pool |
+| Composition replaces inheritance | `AbstractKCT` delegation becomes explicit field access |
+
+. . .
+
+This also removes the current delegation boilerplate in `RichKCT`:
+
+```julia
+# Current: every method needs explicit delegation
+Base.findfirst(rich::RichKCT, key) = findfirst(rich.kct, key)
+compute_index!(rich::RichKCT; kw...) = compute_index!(rich.kct; kw...)
+# ...
+
+# After refactor: KmerTable is a shared field, called directly
+findfirst(rich.kmer_table, key)
+compute_index!(rich.kmer_table)
+```
+
+---
+
+## Build Strategy · `build_kct_tcga.sh`
+
+A Slurm-chained incremental build script. Each job adds a batch of samples, saves a checkpoint, then submits the next job. If Julia exits non-zero, the chain stops.
+
+```
+Bootstrap:
+  ./build_kct_tcga.sh /data/tcga/ sample_paths.txt --batch-size 20 --target 5000
+  └─ submits job KCT_tcga_20_samples (5 × 20 GB → 100 GB requested)
+
+Job KCT_tcga_20_samples:
+  loads KCT "none" (fresh) or resumes from seed   →  processes samples 1–20
+  saves .../[20_samples]_neokct.kct
+  └─ submits job KCT_tcga_40_samples (200 GB)
+
+Job KCT_tcga_40_samples:
+  loads [20_samples]_neokct.kct                   →  processes samples 21–40
+  saves .../[40_samples]_neokct.kct
+  └─ ... and so on until target reached
+```
+
+---
+
+## Build Strategy · Key Design Choices
+
+```bash
+# Memory estimated dynamically: 5 GB/sample, capped at 1800 GB (oni's limit)
+_compute_mem_gb() {
+    local mem=$(( total * 5 ))
+    echo $(( mem > MAX_MEM_GB ? MAX_MEM_GB : mem ))
+}
+```
+
+| Feature | Detail |
+|---|---|
+| `--seed-kct FILE` | Resume from a pre-built KCT; sample count parsed from `[N_samples]` filename pattern |
+| `--target N` | Total samples to build; chain auto-stops at target |
+| `--batch-size N` | Samples per job (default: 20); tune for memory/walltime trade-off |
+| Memory cap | 1800 GB = oni's max; at ~5 GB/sample, that covers ~360 samples at full allocation |
+| Crash recovery | Each job saves before submitting the next; re-run from the last checkpoint |
+
+. . .
+
+**Empty file handling fixed:** some TCGA FASTQ files are present on disk but empty (0-byte). JelloFish would produce an empty hashtable, which caused downstream errors in the CSR construction. Added guard: empty files are skipped with a warning rather than producing corrupt state.
+
+---
+
+## Build Strategy · `incremental_kct_step.jl`
+
+The Julia side of one batch step, called by the Slurm job:
+
+```julia
+# Load or build from scratch
+kct = kct_file == "none" ?
+    NeoKCT{K÷3, AAAlphabet}(jello_superthreaded_hash(batch[1], K, CHUNKS)) :
+    load_kct(kct_file)
+
+# Process batch: push → collapse → benchmark after each sample
+for s in batch
+    push!(kct, jello_superthreaded_hash(s, K, CHUNKS))
+    kct = collapse!(kct)   # deduplicates PackedArray words; keeps table compact
+    benchmark_kct(kct, BENCH_DIR)
+end
+
+# Save with sample count in filename for easy pickup by the next job
+write_kct(kct, joinpath(output_dir, "..._[$(next_total)_samples]_neokct.kct"))
+```
+
+`collapse!` is run after every sample: deduplicates PackedArray words whose bit-layout is identical.
+`benchmark_kct` saves a snapshot of component sizes and query speed for the growth plots.
+
+---
+
+## Summary · What Was Added
+
+| Component | What it is | Key property |
+|---|---|---|
+| `GenomicIndex` | Reference k-mer table with biotype bitmasks | Built from FASTA + GTF/GFF3; DeltaArray + pool |
+| `BiotypLayer` | Per-KCT biotype annotation layer | 2 bytes/k-mer via pool deduplication |
+| `RichKCT` | NeoKCT + BiotypLayer under AbstractKCT | O(n+m) merge-based build; zero lookup overhead |
+| `build_kct_tcga.sh` | Slurm-chained incremental build | Crash-safe checkpoints; dynamic memory estimation |
+
+. . .
+
+**Cost of biotype annotation:**
+
+| Structure | Size at 1.15B k-mers |
+|---|---|
+| `BiotypLayer.ids` (UInt16 × n_kmers) | **2.3 GB** |
+| `BiotypLayer.pool` (dozens of UInt64 entries) | < 1 KB |
+| Raw bitmasks (UInt64 × n_kmers) | 9.2 GB |
+| **Savings from pool** | **6.9 GB** |
+
+---
+
+## What's Next
+
+| Priority | Task |
+|---|---|
+| **Now** | Complete modularity refactor: extract KmerTable + CountTable |
+| **Now** | Continue TCGA production run with `build_kct_tcga.sh` |
+| **Near** | Serialize and load RichKCT (V2.0 binary format) |
+| **Near** | aeTSA extraction pipeline: join RichKCT against mass-spec peptide table |
+| **Key analysis** | Filter aeTSA candidates by biotype (protein_coding vs. intergenic) |
+
+---
+
+# Questions? {background-color="#1a1a2e"}
+
+`github.com/lemieux-lab/NeoKCT`
