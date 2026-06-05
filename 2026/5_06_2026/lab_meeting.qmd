@@ -277,7 +277,8 @@ function add_biotypes(kct::NeoKCT{K,Ab,C}, gidx::GenomicIndex{K,Ab}) where {K, A
 end
 ```
 
-**One pass. No hash lookups for the join itself.** Both `DeltaArray` iterators advance at O(1) amortised.
+**It is done with one pass with hash lookups for the join itself.** Both `DeltaArray` iterators advance at O(1) amortised.
+_Note: latest version, this was changed to an outer join instead. This should be the same on high sample KCTs_
 
 ---
 
@@ -295,7 +296,8 @@ Both `kct.seqs` and `gidx.seqs` are sorted `DeltaArray`s. The merge walk is a st
 ```
 
 Unmatched KCT k-mers keep the default `INTERGENIC_MASK` (pool[1]) assigned at initialization.
-k-mers only in the reference are silently skipped.
+k-mers only in the reference are silently skipped (left-join).
+_Note: No longer true with outer join. Again, on high sample KCTs this is should be the same_
 
 . . .
 

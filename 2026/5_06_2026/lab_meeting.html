@@ -1256,7 +1256,7 @@ k-mer in intergenic only         → 0b001 = 1</code></pre>
 <span id="cb12-22"><a href></a>    <span class="cf">end</span></span>
 <span id="cb12-23"><a href></a>    <span class="cf">return</span> <span class="fu">RichKCT</span><span class="dt">{K,Ab,C}</span>(kct, <span class="fu">BiotypLayer</span>(ids, pool, gidx.biotype_names))</span>
 <span id="cb12-24"><a href></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>One pass. No hash lookups for the join itself.</strong> Both <code>DeltaArray</code> iterators advance at O(1) amortised.</p>
+<p><strong>It is done with one pass with hash lookups for the join itself.</strong> Both <code>DeltaArray</code> iterators advance at O(1) amortised. <em>Note: latest version, this was changed to an outer join instead. This should be the same on high sample KCTs</em></p>
 </section>
 <section id="richkct-sorted-merge-correctness" class="slide level2">
 <h2>RichKCT · Sorted Merge Correctness</h2>
@@ -1267,7 +1267,7 @@ k-mer in intergenic only         → 0b001 = 1</code></pre>
                match     match  match → biotype from gidx assigned to KCT position
                     ↑  ↑
                   KCT advance   gidx advance (k-mer only in reference, ignored)</code></pre>
-<p>Unmatched KCT k-mers keep the default <code>INTERGENIC_MASK</code> (pool[1]) assigned at initialization. k-mers only in the reference are silently skipped.</p>
+<p>Unmatched KCT k-mers keep the default <code>INTERGENIC_MASK</code> (pool[1]) assigned at initialization. k-mers only in the reference are silently skipped (left-join). <em>Note: No longer true with outer join. Again, on high sample KCTs this is should be the same</em></p>
 <div class="fragment">
 <p>This is the right semantics: if a k-mer appears in the RNA-Seq data but has no match in the reference transcriptome, it is <strong>intergenic by definition</strong>.</p>
 </div>
