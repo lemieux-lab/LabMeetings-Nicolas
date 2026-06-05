@@ -327,7 +327,7 @@ data.biotype   # UInt64 bitmask
 
 ## Modularity Refactor · In Progress
 
-The current `NeoKCT` file is a monolith. We're breaking it into three orthogonal components:
+The current `NeoKCT` file is a monolith, I'm breaking it into three orthogonal components:
 
 :::: {.columns}
 ::: {.column width="33%"}
@@ -454,7 +454,8 @@ _compute_mem_gb() {
 
 . . .
 
-**Empty file handling fixed:** some TCGA FASTQ files are present on disk but empty (0-byte). JelloFish would produce an empty hashtable, which caused downstream errors in the CSR construction. Added guard: empty files are skipped with a warning rather than producing corrupt state.
+**Empty file handling fixed:** some TCGA FASTQ files were present on disk but empty (0-byte). JelloFish would produce an empty hashtable, which caused downstream errors in the KCT construction. This was fixed by Albert.
+Added guard: empty files are skipped with a warning rather than producing corrupt state (shouldn't happen now anyway)
 
 ---
 
@@ -497,12 +498,12 @@ write_kct(kct, joinpath(output_dir, "..._[$(next_total)_samples]_neokct.kct"))
 
 **Cost of biotype annotation:**
 
-| Structure | Size at 1.15B k-mers |
+| Structure | Size at 62M k-mers |
 |---|---|
-| `BiotypLayer.ids` (UInt16 × n_kmers) | **2.3 GB** |
+| `BiotypLayer.ids` (UInt16 × n_kmers) | 120 MB |
 | `BiotypLayer.pool` (dozens of UInt64 entries) | < 1 KB |
-| Raw bitmasks (UInt64 × n_kmers) | 9.2 GB |
-| **Savings from pool** | **6.9 GB** |
+| Raw bitmasks (UInt64 × n_kmers) | 500 MB |
+| Savings from pool | 380 MB |
 
 ---
 

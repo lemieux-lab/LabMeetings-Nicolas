@@ -1290,7 +1290,7 @@ k-mer in intergenic only         → 0b001 = 1</code></pre>
 </section>
 <section id="modularity-refactor-in-progress" class="slide level2">
 <h2>Modularity Refactor · In Progress</h2>
-<p>The current <code>NeoKCT</code> file is a monolith. We’re breaking it into three orthogonal components:</p>
+<p>The current <code>NeoKCT</code> file is a monolith, I’m breaking it into three orthogonal components:</p>
 <div class="columns">
 <div class="column" style="width:33%;">
 <p><strong>KmerTable</strong></p>
@@ -1428,7 +1428,7 @@ Job KCT_tcga_40_samples:
 </tbody>
 </table>
 <div class="fragment">
-<p><strong>Empty file handling fixed:</strong> some TCGA FASTQ files are present on disk but empty (0-byte). JelloFish would produce an empty hashtable, which caused downstream errors in the CSR construction. Added guard: empty files are skipped with a warning rather than producing corrupt state.</p>
+<p><strong>Empty file handling fixed:</strong> some TCGA FASTQ files were present on disk but empty (0-byte). JelloFish would produce an empty hashtable, which caused downstream errors in the KCT construction. This was fixed by Albert. Added guard: empty files are skipped with a warning rather than producing corrupt state (shouldn’t happen now anyway)</p>
 </div>
 </section>
 <section id="build-strategy-incremental_kct_step.jl" class="slide level2">
@@ -1494,13 +1494,13 @@ Job KCT_tcga_40_samples:
 <thead>
 <tr class="header">
 <th>Structure</th>
-<th>Size at 1.15B k-mers</th>
+<th>Size at 62M k-mers</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td><code>BiotypLayer.ids</code> (UInt16 × n_kmers)</td>
-<td><strong>2.3 GB</strong></td>
+<td>120 MB</td>
 </tr>
 <tr class="even">
 <td><code>BiotypLayer.pool</code> (dozens of UInt64 entries)</td>
@@ -1508,11 +1508,11 @@ Job KCT_tcga_40_samples:
 </tr>
 <tr class="odd">
 <td>Raw bitmasks (UInt64 × n_kmers)</td>
-<td>9.2 GB</td>
+<td>500 MB</td>
 </tr>
 <tr class="even">
-<td><strong>Savings from pool</strong></td>
-<td><strong>6.9 GB</strong></td>
+<td>Savings from pool</td>
+<td>380 MB</td>
 </tr>
 </tbody>
 </table>
