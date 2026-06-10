@@ -1,6 +1,6 @@
 ---
-title: "NeoKCT"
-subtitle: "Reference-free k-mer count tables for aeTSA discovery"
+title: "K-meromics"
+subtitle: "Developing methods for reference-free analysis"
 author: "Nicolas Jacquin"
 date: today
 format:
