@@ -1,8 +1,8 @@
 ## Project Presentation
 
-> Ongoing presentation of my main PhD project: NeoKCT, a reference-free k-mer count table for aeTSA discovery.
+> Ongoing presentation of my main PhD project: K-meromics with the NeoKCT; a reference-free k-mer count table for aeTSA discovery.
 
-### <a href="https://lemieux-lab.github.io/LabMeetings-Nicolas/Project_Presentation/project_presentation.html">NeoKCT Project Presentation</a>
+### <a href="https://lemieux-lab.github.io/LabMeetings-Nicolas/Project_Presentation/project_presentation.html">K-meromics Project Presentation</a>
 
 ---
 
