@@ -30,9 +30,9 @@ bibliography: references.bib
 ::: {.column width="35%"}
 Reference alignment **discards non-aligning reads**.
 
-Non-canonical TSAs (ERVs, gene fusions, alternative ORFs, and other aberrant events) **fail to align** and are lost.
+Non-canonical TSAs (ERVs, gene fusions, alternative ORFs, and other aberrant events) fail to align and are lost.
 
-Yet non-canonical regions are the **dominant source** of tumor-specific antigens (~90%) [@laumont2018; @cuevas2021].
+Yet non-canonical regions are the dominant source of tumor-specific antigens (~90%) [@laumont2018; @cuevas2021].
 :::
 
 ::::
@@ -77,13 +77,13 @@ Yet non-canonical regions are the **dominant source** of tumor-specific antigens
 :::
 
 ::: {.column width="35%"}
-Each k-mer's count vector is stored as a **packed bits** row plus a **mirror bitmap** that marks the bit-width boundaries.
+Each k-mer's count vector is stored as a packed bits row plus a mirror bitmap that marks the bit-width boundaries.
 
 **Why this saves space**
 
 Most counts are very low (0, 1, 2...), so a 2-bit or 4-bit slot is enough per sample. Even paying for the extra mirror bitmap is cheaper than one `UInt32` per count.
 
-Fixed-size packed **chunks** are reused across k-mers: as more samples are added, the pool of distinct chunks grows slowly while the number of k-mers that share the same chunk grows fast. A naive per-k-mer `Vector{UInt32}` would become increasingly unique and never benefit from that deduplication.
+Fixed-size packed chunks are reused across k-mers: as more samples are added, the pool of distinct chunks grows slowly while the number of k-mers that share the same chunk grows fast. A naive per-k-mer `Vector{UInt32}` would become increasingly unique and never benefit from that deduplication.
 :::
 
 ::::
