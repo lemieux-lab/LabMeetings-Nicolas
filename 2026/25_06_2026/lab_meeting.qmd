@@ -133,6 +133,7 @@ end
 ```
 
 For 100M k-mers, `seen` grows to 100M entries, roughly **4.5 GB** of temporary allocation.
+
 ---
 
 ## OOM Fix · `find_shared_words`

@@ -1166,10 +1166,8 @@ bit 1 set → BiotypLayer stored</code></pre>
 <span id="cb5-3"><a href></a><span class="cf">for</span> cid <span class="kw">in</span> cl.flat_cids</span>
 <span id="cb5-4"><a href></a>    cid <span class="kw">in</span> seen ? <span class="fu">push!</span>(shared, cid) <span class="op">:</span> <span class="fu">push!</span>(seen, cid)</span>
 <span id="cb5-5"><a href></a><span class="cf">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For 100M k-mers, <code>seen</code> grows to 100M entries, roughly <strong>4.5 GB</strong> of temporary allocation.</p>
 </div>
-</section>
-<section id="for-100m-k-mers-seen-grows-to-100m-entries-roughly-4.5-gb-of-temporary-allocation." class="slide level2">
-<h2>For 100M k-mers, <code>seen</code> grows to 100M entries, roughly <strong>4.5 GB</strong> of temporary allocation.</h2>
 </section>
 <section id="oom-fix-find_shared_words" class="slide level2">
 <h2>OOM Fix · <code>find_shared_words</code></h2>
