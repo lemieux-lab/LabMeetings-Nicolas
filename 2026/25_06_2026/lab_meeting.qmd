@@ -112,7 +112,7 @@ While running tests to make sure the refactor hadn't broken anything, I fired up
 
 . . .
 
-Tracking it down was a bit more involved than usual because the refactor added a layer of indirection, so there were more places to look. The two culprits turned out to be straightforward once found, and the fixes are worth explaining.
+Tracking it down was a bit more involved than usual because the refactor was in progress and incomplete, so there were more places to look. The two culprits turned out to be straightforward once found, and the fixes are worth explaining.
 
 ---
 
@@ -132,13 +132,12 @@ for cid in cl.flat_cids
 end
 ```
 
-For 100M k-mers, `seen` grows to 100M entries, roughly **4.5 GB** of temporary allocation, even though before any `collapse!` the result is always an empty set.
-
+For 100M k-mers, `seen` grows to 100M entries, roughly **4.5 GB** of temporary allocation.
 ---
 
 ## OOM Fix · `find_shared_words`
 
-Replaced the `Set` with a compact byte array indexed by **word ID** instead of k-mer ID.
+Replaced the `Set` with a compact byte array indexed by word ID instead of k-mer ID.
 The number of PackedArray words is bounded by the number of k-mers before collapse, and shrinks dramatically after collapse (deduplication removes redundant words).
 
 ```julia
@@ -150,7 +149,7 @@ end
 return Set{UInt32}(i for i in eachindex(ref_counts) if ref_counts[i] > 1)
 ```
 
-The returned `Set` is the same in both versions: it only contains words actually shared, which is empty before any collapse. The saving is entirely in the intermediary: `seen` (100M entries, 4.5 GB) replaced by `ref_counts` (100M bytes, **100 MB**).
+The returned `Set` is the same in both versions: it only contains words actually shared. The saving is entirely in the intermediary: `seen` (100M entries, 4.5 GB) replaced by `ref_counts` (100M bytes, **100 MB**).
 
 ---
 
@@ -166,7 +165,7 @@ For the second sample push, `missing_counts = 0` for all existing k-mers and no 
 
 . . .
 
-Fix: **create the entry lazily**, only at the point where a word actually overflows:
+Fix: create the entry lazily, only at the point where a word actually overflows:
 
 ```julia
 # Before (always allocates)

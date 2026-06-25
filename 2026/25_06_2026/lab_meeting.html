@@ -1153,7 +1153,7 @@ bit 1 set → BiotypLayer stored</code></pre>
 <h2>OOM · How It Showed Up</h2>
 <p>While running tests to make sure the refactor hadn’t broken anything, I fired up the production build on TCGA samples and hit an out-of-memory kill at 23% of the second sample push (50 GB SLURM allocation).</p>
 <div class="fragment">
-<p>Tracking it down was a bit more involved than usual because the refactor added a layer of indirection, so there were more places to look. The two culprits turned out to be straightforward once found, and the fixes are worth explaining.</p>
+<p>Tracking it down was a bit more involved than usual because the refactor was in progress and incomplete, so there were more places to look. The two culprits turned out to be straightforward once found, and the fixes are worth explaining.</p>
 </div>
 </section>
 <section id="oom-fix-the-problem" class="slide level2">
@@ -1166,19 +1166,21 @@ bit 1 set → BiotypLayer stored</code></pre>
 <span id="cb5-3"><a href></a><span class="cf">for</span> cid <span class="kw">in</span> cl.flat_cids</span>
 <span id="cb5-4"><a href></a>    cid <span class="kw">in</span> seen ? <span class="fu">push!</span>(shared, cid) <span class="op">:</span> <span class="fu">push!</span>(seen, cid)</span>
 <span id="cb5-5"><a href></a><span class="cf">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>For 100M k-mers, <code>seen</code> grows to 100M entries, roughly <strong>4.5 GB</strong> of temporary allocation, even though before any <code>collapse!</code> the result is always an empty set.</p>
 </div>
+</section>
+<section id="for-100m-k-mers-seen-grows-to-100m-entries-roughly-4.5-gb-of-temporary-allocation." class="slide level2">
+<h2>For 100M k-mers, <code>seen</code> grows to 100M entries, roughly <strong>4.5 GB</strong> of temporary allocation.</h2>
 </section>
 <section id="oom-fix-find_shared_words" class="slide level2">
 <h2>OOM Fix · <code>find_shared_words</code></h2>
-<p>Replaced the <code>Set</code> with a compact byte array indexed by <strong>word ID</strong> instead of k-mer ID. The number of PackedArray words is bounded by the number of k-mers before collapse, and shrinks dramatically after collapse (deduplication removes redundant words).</p>
+<p>Replaced the <code>Set</code> with a compact byte array indexed by word ID instead of k-mer ID. The number of PackedArray words is bounded by the number of k-mers before collapse, and shrinks dramatically after collapse (deduplication removes redundant words).</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href></a>n_words <span class="op">=</span> <span class="fu">length</span>(cl.counts.words)</span>
 <span id="cb6-2"><a href></a>ref_counts <span class="op">=</span> <span class="fu">zeros</span>(<span class="dt">UInt8</span>, n_words)   <span class="co"># 1 byte per word; saturate at 2</span></span>
 <span id="cb6-3"><a href></a><span class="cf">for</span> cid <span class="kw">in</span> cl.flat_cids</span>
 <span id="cb6-4"><a href></a>    <span class="pp">@inbounds</span> ref_counts[cid] <span class="op">&lt;</span> <span class="fl">2</span> <span class="op">&amp;&amp;</span> (ref_counts[cid] <span class="op">+=</span> <span class="fu">UInt8</span>(<span class="fl">1</span>))</span>
 <span id="cb6-5"><a href></a><span class="cf">end</span></span>
 <span id="cb6-6"><a href></a><span class="cf">return</span> <span class="fu">Set</span><span class="dt">{UInt32}</span>(i <span class="cf">for</span> i <span class="kw">in</span> <span class="fu">eachindex</span>(ref_counts) <span class="cf">if</span> ref_counts[i] <span class="op">&gt;</span> <span class="fl">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The returned <code>Set</code> is the same in both versions: it only contains words actually shared, which is empty before any collapse. The saving is entirely in the intermediary: <code>seen</code> (100M entries, 4.5 GB) replaced by <code>ref_counts</code> (100M bytes, <strong>100 MB</strong>).</p>
+<p>The returned <code>Set</code> is the same in both versions: it only contains words actually shared. The saving is entirely in the intermediary: <code>seen</code> (100M entries, 4.5 GB) replaced by <code>ref_counts</code> (100M bytes, <strong>100 MB</strong>).</p>
 </section>
 <section id="oom-fix-ext_buf" class="slide level2">
 <h2>OOM Fix · <code>ext_buf</code></h2>
@@ -1186,7 +1188,7 @@ bit 1 set → BiotypLayer stored</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href></a>ext <span class="op">=</span> <span class="fu">get!</span>(ext_buf, k_pos, <span class="dt">UInt32</span>[])  <span class="co"># called for every k-mer in the loop</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>For the second sample push, <code>missing_counts = 0</code> for all existing k-mers and no words overflow, so every one of those entries stays empty. With 100M existing k-mers that’s millions of empty <code>UInt32[]</code> allocations and a large dict, for nothing.</p>
 <div class="fragment">
-<p>Fix: <strong>create the entry lazily</strong>, only at the point where a word actually overflows:</p>
+<p>Fix: create the entry lazily, only at the point where a word actually overflows:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href></a><span class="co"># Before (always allocates)</span></span>
 <span id="cb8-2"><a href></a>ext <span class="op">=</span> <span class="fu">get!</span>(ext_buf, k_pos, <span class="dt">UInt32</span>[])</span>
 <span id="cb8-3"><a href></a><span class="op">...</span></span>
