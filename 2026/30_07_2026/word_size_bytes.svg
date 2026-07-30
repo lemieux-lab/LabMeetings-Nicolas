@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1700 760" font-family='ui-monospace, "JetBrains Mono", "IBM Plex Mono", "SF Mono", Menlo, Consolas, monospace'>
+<text x="40" y="42" font-size="30" font-weight="600" fill="#ffffff">Measured bytes, real production table</text>
+<text x="40" y="70" font-size="19" fill="#c3c2b7">698,921,107 k-mers, 30 samples, merge=true repack -- words + bitmap components</text>
+<line x1="40" y1="560.0" x2="1640" y2="560.0" stroke="rgba(255,255,255,0.10)" stroke-width="1"/>
+<text x="28" y="565.0" font-size="15" fill="#898781" text-anchor="end">0</text>
+<line x1="40" y1="466.0" x2="1640" y2="466.0" stroke="rgba(255,255,255,0.10)" stroke-width="1"/>
+<text x="28" y="471.0" font-size="15" fill="#898781" text-anchor="end">100</text>
+<line x1="40" y1="372.0" x2="1640" y2="372.0" stroke="rgba(255,255,255,0.10)" stroke-width="1"/>
+<text x="28" y="377.0" font-size="15" fill="#898781" text-anchor="end">200</text>
+<line x1="40" y1="278.0" x2="1640" y2="278.0" stroke="rgba(255,255,255,0.10)" stroke-width="1"/>
+<text x="28" y="283.0" font-size="15" fill="#898781" text-anchor="end">300</text>
+<line x1="40" y1="184.0" x2="1640" y2="184.0" stroke="rgba(255,255,255,0.10)" stroke-width="1"/>
+<text x="28" y="189.0" font-size="15" fill="#898781" text-anchor="end">400</text>
+<line x1="40" y1="90.0" x2="1640" y2="90.0" stroke="rgba(255,255,255,0.10)" stroke-width="1"/>
+<text x="28" y="95.0" font-size="15" fill="#898781" text-anchor="end">500</text>
+<text x="28" y="68.0" font-size="15" fill="#898781" text-anchor="end">MiB</text>
+<line x1="40" y1="560" x2="1640" y2="560" stroke="rgba(255,255,255,0.22)" stroke-width="1.5"/>
+<rect x="293.0" y="502.3" width="90" height="57.7" rx="4" fill="#3987e5"/>
+<text x="338.0" y="492.3" font-size="15" fill="#ffffff" text-anchor="middle">61.4</text>
+<rect x="397.0" y="504.4" width="90" height="55.6" rx="4" fill="#d95926"/>
+<text x="442.0" y="494.4" font-size="15" fill="#ffffff" text-anchor="middle">59.1</text>
+<text x="390.0" y="594" font-size="20" font-weight="600" fill="#ffffff" text-anchor="middle">UInt64</text>
+<text x="390.0" y="630" font-size="19" font-weight="700" fill="#0ca30c" text-anchor="middle">▼ -7.17%</text>
+<text x="390.0" y="652" font-size="14" fill="#898781" text-anchor="middle">total CSR vs UInt128 original</text>
+<rect x="793.0" y="329.0" width="90" height="231.0" rx="4" fill="#3987e5"/>
+<text x="838.0" y="319.0" font-size="15" fill="#ffffff" text-anchor="middle">245.7</text>
+<rect x="897.0" y="348.3" width="90" height="211.7" rx="4" fill="#d95926"/>
+<text x="942.0" y="338.3" font-size="15" fill="#ffffff" text-anchor="middle">225.2</text>
+<text x="890.0" y="594" font-size="20" font-weight="600" fill="#ffffff" text-anchor="middle">UInt256</text>
+<text x="890.0" y="630" font-size="19" font-weight="700" fill="#fab219" text-anchor="middle">▲ +0.67%</text>
+<text x="890.0" y="652" font-size="14" fill="#898781" text-anchor="middle">total CSR vs UInt128 original</text>
+<rect x="1293.0" y="98.0" width="90" height="462.0" rx="4" fill="#3987e5"/>
+<text x="1338.0" y="88.0" font-size="15" fill="#ffffff" text-anchor="middle">491.5</text>
+<rect x="1397.0" y="136.7" width="90" height="423.3" rx="4" fill="#d95926"/>
+<text x="1442.0" y="126.7" font-size="15" fill="#ffffff" text-anchor="middle">450.3</text>
+<text x="1390.0" y="594" font-size="20" font-weight="600" fill="#ffffff" text-anchor="middle">UInt512</text>
+<text x="1390.0" y="630" font-size="19" font-weight="700" fill="#d03b3b" text-anchor="middle">▲ +11.29%</text>
+<text x="1390.0" y="652" font-size="14" fill="#898781" text-anchor="middle">total CSR vs UInt128 original</text>
+<rect x="1260" y="30" width="16" height="16" rx="3" fill="#3987e5"/>
+<text x="1284" y="43" font-size="16" fill="#c3c2b7">words bytes</text>
+<rect x="1430" y="30" width="16" height="16" rx="3" fill="#d95926"/>
+<text x="1454" y="43" font-size="16" fill="#c3c2b7">bitmap bytes</text>
+</svg>

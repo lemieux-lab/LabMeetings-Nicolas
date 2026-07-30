@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1700 700" font-family='ui-monospace, "JetBrains Mono", "IBM Plex Mono", "SF Mono", Menlo, Consolas, monospace'>
+
+    <defs>
+      <pattern id="hatch" width="10" height="10" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+        <rect width="10" height="10" fill="rgba(255,255,255,0.045)"/>
+        <line x1="0" y1="0" x2="0" y2="10" stroke="rgba(255,255,255,0.16)" stroke-width="2"/>
+      </pattern>
+    </defs>
+    
+<text x="40" y="52" font-size="30" font-weight="600" fill="#ffffff">Same packed data, wrapped in a bigger container</text>
+<text x="40" y="86" font-size="19" fill="#c3c2b7">A word must reserve its full width whether or not it's full -- the bitmap does too</text>
+<text x="40" y="180.0" font-size="24" font-weight="600" fill="#ffffff">UInt64</text>
+<rect x="250" y="150" width="121.6" height="46" rx="6" fill="url(#hatch)" stroke="rgba(255,255,255,0.22)" stroke-width="1.5"/>
+<rect x="250" y="150" width="96.0" height="46" rx="6" fill="#3987e5"/>
+<rect x="338.0" y="150" width="8" height="46" fill="#3987e5"/>
+<text x="387.6" y="179.0" font-size="17" fill="#c3c2b7">64 bits allocated</text>
+<text x="250" y="218" font-size="16" fill="#898781">already at the floor -- 1 word per k-mer</text>
+<text x="40" y="298.0" font-size="24" font-weight="600" fill="#ffffff">UInt256</text>
+<rect x="250" y="268" width="486.4" height="46" rx="6" fill="url(#hatch)" stroke="rgba(255,255,255,0.22)" stroke-width="1.5"/>
+<rect x="250" y="268" width="96.0" height="46" rx="6" fill="#3987e5"/>
+<rect x="338.0" y="268" width="8" height="46" fill="#3987e5"/>
+<text x="752.4" y="297.0" font-size="17" fill="#c3c2b7">256 bits allocated</text>
+<text x="250" y="336" font-size="16" fill="#898781">4x wider container, identical data inside</text>
+<text x="40" y="416.0" font-size="24" font-weight="600" fill="#ffffff">UInt512</text>
+<rect x="250" y="386" width="972.8" height="46" rx="6" fill="url(#hatch)" stroke="rgba(255,255,255,0.22)" stroke-width="1.5"/>
+<rect x="250" y="386" width="96.0" height="46" rx="6" fill="#3987e5"/>
+<rect x="338.0" y="386" width="8" height="46" fill="#3987e5"/>
+<text x="1238.8" y="415.0" font-size="17" fill="#c3c2b7">512 bits allocated</text>
+<text x="250" y="454" font-size="16" fill="#898781">8x wider container, identical data inside</text>
+<rect x="40" y="510" width="18" height="18" rx="4" fill="#3987e5"/>
+<text x="66" y="524" font-size="16" fill="#c3c2b7">k-mer's actual packed values (identical in all three rows)</text>
+<rect x="600" y="510" width="18" height="18" rx="4" fill="url(#hatch)" stroke="rgba(255,255,255,0.22)"/>
+<text x="626" y="524" font-size="16" fill="#c3c2b7">unused capacity -- still costs real bytes</text>
+<rect x="40" y="560" width="1620" height="64" rx="10" fill="rgba(224,164,94,0.10)" stroke="rgba(224,164,94,0.35)" stroke-width="1.5"/>
+<text x="62" y="587" font-size="17" font-weight="600" fill="#F0C08C">The bitmap pays this same tax, separately:</text>
+<text x="62" y="610" font-size="16" fill="#c3c2b7">every word reserves W bits of companion bitmap too, regardless of how many values it holds -- the waste is doubled, not single.</text>
+</svg>
