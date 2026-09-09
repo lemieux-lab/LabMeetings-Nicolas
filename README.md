@@ -21,6 +21,7 @@
 <details>
     <summary><h3>Workshops<h3></summary>
     <li><a href = https://lemieux-lab.github.io/LabMeetings-Nicolas/Workshops/Julia_Packages/julia_pkg_workshop.html> Julia Packages</a></li>
+    <li><a href = https://lemieux-lab.github.io/LabMeetings-Nicolas/Workshops/Precompiling/julia_precompiler_workshop.html> Julia Precompilation</a></li>
 </details>
 
 #### Main project repo: https://github.com/lemieux-lab/NeoKCT

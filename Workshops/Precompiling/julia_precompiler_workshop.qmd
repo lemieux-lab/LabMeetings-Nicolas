@@ -1,0 +1,642 @@
+---
+title: "Julia Precompilation"
+subtitle: "From `using` lag to instant startup"
+author: "Nicolas Jacquin"
+date: today
+format:
+  revealjs:
+    theme: dark
+    highlight-style: github-dark
+    self-contained: true
+    scrollable: true
+    width: 1400
+    height: 800
+    margin: 0.04
+execute:
+  echo: true
+  eval: false
+  cache: false
+---
+
+# What is taking so long
+
+## Main issue
+
+- "Why does `using CairoMakie` take 10 minutes the first time?"
+- "Why is my first plot slow and every one after it instant?"
+- "I changed one line and now the whole stack recompiles."
+
+These are the same mechanism seen from three sides. This workshop is about that mechanism and the knobs on it.
+
+
+
+## Do this now
+
+Grab the workshop folder, then:
+
+```{julia}
+import Pkg
+Pkg.activate(@__DIR__)   # this folder, not the VSCode workspace root
+Pkg.instantiate()
+```
+
+The first `instantiate` pulls in CairoMakie, SnoopCompile, JET, Cthulhu, and PackageCompiler, then precompiles all of it. That takes a few minutes. Start it now and let it run while we talk.
+
+The live exercise later uses a separate environment in `KmerTools/`, so leave this one activated for everything else.
+
+
+
+## Latency vs throughput
+
+Julia compiles to native code specialised on the argument types at each call site. That is why the tenth call is fast. The first call pays for:
+
+- lowering the source to Intermediate Representation (IR)
+- type inference across the call graph
+- LLVM optimisation and native codegen
+
+"Time to first X" (TTFX) is that work summed over a whole workflow. Precompilation is the machinery that moves as much of it as possible out of your session and onto disk.
+
+
+
+## The pipeline in one slide
+
+```
+source
+  │  @code_lowered
+lowered IR
+  │  @code_typed  /  @code_warntype
+typed IR  (inference)
+  │  @code_llvm
+LLVM IR  (optimisation)
+  │  @code_native
+machine code
+```
+
+```{julia}
+f(x) = sum(abs2, x)
+
+@code_warntype f([1.0, 2.0, 3.0])  # are all types concrete? any red?
+@code_llvm f([1.0, 2.0, 3.0])  # LLVM IR
+@code_native f([1.0, 2.0, 3.0])  # final assembly
+```
+
+Inference and codegen are the expensive stages, and those are exactly what a package image stores.
+
+
+
+## Seeing it live
+
+```{julia}
+# fresh REPL, right after install
+@time using CairoMakie  # tens of seconds
+
+# restart the REPL
+@time using CairoMakie  # well under a second, served from cache
+
+@time (scatter(rand(10), rand(10)); nothing)  # first plot: still some cost
+@time (scatter(rand(10), rand(10)); nothing)  # second plot: instant
+```
+
+The `using` cost is cached across sessions. The first-plot cost is only partly cached, and that gap is what Blocks 3 and 4 are about.
+
+
+
+## What we will cover (~105 min)
+
+| Block | Topic | Time |
+|---|---|---|
+| 1 | What is taking so long: TTFX and the pipeline | 15 min |
+| 2 | What Julia caches for you | 15 min |
+| 3 | Invalidations, and the inference toolbox | 30 min |
+| 4 | Precompiling your own package | 20 min |
+| 5 | System images, apps, and the cluster | 15 min |
+| 6 | Live exercise | 10 min |
+
+
+
+# Block 2: What Julia caches for you
+
+## The compiled depot
+
+After a package precompiles, its cache lands under the depot:
+
+```
+~/.julia/compiled/v1.11/CairoMakie/
+├── <slug>.ji  # serialised module: types, method table, inferred code
+└── <slug>.so  # native code image (pkgimage), since Julia 1.9
+```
+
+One pair per package per set of resolved dependency versions. On `using`, Julia memory-maps the `.so` instead of re-inferring and re-compiling.
+
+
+
+## When precompilation runs
+
+- automatically after `Pkg.add`, `Pkg.update`, or any manifest change
+- automatically on `using Foo` when the cache is missing or stale
+- explicitly with `Pkg.precompile()`
+
+It runs in parallel across packages. Cap the worker count with `JULIA_NUM_PRECOMPILE_TASKS` if it is starving the machine.
+
+
+
+## What makes a cache file stale
+
+A pair is rebuilt when any input changed:
+
+- the package's own source files
+- the resolved version of any dependency
+- the Julia version (`v1.11` in the path above)
+- `Preferences.jl` values the package reads at precompile time
+
+If none of those moved, the existing `.ji` and `.so` are reused untouched. A rebuild "for no reason" almost always means one of these moved without you noticing, usually a shared environment.
+
+
+
+## Measuring import cost
+
+```{julia}
+using InteractiveUtils
+
+@time_imports using CairoMakie
+    #   1.2 ms  Reexport
+    # 145.0 ms  ColorTypes
+    #  89.3 ms  FixedPointNumbers  88.7% compilation time
+    #   ...
+```
+
+`@time_imports` splits the cost per dependency and flags how much was compilation rather than plain loading. A high compilation percentage on a package that is already precompiled means its work is not sticking, which is Block 3.
+
+
+
+## Watching runtime compilation
+
+```{bash}
+julia --trace-compile=stderr script.jl
+julia --trace-compile=stderr --trace-compile-timing script.jl  # 1.11+, adds per-call ms
+```
+
+Every line printed is a method compiled at runtime, so the cache did not cover it. That list is the raw material for Block 4. Redirect it to a file and you have a starting precompile set.
+
+`script.jl` ships with the workshop materials. It runs a small dependency-free workload, and its trace shows your own `Point` and `nearest` instances alongside the `Base` ones.
+
+
+
+# Block 3: Invalidations
+
+## World age: a version clock for methods
+
+Julia keeps one global counter, the world age. Every method definition or deletion bumps it.
+
+```{julia}
+println(Base.get_world_counter())  # N
+f() = 1  # define a method
+println(Base.get_world_counter())  # N+1
+```
+
+Every method and every compiled `CodeInstance` carries a validity range `[min_world, max_world]`. A fresh definition starts at `[current, ∞)`. When something supersedes it, `max_world` is capped and the code is dead from that world on.
+
+
+
+## Watching a CodeInstance die
+
+```{julia}
+inner(x) = x + 1
+outer(x) = inner(x)
+outer(1)  # compiles outer(::Int), CodeInstance [38688, ∞)
+
+inner(x) = x + 100  # redefine the callee, counter goes to 38691 outer's CodeInstance is now [38688, 38690]
+
+outer(1)  # forced recompile, new CodeInstance [38691, ∞)
+```
+
+```
+world age →   ..688       ..689       ..690       ..691       ..692
+            ────┬───────────┬───────────┬───────────┬───────────┬────
+inner  v1       ●━━━━━━━━━━━━━━━━━━━━━━━━╳                            [688, 690] dead
+inner  v2                               ●━━━━━━━━━━━━━━━━━━━━━━━━▶    [691, ∞)
+outer  CI v1    ●━━━━━━━━━━━━━━━━━━━━━━━━╳  capped through backedge   [688, 690] dead
+outer  CI v2                             ·············●━━━━━━━━━━━▶   rebuilt on next call
+```
+
+That is one invalidation. The `FilePathsBase` `write` method from the last block caps thousands of `CodeInstance`s the same way, in one definition.
+
+
+
+## The world age barrier
+
+```{julia}
+val() = 1
+
+function barrier()
+    a = val()  # 1
+    Core.eval(Main, :(val() = 2))
+    b = val()  # still 1, this frame is pinned to the old world
+    c = Base.invokelatest(val)  # 2, opts into the current world
+    (a, b, c)
+end
+
+println(barrier())  # (1, 1, 2)
+println(val()) # 2, back at the top level
+```
+
+A running call is pinned to the world age it started in. Methods defined while it runs are invisible until control returns to the top level. Call a function whose only method is brand new and you get a very obscure error:
+`MethodError: method too new to be called from this world context`.
+
+Precompilation leans on the same rule. Cached code is stamped with the world it was built in, and on load Julia checks that stamp against the current method tables before trusting it.
+
+
+
+## The failure mode
+
+You `using` package A, which precompiled cleanly. Then you `using` package B, which contains:
+
+```{julia}
+Base.:+(x::MyType, y::Integer) = ...  # a new method on a core function
+```
+
+Any inferred code in A that called `+` and could now reach this method is invalidated. It recompiles from scratch the next time it runs. Part of A's precompilation was wasted, and you pay for it every session where B loads first.
+
+
+
+## The usual causes
+
+- type piracy: adding methods to functions you do not own, dispatching on types you do not own (I do this often, yarrrr)
+- loose signatures like `f(x) = ...` with no annotation, specialised late and widely
+- adding methods to `Base` functions from deep inside a dependency tree
+
+Loading order then decides how much recompilation you eat.
+
+
+
+## Finding them
+
+```{julia}
+using SnoopCompileCore
+invs = @snoop_invalidations using CairoMakie;   # fresh REPL, this is the first using
+
+using SnoopCompile
+trees = invalidation_trees(invs)
+```
+
+Each tree is rooted at one method definition and branches into every compiled instance it knocked out. A tree with hundreds of children is a package degrading everyone downstream of it.
+
+Loading CairoMakie into a fresh session here gives about 196 trees and 8600 invalidated instances. The biggest is `FilePathsBase` adding `write(::FileBuffer, ::String)`, which supersedes `Base.write(::IO, ::String)` and takes roughly 1400 instances with it. Textbook case of the third bullet on the previous slide.
+
+
+
+## Writing cache-friendly code
+
+- annotate argument types on public methods so specialisation happens at precompile time, not first call
+- do not commit type piracy, and read the invalidation trees of dependencies that do
+- keep return types inferrable, the next slides are the tools for checking
+- wrap a fragile block in `PrecompileTools.@recompile_invalidations` so invalidated code is rebuilt once at precompile time instead of in every session
+
+
+
+## The inference toolbox
+
+Invalidations and code that will not precompile share a root cause: inference could not settle on a concrete type. Three tools, three questions.
+
+| Tool | Question it answers |
+|---|---|
+| `JET.@report_opt` | is there runtime dispatch left after inference |
+| `Cthulhu.@descend` | which call in the tree is where the type is lost |
+| `SnoopCompile.@snoop_inference` | what did all that inference cost, and where |
+
+Running example, a struct with an abstractly typed field:
+
+```{julia}
+struct Bag
+    items::Array          # no eltype, no ndims, so abstract
+end
+bagsum(b::Bag) = sum(b.items)
+```
+
+
+
+## JET: is inference clean
+
+`@report_opt` walks the inferred code and flags every call that still needs a runtime lookup.
+
+```{julia}
+using JET
+@report_opt bagsum(Bag([1, 2, 3]))
+```
+```
+═════ 1 possible error found ═════
+┌ bagsum(b::Bag) @ Main
+│ runtime dispatch detected: sum(%1::Array)::Any
+└────────────────────
+```
+
+`b.items` is typed `Array` with no parameters, so `sum` cannot specialise and returns `Any`. That call recompiles for every new element type and never lands in the pkgimage. `@report_call` is the sibling that hunts for outright errors, undefined names, `MethodError`s, bad conversions, without running the code. similar to `@code_warntype`.
+
+
+
+## Cthulhu: follow the type
+
+`@descend` opens an interactive, recursive view of the typed code. Every call is annotated with its inferred return type, and a runtime-dispatched call is marked. Enter steps into a call, `q` steps back out.
+
+```{julia}
+using Cthulhu
+@descend bagsum(Bag([1, 2, 3]))
+```
+
+Start at `bagsum`. The `sum(b.items)` call shows a blue `::Any` with a yellow `dynamic` tag, so that one is a runtime dispatch. Step in and keep going until you reach the method where the concrete type was first lost. `@code_warntype` shows one frame, Cthulhu shows the whole path. `@descend_code_warntype` opens straight into the warntype view. `ascend` goes the other way, from a `MethodInstance` up through its callers, which pairs with a SnoopCompile invalidation tree.
+
+
+
+## SnoopCompileCore: collect the data
+
+`SnoopCompileCore` is a tiny package with no dependencies. That is the whole point. Loading it invalidates nothing and adds no inference of its own, so it cannot contaminate the measurement. It gives you two collector macros and nothing else.
+
+```{julia}
+using SnoopCompileCore
+invs = @snoop_invalidations using CairoMakie  # what the cache lost
+tinf = @snoop_inference begin  # what refilling it costs
+    bagsum(Bag([1, 2, 3]))
+    bagsum(Bag(rand(4)))
+end
+```
+
+Each macro hooks the compiler, records raw events into a lightweight object, and does no analysis. Run them in a fresh session before you load anything heavy, `SnoopCompile` included.
+
+
+
+## SnoopCompile: read the data
+
+`SnoopCompile` is the heavy half. It depends on Cthulhu and carries a JET extension, so you load it only after collection is done. It turns those raw objects into something you can act on.
+
+```{julia}
+using SnoopCompile
+
+invalidation_trees(invs)  # roots and the instances each one knocked out
+
+flatten(tinf; sortby = inclusive)  # every inferred call, slowest first
+accumulate_by_source(flatten(tinf))  # collapse specialisations, cost per method
+inference_triggers(tinf)  # call sites where inference started from nothing
+```
+```
+Inference triggered to call sum(::Vector{Float64}) from bagsum (./none:4)
+    with specialization bagsum(::Bag)
+```
+
+`inference_triggers` is the one that writes your `@compile_workload`. Each line is a call that had nothing cached, named with the exact specialisation to add.
+
+
+
+# Block 4: Precompiling your own package
+
+## The manual directive
+
+At the top level of the module:
+
+```{julia}
+module KmerTools
+
+export kmer_count
+
+function kmer_count(seq::AbstractString, k::Int)
+    counts = Dict{String, Int}()
+    for i in 1:(length(seq) - k + 1)
+        mer = seq[i:i+k-1]
+        counts[mer] = get(counts, mer, 0) + 1
+    end
+    return counts
+end
+
+precompile(kmer_count, (String, Int))
+
+end
+```
+
+`precompile` forces inference and codegen for that exact signature during precompilation. It works, but a hand-kept list drifts away from real usage fast.
+
+
+
+## PrecompileTools
+
+```{julia}
+module KmerTools
+
+using PrecompileTools
+
+export kmer_count
+
+function kmer_count(seq::AbstractString, k::Int)
+    # body unchanged from the previous slide
+end
+
+@setup_workload begin
+    example = "ACDEFGHIKLMNPQRSTVWY"^5
+    @compile_workload begin
+        kmer_count(example, 3)
+        kmer_count(example, 6)
+    end
+end
+
+end
+```
+
+Everything inside `@compile_workload` runs during precompilation, and every method it triggers is inferred, compiled, and written into the pkgimage. `@setup_workload` builds inputs without caching their compilation.
+
+
+
+## Choosing a workload
+
+`@compile_workload` only bakes in the exact method and concrete-type combinations it runs. Write it like the first real script of a session: the top-level entry points, called with the types they normally get.
+
+"Paths users reach first" is the handful of calls that run before anyone does anything unusual, because that is the wait people feel.
+
+```{julia}
+@compile_workload begin
+    kmer_count("ACDEFGHIKLMNPQRSTVWY"^5, 3)  # what a user runs on line 1
+    # kmer_count(SubString("ACGT"^10, 2), 3)  # different type, nobody passes this
+    # _hash_kmer(...)  # internal, never called directly
+end
+```
+
+Match the type exactly. A run on `SubString` compiles different native code and does nothing for a caller passing a `String`.
+
+
+
+## Choosing a workload: size and evidence
+
+Too narrow and it caches nothing useful. Too broad and precompilation itself gets slow for little return.
+
+Do not guess at the list. Record a realistic run and read off what actually cost inference time:
+
+```{julia}
+using SnoopCompileCore
+tinf = @snoop_inference begin
+    kmer_count("ACGT"^250, 6)
+    kmer_count("ACDEFGHIKLMNPQRSTVWY"^20, 3)
+end
+
+using SnoopCompile
+accumulate_by_source(flatten(tinf))   # inference cost per method, biggest last
+```
+```
+ 7.9 ms   literal_pow(::typeof(^), x, ::Val{p})
+22.7 ms   kmer_count(seq::AbstractString, k::Int64)
+```
+
+`kmer_count(::String, ::Int)` is the expensive root, so that one call is the whole workload. `literal_pow` comes from the `^` building the test string, not from anything a user runs, so leave it out.
+
+
+
+## Confirming it worked
+
+```{julia}
+# same command before and after adding the workload
+julia --trace-compile=stderr -e 'using KmerTools; kmer_count("ACDACDACD", 3)'
+```
+
+The list of runtime-compiled methods should shrink. `@time_imports` should show more time in loading and less in compilation.
+
+
+
+## What precompilation cannot cache
+
+- code whose argument types stay abstract until runtime
+- dispatch that depends on user types the package never sees at build time
+- anything needing a package that is not a declared dependency
+
+CairoMakie is an example. It ships large `@compile_workload` blocks, so a bare `scatter` is quick (after the original precompilation). Use your own recipe or an unusual type combination and you still pay for that specialisation on first call.
+
+
+
+# Block 5: System images, apps, and the cluster
+
+## PackageCompiler
+
+Precompilation caches one package at a time. A system image bakes Julia plus a chosen set of packages plus a workload into a single file that replaces `sys.so`.
+
+```{julia}
+using PackageCompiler
+
+create_sysimage(
+    ["CairoMakie", "KmerTools"];
+    sysimage_path = "labsys.so",
+    precompile_execution_file = "workload.jl",
+)
+```
+
+```
+julia --sysimage labsys.so
+```
+
+`precompile_execution_file` is a plain script that PackageCompiler runs with `--trace-compile` while building the image. Every method it compiles gets frozen into `labsys.so`. Same idea as a `@compile_workload`, but it lives outside the package and can exercise the whole stack at once, so point it at a real end to end run. You can pass several as a vector, and `precompile_statements_file` takes a ready made list of `precompile(...)` lines instead.
+
+Startup and first call are near instant because the work is already inside the image.
+
+
+
+## The tradeoffs
+
+- the image is pinned to exact package versions, so updating a dependency means rebuilding it
+- large file, minutes to build, not portable across CPU architectures
+- easy to keep running a stale image without realising
+
+Worth it when the same environment launches over and over, for example a Slurm array of ten thousand tasks that each pay startup once. Not worth it for interactive work where you update packages often.
+
+
+
+## Other PackageCompiler outputs
+
+- `create_app`: a self-contained directory with a launcher, no Julia install needed on the target
+- `create_library`: a C-callable shared library with a header
+
+Both carry the same version-pinning caveat as a sysimage.
+
+
+
+## Precompilation on a shared filesystem
+
+The depot at `~/.julia` usually sits on NFS. Two hazards on the cluster:
+
+- a job array of hundreds of Julia processes starting at once, all finding a stale cache, all precompiling into the same depot
+- precompilation writing many small files onto a filesystem that is slow at exactly that
+
+
+
+## Cluster practice
+
+- warm the depot once in a dedicated setup job, not on the login node: `julia -e 'using Pkg; Pkg.precompile()'`
+- in the job script set `JULIA_PKG_PRECOMPILE_AUTO=0` so tasks never trigger a precompile
+- run tasks with `--compiled-modules=existing` so they use cache files but never write them
+- for a heavy stack, build one sysimage in an interactive or batch job and point every task at it with `--sysimage`
+- for write-heavy precompile, put a per-node depot on local scratch via `JULIA_DEPOT_PATH`
+
+
+
+# Block 6: Live exercise
+
+## Measure and fix TTFX on a toy package
+
+Starting point: a `KmerTools` package with `kmer_count` and no precompile setup.
+
+1. `julia --trace-compile=stderr -e 'using KmerTools; kmer_count("ACDACDACD", 3)'` and count the lines
+2. `@time_imports using KmerTools`, note the compilation percentage
+3. add `PrecompileTools` and a `@compile_workload` calling `kmer_count(::String, ::Int)`
+4. restart, repeat 1 and 2, compare
+
+
+
+Stretch: run `@snoop_inference` on a longer workload, add the top few inference roots to the workload, measure again.
+
+
+
+## Common pitfalls {.smaller}
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| Recompiles every session | Switching between environments with different manifests | Separate depots, or a sysimage per environment |
+| `using` fast, first call slow | No `@compile_workload`, or it misses that path | Widen the workload using `@snoop_inference` evidence |
+| Precompile after every `Pkg` command | Default auto-precompile | `JULIA_PKG_PRECOMPILE_AUTO=0` when you want to defer it |
+| Package rebuilds when a sibling changes | Real dependency edge, correctly invalidated | Expected, reduce coupling only if it hurts |
+| Sysimage ignores a package update | Image pinned to old versions | Rebuild the image, or fall back to `sys.so` |
+| Job array stalls at startup | Hundreds of processes precompiling into one NFS depot | Warm the depot in a setup job, run with `--compiled-modules=existing` |
+
+
+
+# Recap
+
+## What you now know
+
+- TTFX is inference plus codegen, and precompilation moves it to disk
+- pkgimages cache native code under `~/.julia/compiled`, keyed on source, deps, and Julia version
+- invalidations from type piracy and loose signatures throw that cache away
+- `@compile_workload` from PrecompileTools is the main lever for your own packages
+- `@time_imports`, `--trace-compile`, and SnoopCompile are how you measure
+- system images are the escalation for repeated launches, at the cost of version pinning
+- on the cluster, precompile once up front and run tasks read-only
+
+
+
+## Rule of thumb
+
+If a package is slow on first use in every session, something is invalidating its cache. If it is slow only right after install, that is precompilation doing its job once.
+
+
+
+## Resources
+
+- Pkg.jl manual, the "Precompilation" section
+- [PrecompileTools.jl](https://julialang.github.io/PrecompileTools.jl/)
+- [SnoopCompile.jl](https://timholy.github.io/SnoopCompile.jl/), especially the invalidations tutorial
+- [PackageCompiler.jl](https://julialang.github.io/PackageCompiler.jl/)
+- Tim Holy's writing on compiler latency and invalidations
+- `julia --help` for `--trace-compile`, `--compiled-modules`, `--sysimage`, `--pkgimages`
+
+```{julia}
+# The 80/20:
+using PrecompileTools
+@setup_workload begin
+    # representative inputs
+    @compile_workload begin
+        # the calls your users make first
+    end
+end
+```
