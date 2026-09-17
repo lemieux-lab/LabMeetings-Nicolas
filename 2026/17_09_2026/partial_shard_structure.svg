@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="690" viewBox="0 0 1000 690">
+  <defs>
+    <style>
+      .card  { fill:#151f1b; }
+      .box   { fill:#1c2822; stroke:#2a3a33; stroke-width:1.5; }
+      .lbl   { font-family:'JetBrains Mono', monospace; font-size:13px; fill:#e8efec; }
+      .lblD  { font-family:'JetBrains Mono', monospace; font-size:12px; fill:#9db3ab; }
+      .title { font-family:'Archivo', sans-serif; font-size:14px; font-weight:700; fill:#e8efec; }
+      .cap   { font-family:'Archivo', sans-serif; font-size:13px; fill:#9db3ab; }
+      .tick  { stroke:#586b64; stroke-width:1.3; }
+    </style>
+    <marker id="hA" markerWidth="8" markerHeight="7" refX="7" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 Z" fill="#3ecfa2"/></marker>
+    <marker id="hB" markerWidth="8" markerHeight="7" refX="7" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 Z" fill="#fab219"/></marker>
+    <marker id="hC" markerWidth="8" markerHeight="7" refX="7" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 Z" fill="#5fb3e8"/></marker>
+    <marker id="hD" markerWidth="8" markerHeight="7" refX="7" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 Z" fill="#b98ae0"/></marker>
+  </defs>
+
+  <rect class="card" x="0" y="0" width="1000" height="690" rx="14"/>
+  <text class="cap" x="24" y="28">one prefix shard: sorted k-mers, each pointing via row_id into a shard-local pool of deduplicated sparse rows</text>
+  <text class="cap" x="24" y="46" fill="#6b7d76">k1 (0x0A22...) and k3 (0x0A31...) both resolve to row B: identical (sample, count) pairs, stored once</text>
+
+  <!-- kmers[] column -->
+  <text class="title" x="40" y="80">kmers[]</text>
+  <g font-family="JetBrains Mono, monospace" font-size="13">
+    <rect class="box" x="40" y="94"  width="150" height="34" rx="6"/>
+    <rect class="box" x="40" y="138" width="150" height="34" rx="6"/>
+    <rect class="box" x="40" y="182" width="150" height="34" rx="6"/>
+    <rect class="box" x="40" y="226" width="150" height="34" rx="6"/>
+    <rect class="box" x="40" y="270" width="150" height="34" rx="6"/>
+    <text class="lbl" x="115" y="116" text-anchor="middle">0x0A1F...</text>
+    <text class="lbl" x="115" y="160" text-anchor="middle">0x0A22...</text>
+    <text class="lbl" x="115" y="204" text-anchor="middle">0x0A2B...</text>
+    <text class="lbl" x="115" y="248" text-anchor="middle">0x0A31...</text>
+    <text class="lbl" x="115" y="292" text-anchor="middle">0x0A3E...</text>
+  </g>
+
+  <!-- row_id[] column, colored per destination row -->
+  <text class="title" x="260" y="80">row_id[]</text>
+  <g font-family="JetBrains Mono, monospace" font-size="14" font-weight="700">
+    <rect class="box" x="260" y="94"  width="90" height="34" rx="6" stroke="#3ecfa2" stroke-width="2"/>
+    <rect class="box" x="260" y="138" width="90" height="34" rx="6" stroke="#fab219" stroke-width="2"/>
+    <rect class="box" x="260" y="182" width="90" height="34" rx="6" stroke="#5fb3e8" stroke-width="2"/>
+    <rect class="box" x="260" y="226" width="90" height="34" rx="6" stroke="#fab219" stroke-width="2"/>
+    <rect class="box" x="260" y="270" width="90" height="34" rx="6" stroke="#b98ae0" stroke-width="2"/>
+    <text x="305" y="116" text-anchor="middle" fill="#3ecfa2">row A</text>
+    <text x="305" y="160" text-anchor="middle" fill="#fab219">row B</text>
+    <text x="305" y="204" text-anchor="middle" fill="#5fb3e8">row C</text>
+    <text x="305" y="248" text-anchor="middle" fill="#fab219">row B</text>
+    <text x="305" y="292" text-anchor="middle" fill="#b98ae0">row D</text>
+  </g>
+
+  <!-- kmer -> row_id : same y, horizontal, unambiguous -->
+  <g fill="none" stroke-width="1.8">
+    <path d="M190,111 L260,111" stroke="#3ecfa2" marker-end="url(#hA)"/>
+    <path d="M190,155 L260,155" stroke="#fab219" marker-end="url(#hB)"/>
+    <path d="M190,199 L260,199" stroke="#5fb3e8" marker-end="url(#hC)"/>
+    <path d="M190,243 L260,243" stroke="#fab219" marker-end="url(#hB)"/>
+    <path d="M190,287 L260,287" stroke="#b98ae0" marker-end="url(#hD)"/>
+  </g>
+
+  <!-- small unlabeled bracket: the two row-B boxes are the same entry (explained in the caption above) -->
+  <path d="M352,155 L360,155 L360,243 L352,243" fill="none" stroke="#fab219" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- row_id -> pool: elbow-routed (horizontal stub, vertical lane, short diagonal to target) so no
+       segment ever crosses another box or a text label -->
+  <g fill="none" stroke-width="2">
+    <path d="M350,111 L400,111 L400,500 L290,546" stroke="#3ecfa2" marker-end="url(#hA)"/>
+    <path d="M350,155 L414,155 L414,500 L440,546" stroke="#fab219" marker-end="url(#hB)"/>
+    <path d="M350,199 L428,199 L428,500 L590,546" stroke="#5fb3e8" marker-end="url(#hC)"/>
+    <path d="M350,243 L442,243 L442,500 L440,546" stroke="#fab219" marker-end="url(#hB)"/>
+    <path d="M350,287 L456,287 L456,500 L740,546" stroke="#b98ae0" marker-end="url(#hD)"/>
+  </g>
+
+  <text class="lbl" x="40" y="574" fill="#9db3ab">pool_s[]/</text>
+  <text class="lbl" x="40" y="590" fill="#9db3ab">pool_c[]</text>
+
+  <!-- tick marks at pool bar boundaries: position only, values called out at right where there's room -->
+  <g>
+    <line class="tick" x1="240" y1="540" x2="240" y2="552"/>
+    <line class="tick" x1="340" y1="540" x2="340" y2="552"/>
+    <line class="tick" x1="540" y1="540" x2="540" y2="552"/>
+    <line class="tick" x1="640" y1="540" x2="640" y2="552"/>
+    <line class="tick" x1="840" y1="540" x2="840" y2="552"/>
+  </g>
+
+  <!-- pool[] : one bar, segment WIDTH = pair count, so it can never disagree with the offsets -->
+  <g font-family="JetBrains Mono, monospace" font-size="12.5">
+    <rect x="240" y="552" width="100" height="60" rx="6" fill="#3ecfa2" opacity="0.82"/>
+    <rect x="340" y="552" width="200" height="60" rx="6" fill="#fab219" opacity="0.82"/>
+    <rect x="540" y="552" width="100" height="60" rx="6" fill="#5fb3e8" opacity="0.82"/>
+    <rect x="640" y="552" width="200" height="60" rx="6" fill="#b98ae0" opacity="0.82"/>
+    <text x="290" y="574" text-anchor="middle" fill="#0c1a15" font-weight="700">row A</text>
+    <text x="290" y="594" text-anchor="middle" fill="#0c1a15">(12,4)</text>
+    <text x="440" y="574" text-anchor="middle" fill="#2a1c00" font-weight="700">row B</text>
+    <text x="440" y="594" text-anchor="middle" fill="#2a1c00">(3,7) (41,2)</text>
+    <text x="590" y="574" text-anchor="middle" fill="#04141f" font-weight="700">row C</text>
+    <text x="590" y="594" text-anchor="middle" fill="#04141f">(9,1)</text>
+    <text x="740" y="574" text-anchor="middle" fill="#1c0c25" font-weight="700">row D</text>
+    <text x="740" y="594" text-anchor="middle" fill="#1c0c25">(2,5) (18,3)</text>
+  </g>
+  <text class="lblD" x="290" y="630" text-anchor="middle">1 pair</text>
+  <text class="lblD" x="440" y="630" text-anchor="middle" fill="#fab219">2 pairs, stored once</text>
+  <text class="lblD" x="590" y="630" text-anchor="middle">1 pair</text>
+  <text class="lblD" x="740" y="630" text-anchor="middle">2 pairs</text>
+
+  <text class="lblD" x="864" y="572">offsets[]</text>
+  <text class="lblD" x="864" y="588">1,2,4,5,7</text>
+
+  <text class="cap" x="24" y="656" fill="#6b7d76">dedup here is shard-local and cheap, at most wave_size samples wide.</text>
+  <text class="cap" x="24" y="674" fill="#6b7d76">the old design tried this whole-table: a dictionary in the tens of billions of entries.</text>
+</svg>

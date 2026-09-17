@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="340" viewBox="0 0 1100 340">
+  <defs>
+    <style>
+      .card  { fill:#151f1b; }
+      .stage { fill:#1c2822; stroke:#2a3a33; stroke-width:1.5; }
+      .num   { fill:#3ecfa2; font-family:'JetBrains Mono', monospace; font-size:22px; font-weight:700; }
+      .title { fill:#e8efec; font-family:'Archivo', sans-serif; font-size:16px; font-weight:700; }
+      .desc  { fill:#9db3ab; font-family:'Archivo', sans-serif; font-size:12.5px; }
+      .arrow { stroke:#3ecfa2; stroke-width:2.5; fill:none; marker-end:url(#head); }
+      .callout { fill:#3a231c; stroke:#e58468; stroke-width:1; }
+      .calloutT { fill:#e58468; font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:700; }
+    </style>
+    <marker id="head" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#3ecfa2"/>
+    </marker>
+  </defs>
+
+  <rect class="card" x="0" y="0" width="1100" height="340" rx="14"/>
+
+  <!-- 4 stage boxes -->
+  <g>
+    <rect class="stage" x="30"  y="40" width="230" height="150" rx="10"/>
+    <rect class="stage" x="300" y="40" width="230" height="150" rx="10"/>
+    <rect class="stage" x="570" y="40" width="230" height="150" rx="10"/>
+    <rect class="stage" x="840" y="40" width="230" height="150" rx="10"/>
+  </g>
+
+  <!-- arrows -->
+  <path class="arrow" d="M260,115 L296,115"/>
+  <path class="arrow" d="M530,115 L566,115"/>
+  <path class="arrow" d="M800,115 L836,115"/>
+
+  <!-- stage 1 -->
+  <g transform="translate(48,66)">
+    <text class="num">1</text>
+    <text class="title" x="0" y="34">Count, per wave</text>
+    <text class="desc" x="0" y="58">wave_size samples (default 100)</text>
+    <text class="desc" x="0" y="76">scattered by prefix into shard</text>
+    <text class="desc" x="0" y="94">files on local scratch, not NFS</text>
+  </g>
+
+  <!-- stage 2 -->
+  <g transform="translate(318,66)">
+    <text class="num">2</text>
+    <text class="title" x="0" y="34">Fold each shard</text>
+    <text class="desc" x="0" y="58">sort by k-mer, collapse into</text>
+    <text class="desc" x="0" y="76">(sample, count) rows, dedup</text>
+    <text class="desc" x="0" y="94">within that shard only</text>
+  </g>
+
+  <!-- stage 3 -->
+  <g transform="translate(588,66)">
+    <text class="num">3</text>
+    <text class="title" x="0" y="34">Hierarchical merge,</text>
+    <text class="title" x="0" y="52">interleaved with waves</text>
+    <text class="desc" x="0" y="74">merge_fanin (default 5) partials</text>
+    <text class="desc" x="0" y="92">combine as soon as ready</text>
+  </g>
+
+  <!-- stage 4 -->
+  <g transform="translate(858,66)">
+    <text class="num">4</text>
+    <text class="title" x="0" y="34">Streaming assembly</text>
+    <text class="desc" x="0" y="58">no dedup dictionary</text>
+    <text class="desc" x="0" y="76">blocks stream straight to</text>
+    <text class="desc" x="0" y="94">the finished .kct</text>
+  </g>
+
+  <!-- callout under stage 3: the Aug 2026 fix -->
+  <rect class="callout" x="588" y="150" width="182" height="28" rx="6"/>
+  <text class="calloutT" x="679" y="169" text-anchor="middle">disk stays O(merge_fanin)</text>
+
+  <text class="desc" x="30" y="220" font-size="13" fill="#9db3ab">seeds: an existing .kct can feed in as a ready-made level-0 partial (skip recounting)</text>
+  <text class="desc" x="30" y="242" font-size="13" fill="#9db3ab">every stage marks itself done - resume=true picks a killed build back up without redoing finished work</text>
+</svg>
