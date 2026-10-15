@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640">
+  <defs>
+    <style>
+      .card    { fill:#151f1b; }
+      .leaf    { fill:#1c2822; stroke:#3ecfa2; stroke-width:2; }
+      .flagged { fill:#2e201b; stroke:#e58468; stroke-width:2; }
+      .edge    { stroke:#3a4a43; stroke-width:1.5; fill:none; }
+      .title   { fill:#e8efec; font-family:'Archivo', sans-serif; font-size:18px; font-weight:700; }
+      .lbl     { fill:#9db3ab; font-family:'Archivo', sans-serif; font-size:13px; }
+      .lblL    { fill:#9db3ab; font-family:'Archivo', sans-serif; font-size:12px; text-anchor:middle; }
+      .tag     { fill:#e8efec; font-family:'JetBrains Mono', monospace; font-size:12px; text-anchor:middle; }
+      .tagS    { fill:#e8efec; font-family:'JetBrains Mono', monospace; font-size:11px; text-anchor:middle; }
+      .ell     { fill:#9db3ab; font-family:'Archivo', sans-serif; font-size:20px; font-weight:700; }
+      .manifest{ fill:#1c2822; stroke:#2a3a33; stroke-width:1.5; }
+      .mT      { fill:#e8efec; font-family:'JetBrains Mono', monospace; font-size:12.5px; }
+    </style>
+  </defs>
+
+  <rect class="card" x="0" y="0" width="1200" height="640" rx="14"/>
+
+  <text class="title" x="40" y="36">256 shards, 8-bit prefix, stat'd across all 5 roots</text>
+  <text class="lbl" x="40" y="58">~26 flagged (over target T), ~230 left completely untouched</text>
+
+  <!-- top row: sample of shards -->
+  <g transform="translate(40,80)">
+    <rect class="leaf" x="0"   y="0" width="40" height="40" rx="6"/>
+    <rect class="leaf" x="50"  y="0" width="40" height="40" rx="6"/>
+    <rect class="leaf" x="100" y="0" width="40" height="40" rx="6"/>
+    <rect class="leaf" x="150" y="0" width="40" height="40" rx="6"/>
+    <rect class="leaf" x="200" y="0" width="40" height="40" rx="6"/>
+    <text class="ell" x="265" y="28">...</text>
+    <rect class="flagged" x="300" y="0" width="40" height="40" rx="6"/>
+    <text class="tagS" x="320" y="25">37</text>
+    <rect class="leaf" x="350" y="0" width="40" height="40" rx="6"/>
+    <rect class="leaf" x="400" y="0" width="40" height="40" rx="6"/>
+    <text class="ell" x="460" y="28">...</text>
+    <rect class="flagged" x="495" y="0" width="40" height="40" rx="6"/>
+    <text class="tagS" x="515" y="25">82</text>
+    <rect class="leaf" x="545" y="0" width="40" height="40" rx="6"/>
+    <rect class="leaf" x="595" y="0" width="40" height="40" rx="6"/>
+    <text class="ell" x="655" y="28">...</text>
+  </g>
+
+  <!-- Case 1: shard37, one split, 4 leaves -->
+  <text class="lbl" x="130" y="165">shard37: one split (+2 bits), done</text>
+  <path class="edge" d="M360,120 L80,200"/>
+  <path class="edge" d="M360,120 L160,200"/>
+  <path class="edge" d="M360,120 L240,200"/>
+  <path class="edge" d="M360,120 L320,200"/>
+  <g transform="translate(0,200)">
+    <rect class="leaf" x="60"  y="0" width="40" height="40" rx="6"/>
+    <text class="tagS" x="80" y="25">37_0</text>
+    <rect class="leaf" x="140" y="0" width="40" height="40" rx="6"/>
+    <text class="tagS" x="160" y="25">37_1</text>
+    <rect class="leaf" x="220" y="0" width="40" height="40" rx="6"/>
+    <text class="tagS" x="240" y="25">37_2</text>
+    <rect class="leaf" x="300" y="0" width="40" height="40" rx="6"/>
+    <text class="tagS" x="320" y="25">37_3</text>
+  </g>
+
+  <!-- Case 2: shard82, worst case, recursive split -->
+  <text class="lbl" x="700" y="165">shard82 (~41.8 GB, max shard): splits again where still over T</text>
+  <path class="edge" d="M555,120 L600,200"/>
+  <path class="edge" d="M555,120 L680,200"/>
+  <path class="edge" d="M555,120 L760,200"/>
+  <path class="edge" d="M555,120 L840,200"/>
+  <g transform="translate(0,200)">
+    <rect class="leaf" x="580"  y="0" width="40" height="40" rx="6"/>
+    <text class="tagS" x="600" y="25">82_0</text>
+    <rect class="leaf" x="660"  y="0" width="40" height="40" rx="6"/>
+    <text class="tagS" x="680" y="25">82_1</text>
+    <rect class="leaf" x="740"  y="0" width="40" height="40" rx="6"/>
+    <text class="tagS" x="760" y="25">82_2</text>
+    <rect class="flagged" x="820" y="0" width="40" height="40" rx="6"/>
+    <text class="tagS" x="840" y="25">82_3</text>
+  </g>
+
+  <!-- 82_3 still over T, splits again -->
+  <text class="lbl" x="880" y="280">still over T, split again (+2 bits)</text>
+  <path class="edge" d="M840,240 L800,320"/>
+  <path class="edge" d="M840,240 L860,320"/>
+  <path class="edge" d="M840,240 L920,320"/>
+  <path class="edge" d="M840,240 L980,320"/>
+  <g transform="translate(0,320)">
+    <rect class="leaf" x="780"  y="0" width="40" height="40" rx="6"/>
+    <text class="tagS" x="800" y="25">82_3_0</text>
+    <rect class="leaf" x="840" y="0" width="40" height="40" rx="6"/>
+    <text class="tagS" x="860" y="25">82_3_1</text>
+    <rect class="leaf" x="900" y="0" width="40" height="40" rx="6"/>
+    <text class="tagS" x="920" y="25">82_3_2</text>
+    <rect class="leaf" x="960" y="0" width="40" height="40" rx="6"/>
+    <text class="tagS" x="980" y="25">82_3_3</text>
+  </g>
+  <text class="lbl" x="700" y="395">illustrative: real count ~14-16 leaves for this shard, not necessarily a clean power of 2</text>
+
+  <!-- manifest callout -->
+  <rect class="manifest" x="40" y="450" width="1120" height="150" rx="10"/>
+  <text class="title" x="60" y="480" font-size="15">Manifest: what assembly actually iterates over</text>
+  <text class="mT" x="60" y="515">{ prefix: "37",       depth: 8,  file: "shard37.bin" }        -- untouched, original file</text>
+  <text class="mT" x="60" y="540">{ prefix: "00",       depth: 8,  file: "shard0.bin" }         -- untouched, original file</text>
+  <text class="mT" x="60" y="565">{ prefix: "82_3_2",   depth: 12, file: "shard82_3_2.bin" }    -- recursively split, deepest leaf in this branch</text>
+  <text class="lbl" x="60" y="588">Assembly's main loop walks the manifest's leaves instead of a flat 0..255 range. _merge_shard_rows / _assemble_v4 stay otherwise unchanged.</text>
+</svg>

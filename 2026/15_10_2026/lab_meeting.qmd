@@ -173,21 +173,30 @@ Whenever assembly's concurrency window happens to include one of the giant shard
 
 ---
 
-## The Fix · Re-sharding
+## The Fix · Adaptive Prefix-Tree Sharding
 
-The expensive parts, 13 days of CRAM counting and 5 hierarchical merges, are already done and safe on disk as 5 root partials, each split into 256 shard files. Re-sharding touches only those already-merged files, not the raw sequencing data and not the merge logic.
+Stat all 256 shards across the 5 roots, nearly free. Leave anything under a size target untouched. Split anything over it, and recurse only where the data is still dense.
+
+![](prefix_tree_sharding.svg){fig-align="center" width="100%"}
+
+---
+
+## The Fix · By the Numbers
+
+The expensive parts, 13 days of CRAM counting and 5 hierarchical merges, are already done and safe on disk as 5 root partials. The fix only touches those already-merged shard files, not the raw data or the merge logic.
+
+Real shard sizes, per root: median ~1 MB, 90th percentile ~20.7 GB, max ~41.8 GB, total ~1,526 GB. Almost all of that mass sits in roughly the top 10% of shards.
 
 | | |
 |---|---|
-| Current | 256 shards, 8-bit prefix (~1.6 residues) |
-| New | 32,768 shards, 15-bit prefix (~3 residues) |
-| Peak memory during re-shard | bounded by the single largest old shard, ~42 GB, not assembly's multi-hundred-GB spikes |
-| I/O cost | ~7.5 TB read + ~7.5 TB write (5 roots x ~1.5 TB), roughly half a day to a day at muninn's sustained throughput |
-| Code needed | glue around existing `_read_partial_shard`, `_write_partial_shard`, `_shard_of`, ~40-60 lines |
+| Oversized shards (over target T, ~2-4 GB) | ~26 of 256 |
+| Leaves needed to cover them | ~500 (the 41.8 GB shard alone needs ~14-16) |
+| Untouched shards | ~230 |
+| Peak memory per split | bounded by that one shard's size, ~42 GB worst case |
 
-Validated one giant shard alone first, as a cheap sanity check that the resulting sub-shards actually come out balanced, before committing to the full 7.5 TB run.
+On disk: a manifest lists each leaf's prefix, bit-depth, and filename. Untouched shards keep their name (`shard37.bin`), split ones get child names (`shard82_0.bin` .. `shard82_15.bin`, recursively `shard82_3_2.bin` if a child itself needed splitting). Assembly's main loop walks the manifest's leaves instead of a flat 0..255 range, `_merge_shard_rows`/`_assemble_v4` stay otherwise unchanged.
 
-A cheaper stopgap was also on the table: periodic `GC.gc()` calls in the assembly loop reclaim up to 43% of RSS on some batches, but there's no direct measurement of whether it helps on the specific giant-shard batch that actually needs it. Re-sharding fixes the root cause directly regardless of how GC happens to behave on any given batch.
+A cheaper stopgap was also on the table: periodic `GC.gc()` calls in the assembly loop reclaim up to 43% of RSS on some batches, but there's no direct measurement of whether it helps on the specific giant-shard batch that actually needs it. This fixes the root cause directly regardless of how GC happens to behave on any given batch.
 
 ---
 
@@ -198,7 +207,7 @@ A cheaper stopgap was also on the table: periodic `GC.gc()` calls in the assembl
 | **Done** | C8/C10 tumor cohort built, queried, written into manuscript |
 | **Done** | C9 second reference reused as an independent specificity check |
 | **Done** | Root cause of the assembly OOM found: shard-size skew, not memory or concurrency |
-| **Now** | Incorporate the re-sharding fix, then rerun assembly against the finer partials |
+| **Now** | Incorporate the adaptive prefix-tree sharding fix, then rerun assembly against the manifest |
 | **Maybe** | Stream `blob` during assembly instead of holding it RAM-resident |
 
 ---
