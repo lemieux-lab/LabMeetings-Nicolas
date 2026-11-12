@@ -18,6 +18,7 @@
     <li><a href = https://lemieux-lab.github.io/LabMeetings-Nicolas/2026/30_07_2026/lab_meeting.html> 30 July 2026</a></li>
     <li><a href = https://lemieux-lab.github.io/LabMeetings-Nicolas/2026/17_09_2026/lab_meeting.html> 17 September 2026</a></li>
     <li><a href = https://lemieux-lab.github.io/LabMeetings-Nicolas/2026/15_10_2026/lab_meeting.html> 15 October 2026</a></li>
+    <li><a href = https://lemieux-lab.github.io/LabMeetings-Nicolas/2026/12_11_2026/lab_meeting.html> 12 November 2026</a></li>
 </details>
 
 <details>

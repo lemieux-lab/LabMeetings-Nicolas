@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 520" width="1500" height="520" font-family="'Archivo', sans-serif">
+  <rect x="0" y="0" width="1500" height="520" rx="14" fill="#151f1b"/>
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#9db3ab"/>
+    </marker>
+  </defs>
+
+  <!-- input table -->
+  <rect x="40" y="90" width="260" height="130" rx="10" fill="none" stroke="#3ecfa2" stroke-width="2"/>
+  <text x="170" y="130" text-anchor="middle" fill="#e8efec" font-size="22">Assembled table</text>
+  <text x="170" y="162" text-anchor="middle" fill="#9db3ab" font-size="18" font-family="'JetBrains Mono', monospace">neokct_v4.kct</text>
+  <text x="170" y="194" text-anchor="middle" fill="#9db3ab" font-size="18">read-only, never mutated</text>
+
+  <!-- corrected recount -->
+  <rect x="40" y="300" width="260" height="130" rx="10" fill="none" stroke="#f0b429" stroke-width="2"/>
+  <text x="170" y="340" text-anchor="middle" fill="#e8efec" font-size="22">Corrected recount</text>
+  <text x="170" y="372" text-anchor="middle" fill="#9db3ab" font-size="18">one sample, sorted</text>
+  <text x="170" y="404" text-anchor="middle" fill="#9db3ab" font-size="18">335.5 M k-mers</text>
+
+  <!-- merge box -->
+  <rect x="420" y="150" width="340" height="220" rx="10" fill="none" stroke="#9db3ab" stroke-width="2"/>
+  <text x="590" y="192" text-anchor="middle" fill="#e8efec" font-size="22">One streaming pass</text>
+  <text x="590" y="228" text-anchor="middle" fill="#9db3ab" font-size="18">decode each 64-k-mer block once</text>
+  <text x="590" y="258" text-anchor="middle" fill="#9db3ab" font-size="18">merge-walk against the recount</text>
+  <text x="590" y="288" text-anchor="middle" fill="#9db3ab" font-size="18">re-encode each block once</text>
+  <text x="590" y="338" text-anchor="middle" fill="#9db3ab" font-size="16">about 35 h</text>
+
+  <!-- outcomes -->
+  <rect x="880" y="80" width="340" height="100" rx="10" fill="none" stroke="#3ecfa2" stroke-width="2"/>
+  <text x="1050" y="120" text-anchor="middle" fill="#e8efec" font-size="20">Row exists, count differs</text>
+  <text x="1050" y="154" text-anchor="middle" fill="#3ecfa2" font-size="20">292.9 M updated in place</text>
+
+  <rect x="880" y="210" width="340" height="100" rx="10" fill="none" stroke="#3ecfa2" stroke-width="2"/>
+  <text x="1050" y="250" text-anchor="middle" fill="#e8efec" font-size="20">Row missing entirely</text>
+  <text x="1050" y="284" text-anchor="middle" fill="#3ecfa2" font-size="20">42.6 M added</text>
+
+  <rect x="880" y="340" width="340" height="100" rx="10" fill="none" stroke="#9db3ab" stroke-width="2"/>
+  <text x="1050" y="380" text-anchor="middle" fill="#e8efec" font-size="20">Stale count, no recount hit</text>
+  <text x="1050" y="414" text-anchor="middle" fill="#9db3ab" font-size="20">0 rows to scrub</text>
+
+  <!-- output -->
+  <rect x="1300" y="190" width="160" height="140" rx="10" fill="none" stroke="#3ecfa2" stroke-width="2"/>
+  <text x="1380" y="250" text-anchor="middle" fill="#e8efec" font-size="22">New file</text>
+  <text x="1380" y="284" text-anchor="middle" fill="#9db3ab" font-size="18">62.56 B k-mers</text>
+
+  <!-- connectors, no transforms used so coordinates are absolute -->
+  <path d="M300,155 L420,230" stroke="#9db3ab" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+  <path d="M300,365 L420,290" stroke="#9db3ab" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+  <path d="M760,230 L880,130" stroke="#9db3ab" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+  <path d="M760,260 L880,260" stroke="#9db3ab" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+  <path d="M760,290 L880,390" stroke="#9db3ab" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+  <path d="M1220,130 L1300,240" stroke="#9db3ab" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+  <path d="M1220,260 L1300,260" stroke="#9db3ab" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+  <path d="M1220,390 L1300,280" stroke="#9db3ab" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+</svg>
