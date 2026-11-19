@@ -22,6 +22,11 @@
 </details>
 
 <details>
+    <summary><h3>Long Presentations<h3></summary>
+    <li><a href = https://lemieux-lab.github.io/LabMeetings-Nicolas/Long_Presentations/NeoKCT_IRIC_2026/presentation.html> Approximate was never an option (IRIC, 2026)</a></li>
+</details>
+
+<details>
     <summary><h3>Workshops<h3></summary>
     <li><a href = https://lemieux-lab.github.io/LabMeetings-Nicolas/Workshops/Julia_Packages/julia_pkg_workshop.html> Julia Packages</a></li>
     <li><a href = https://lemieux-lab.github.io/LabMeetings-Nicolas/Workshops/Precompiling/julia_precompiler_workshop.html> Julia Precompilation</a></li>

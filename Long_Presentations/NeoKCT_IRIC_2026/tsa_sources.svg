@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 600" width="1600" height="600" font-family="'Archivo', sans-serif">
+<rect x="0" y="0" width="1600" height="600" rx="14" fill="#151f1b"/>
+<defs><marker id="a" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#9db3ab"/></marker><marker id="ag" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#3ecfa2"/></marker><marker id="ar" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#e58468"/></marker><marker id="ak" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#f0b429"/></marker></defs>
+<rect x="30" y="30" width="330" height="500" rx="10" fill="#1c2822" stroke="#2a3a33" stroke-width="1.5"/>
+<text x="195" y="64" fill="#e8efec" font-size="20" text-anchor="middle" font-weight="700">Tumor cell</text>
+<rect x="50" y="82" width="290" height="46" rx="10" fill="#1c2822" stroke="#3ecfa2" stroke-width="1.5"/>
+<text x="195" y="111" fill="#3ecfa2" font-size="16" text-anchor="middle">annotated proteins</text>
+<text x="195" y="156" fill="#9db3ab" font-size="15" text-anchor="middle">non-canonical sources:</text>
+<rect x="50" y="172" width="290" height="52" rx="10" fill="#1c2822" stroke="#e58468" stroke-width="1.5"/>
+<text x="195" y="204" fill="#e58468" font-size="15" text-anchor="middle">transposable elements (ERVs)</text>
+<rect x="50" y="240" width="290" height="52" rx="10" fill="#1c2822" stroke="#e58468" stroke-width="1.5"/>
+<text x="195" y="272" fill="#e58468" font-size="15" text-anchor="middle">gene fusions, viral integration</text>
+<rect x="50" y="308" width="290" height="52" rx="10" fill="#1c2822" stroke="#e58468" stroke-width="1.5"/>
+<text x="195" y="340" fill="#e58468" font-size="15" text-anchor="middle">out-of-frame translation</text>
+<rect x="50" y="376" width="290" height="52" rx="10" fill="#1c2822" stroke="#e58468" stroke-width="1.5"/>
+<text x="195" y="408" fill="#e58468" font-size="15" text-anchor="middle">intron retention, non-coding RNA</text>
+<rect x="50" y="444" width="290" height="52" rx="10" fill="#1c2822" stroke="#e58468" stroke-width="1.5"/>
+<text x="195" y="476" fill="#e58468" font-size="15" text-anchor="middle">unannotated splice junctions</text>
+<path d="M360,280 L408,280" stroke="#9db3ab" stroke-width="2" fill="none" marker-end="url(#a)"/>
+<rect x="410" y="200" width="250" height="160" rx="10" fill="#1c2822" stroke="#6f8fd8" stroke-width="1.5"/>
+<text x="535" y="238" fill="#e8efec" font-size="19" text-anchor="middle" font-weight="700">MHC-I peptides</text>
+<text x="535" y="268" fill="#9db3ab" font-size="15" text-anchor="middle">8 to 11 residues,</text>
+<text x="535" y="290" fill="#9db3ab" font-size="15" text-anchor="middle">presented at the</text>
+<text x="535" y="312" fill="#9db3ab" font-size="15" text-anchor="middle">cell surface</text>
+<path d="M660,280 L708,280" stroke="#9db3ab" stroke-width="2" fill="none" marker-end="url(#a)"/>
+<rect x="710" y="200" width="280" height="160" rx="10" fill="#1c2822" stroke="#2a3a33" stroke-width="1.5"/>
+<text x="850" y="238" fill="#e8efec" font-size="19" text-anchor="middle" font-weight="700">Mass spectrometry</text>
+<text x="850" y="268" fill="#9db3ab" font-size="15" text-anchor="middle">spectra matched against</text>
+<text x="850" y="290" fill="#9db3ab" font-size="15" text-anchor="middle">a protein database built</text>
+<text x="850" y="312" fill="#9db3ab" font-size="15" text-anchor="middle">from the tumor's RNA-seq</text>
+<path d="M990,250 L1058,150" stroke="#3ecfa2" stroke-width="2" fill="none" marker-end="url(#ag)"/>
+<path d="M990,310 L1058,400" stroke="#e58468" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+<rect x="1060" y="60" width="510" height="170" rx="10" fill="#1c2822" stroke="#3ecfa2" stroke-width="1.5"/>
+<text x="1080" y="94" fill="#3ecfa2" font-size="19" text-anchor="start" font-weight="700">Canonical peptides</text>
+<text x="1080" y="124" fill="#9db3ab" font-size="15" text-anchor="start">come from an annotated protein,</text>
+<text x="1080" y="148" fill="#9db3ab" font-size="15" text-anchor="start">so a gene model says where their RNA is.</text>
+<text x="1080" y="172" fill="#9db3ab" font-size="15" text-anchor="start">A minority of tumor-specific antigens.</text>
+<rect x="1060" y="300" width="510" height="200" rx="10" fill="#1c2822" stroke="#e58468" stroke-width="1.5"/>
+<text x="1080" y="334" fill="#e58468" font-size="19" text-anchor="start" font-weight="700">Non-canonical peptides</text>
+<text x="1080" y="364" fill="#9db3ab" font-size="15" text-anchor="start">no annotated protein, no gene model.</text>
+<text x="1080" y="388" fill="#9db3ab" font-size="15" text-anchor="start">About 90% of the tumor-specific antigens</text>
+<text x="1080" y="412" fill="#9db3ab" font-size="15" text-anchor="start">in Laumont et al. (2018), the most promising</text>
+<text x="1080" y="436" fill="#9db3ab" font-size="15" text-anchor="start">candidates and the hardest to trace back to RNA.</text>
+<rect x="30" y="545" width="1540" height="40" rx="10" fill="#2a2414" stroke="#f0b429" stroke-width="1.5"/>
+<text x="50" y="571" fill="#e8efec" font-size="17" text-anchor="start">Next question for every candidate: where is this peptide's RNA, in the tumor and in healthy tissue?</text>
+</svg>

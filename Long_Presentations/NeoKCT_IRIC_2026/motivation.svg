@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 640" width="1500" height="640" font-family="'Archivo', sans-serif">
+<rect x="0" y="0" width="1500" height="640" rx="14" fill="#151f1b"/>
+<defs><marker id="a" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#9db3ab"/></marker><marker id="ag" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#3ecfa2"/></marker><marker id="ar" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#e58468"/></marker><marker id="ak" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#f0b429"/></marker></defs>
+<rect x="30" y="30" width="320" height="580" rx="10" fill="#1c2822" stroke="#2a3a33" stroke-width="1.5"/>
+<text x="190" y="66" fill="#e8efec" font-size="20" text-anchor="middle" font-weight="700">Tumor cell</text>
+<rect x="50" y="86" width="280" height="48" rx="10" fill="#1c2822" stroke="#3ecfa2" stroke-width="1.5"/>
+<text x="190" y="116" fill="#3ecfa2" font-size="16" text-anchor="middle">canonical transcripts</text>
+<text x="190" y="166" fill="#9db3ab" font-size="15" text-anchor="middle">aberrant or non-coding sources:</text>
+<rect x="50" y="184" width="280" height="50" rx="10" fill="#1c2822" stroke="#e58468" stroke-width="1.5"/>
+<text x="190" y="215" fill="#e58468" font-size="15" text-anchor="middle">gene fusions</text>
+<rect x="50" y="250" width="280" height="50" rx="10" fill="#1c2822" stroke="#e58468" stroke-width="1.5"/>
+<text x="190" y="281" fill="#e58468" font-size="15" text-anchor="middle">transposable elements (ERVs)</text>
+<rect x="50" y="316" width="280" height="50" rx="10" fill="#1c2822" stroke="#e58468" stroke-width="1.5"/>
+<text x="190" y="347" fill="#e58468" font-size="15" text-anchor="middle">viral integration (HPV)</text>
+<rect x="50" y="382" width="280" height="50" rx="10" fill="#1c2822" stroke="#e58468" stroke-width="1.5"/>
+<text x="190" y="413" fill="#e58468" font-size="15" text-anchor="middle">intron retention, non-coding RNA</text>
+<rect x="50" y="448" width="280" height="50" rx="10" fill="#1c2822" stroke="#e58468" stroke-width="1.5"/>
+<text x="190" y="479" fill="#e58468" font-size="15" text-anchor="middle">out-of-frame translation</text>
+<rect x="50" y="514" width="280" height="50" rx="10" fill="#1c2822" stroke="#e58468" stroke-width="1.5"/>
+<text x="190" y="545" fill="#e58468" font-size="15" text-anchor="middle">unannotated splice junctions</text>
+<path d="M350,320 L408,320" stroke="#9db3ab" stroke-width="2" fill="none" marker-end="url(#a)"/>
+<rect x="410" y="270" width="170" height="100" rx="10" fill="#1c2822" stroke="#6f8fd8" stroke-width="1.5"/>
+<text x="495" y="312" fill="#e8efec" font-size="20" text-anchor="middle" font-weight="700">RNA-seq</text>
+<text x="495" y="340" fill="#9db3ab" font-size="15" text-anchor="middle">all reads</text>
+<path d="M580,300 L620,300 L620,150 L648,150" stroke="#9db3ab" stroke-width="2" fill="none" marker-end="url(#a)"/>
+<rect x="650" y="80" width="380" height="140" rx="10" fill="#1c2822" stroke="#2a3a33" stroke-width="1.5"/>
+<text x="670" y="112" fill="#e8efec" font-size="19" text-anchor="start" font-weight="700">Reference-based pipeline</text>
+<text x="670" y="142" fill="#9db3ab" font-size="15" text-anchor="start">align to GRCh38, then translate only</text>
+<text x="670" y="166" fill="#9db3ab" font-size="15" text-anchor="start">annotated, in-frame coding sequence</text>
+<text x="670" y="190" fill="#9db3ab" font-size="15" text-anchor="start">into the search database</text>
+<path d="M1030,120 L1078,88" stroke="#3ecfa2" stroke-width="2" fill="none" marker-end="url(#ag)"/>
+<path d="M1030,180 L1078,212" stroke="#e58468" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+<rect x="1080" y="40" width="390" height="95" rx="10" fill="#1c2822" stroke="#3ecfa2" stroke-width="1.5"/>
+<text x="1100" y="72" fill="#3ecfa2" font-size="18" text-anchor="start" font-weight="700">Kept: canonical peptides</text>
+<text x="1100" y="98" fill="#9db3ab" font-size="15" text-anchor="start">annotated proteins, mutated or not</text>
+<text x="1100" y="120" fill="#9db3ab" font-size="15" text-anchor="start">a minority of identified TSAs</text>
+<rect x="1080" y="160" width="390" height="115" rx="10" fill="#1c2822" stroke="#e58468" stroke-width="1.5"/>
+<text x="1100" y="192" fill="#e58468" font-size="18" text-anchor="start" font-weight="700">Missed: non-canonical sequences</text>
+<text x="1100" y="218" fill="#9db3ab" font-size="15" text-anchor="start">reads that fail to align or fall outside</text>
+<text x="1100" y="240" fill="#9db3ab" font-size="15" text-anchor="start">annotated coding sequence. Source of ~90%</text>
+<text x="1100" y="262" fill="#9db3ab" font-size="15" text-anchor="start">of TSAs in Laumont et al. (2018)</text>
+<path d="M580,340 L620,340 L620,470 L648,470" stroke="#f0b429" stroke-width="2" fill="none" marker-end="url(#ak)"/>
+<rect x="650" y="400" width="380" height="140" rx="10" fill="#1c2822" stroke="#f0b429" stroke-width="2"/>
+<text x="670" y="432" fill="#f0b429" font-size="19" text-anchor="start" font-weight="700">NeoKCT, reference-free</text>
+<text x="670" y="462" fill="#9db3ab" font-size="15" text-anchor="start">count every read window as a k-mer,</text>
+<text x="670" y="486" fill="#9db3ab" font-size="15" text-anchor="start">no alignment, no annotation filter,</text>
+<text x="670" y="510" fill="#9db3ab" font-size="15" text-anchor="start">exact counts in every sample</text>
+<path d="M1030,470 L1078,470" stroke="#3ecfa2" stroke-width="2" fill="none" marker-end="url(#ag)"/>
+<rect x="1080" y="405" width="390" height="130" rx="10" fill="#1c2822" stroke="#3ecfa2" stroke-width="1.5"/>
+<text x="1100" y="437" fill="#3ecfa2" font-size="18" text-anchor="start" font-weight="700">Everything kept</text>
+<text x="1100" y="463" fill="#9db3ab" font-size="15" text-anchor="start">canonical and non-canonical k-mers alike,</text>
+<text x="1100" y="485" fill="#9db3ab" font-size="15" text-anchor="start">queried directly with MS peptides.</text>
+<text x="1100" y="507" fill="#9db3ab" font-size="15" text-anchor="start">Annotation is optional, added afterwards</text>
+<text x="1470" y="600" fill="#9db3ab" font-size="13" text-anchor="end">TSA: tumor-specific antigen. MS: mass spectrometry.</text>
+</svg>

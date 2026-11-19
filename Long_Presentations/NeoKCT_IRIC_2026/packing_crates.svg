@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 600" width="1600" height="600" font-family="'Archivo', sans-serif">
+<rect x="0" y="0" width="1600" height="600" rx="14" fill="#151f1b"/>
+<defs><marker id="a" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#9db3ab"/></marker><marker id="ag" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#3ecfa2"/></marker><marker id="ar" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#e58468"/></marker><marker id="ak" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#f0b429"/></marker></defs>
+<text x="30" y="44" fill="#e8efec" font-size="20" text-anchor="start" font-weight="700">Drop the leading zeros: each block of 64 fragments uses the width of its largest count</text>
+<text x="30" y="112" fill="#e58468" font-size="18" text-anchor="start" font-weight="700">As plain numbers</text>
+<text x="30" y="136" fill="#9db3ab" font-size="15" text-anchor="start">room for 4.3 billion, every time</text>
+<rect x="330" y="90" width="112.0" height="50" rx="3" fill="#24302b" stroke="#e58468" stroke-width="1.5"/>
+<text x="386.0" y="121" fill="#e58468" font-size="14" text-anchor="middle" font-family="'JetBrains Mono', monospace">0000000001</text>
+<rect x="454.0" y="90" width="112.0" height="50" rx="3" fill="#24302b" stroke="#e58468" stroke-width="1.5"/>
+<text x="510.0" y="121" fill="#e58468" font-size="14" text-anchor="middle" font-family="'JetBrains Mono', monospace">0000000003</text>
+<rect x="578.0" y="90" width="112.0" height="50" rx="3" fill="#24302b" stroke="#e58468" stroke-width="1.5"/>
+<text x="634.0" y="121" fill="#e58468" font-size="14" text-anchor="middle" font-family="'JetBrains Mono', monospace">0000000001</text>
+<rect x="702.0" y="90" width="112.0" height="50" rx="3" fill="#24302b" stroke="#e58468" stroke-width="1.5"/>
+<text x="758.0" y="121" fill="#e58468" font-size="14" text-anchor="middle" font-family="'JetBrains Mono', monospace">0000000002</text>
+<rect x="826.0" y="90" width="112.0" height="50" rx="3" fill="#24302b" stroke="#e58468" stroke-width="1.5"/>
+<text x="882.0" y="121" fill="#e58468" font-size="14" text-anchor="middle" font-family="'JetBrains Mono', monospace">0000000006</text>
+<rect x="950.0" y="90" width="112.0" height="50" rx="3" fill="#24302b" stroke="#e58468" stroke-width="1.5"/>
+<text x="1006.0" y="121" fill="#e58468" font-size="14" text-anchor="middle" font-family="'JetBrains Mono', monospace">0000000001</text>
+<rect x="1074.0" y="90" width="112.0" height="50" rx="3" fill="#24302b" stroke="#e58468" stroke-width="1.5"/>
+<text x="1130.0" y="121" fill="#e58468" font-size="14" text-anchor="middle" font-family="'JetBrains Mono', monospace">0000000002</text>
+<rect x="1198.0" y="90" width="112.0" height="50" rx="3" fill="#24302b" stroke="#e58468" stroke-width="1.5"/>
+<text x="1254.0" y="121" fill="#e58468" font-size="14" text-anchor="middle" font-family="'JetBrains Mono', monospace">0000000001</text>
+<text x="1334.0" y="121" fill="#e58468" font-size="16" text-anchor="start">32 bits each</text>
+<text x="30" y="222" fill="#3ecfa2" font-size="18" text-anchor="start" font-weight="700">Packed</text>
+<text x="30" y="246" fill="#9db3ab" font-size="15" text-anchor="start">largest count here is 6</text>
+<rect x="330" y="200" width="10.5" height="50" rx="3" fill="#24302b" stroke="#3ecfa2" stroke-width="1.5"/>
+<text x="335.25" y="192" fill="#e8efec" font-size="15" text-anchor="middle" font-family="'JetBrains Mono', monospace">1</text>
+<rect x="352.5" y="200" width="10.5" height="50" rx="3" fill="#24302b" stroke="#3ecfa2" stroke-width="1.5"/>
+<text x="357.75" y="192" fill="#e8efec" font-size="15" text-anchor="middle" font-family="'JetBrains Mono', monospace">3</text>
+<rect x="375.0" y="200" width="10.5" height="50" rx="3" fill="#24302b" stroke="#3ecfa2" stroke-width="1.5"/>
+<text x="380.25" y="192" fill="#e8efec" font-size="15" text-anchor="middle" font-family="'JetBrains Mono', monospace">1</text>
+<rect x="397.5" y="200" width="10.5" height="50" rx="3" fill="#24302b" stroke="#3ecfa2" stroke-width="1.5"/>
+<text x="402.75" y="192" fill="#e8efec" font-size="15" text-anchor="middle" font-family="'JetBrains Mono', monospace">2</text>
+<rect x="420.0" y="200" width="10.5" height="50" rx="3" fill="#24302b" stroke="#3ecfa2" stroke-width="1.5"/>
+<text x="425.25" y="192" fill="#e8efec" font-size="15" text-anchor="middle" font-family="'JetBrains Mono', monospace">6</text>
+<rect x="442.5" y="200" width="10.5" height="50" rx="3" fill="#24302b" stroke="#3ecfa2" stroke-width="1.5"/>
+<text x="447.75" y="192" fill="#e8efec" font-size="15" text-anchor="middle" font-family="'JetBrains Mono', monospace">1</text>
+<rect x="465.0" y="200" width="10.5" height="50" rx="3" fill="#24302b" stroke="#3ecfa2" stroke-width="1.5"/>
+<text x="470.25" y="192" fill="#e8efec" font-size="15" text-anchor="middle" font-family="'JetBrains Mono', monospace">2</text>
+<rect x="487.5" y="200" width="10.5" height="50" rx="3" fill="#24302b" stroke="#3ecfa2" stroke-width="1.5"/>
+<text x="492.75" y="192" fill="#e8efec" font-size="15" text-anchor="middle" font-family="'JetBrains Mono', monospace">1</text>
+<text x="522.0" y="231" fill="#3ecfa2" font-size="16" text-anchor="start">3 bits each, because 6 is 110 in binary</text>
+<text x="330" y="284" fill="#9db3ab" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">in bits:  001 011 001 010 110 001 010 001</text>
+<rect x="30" y="320" width="1540" height="170" rx="10" fill="#1c2822" stroke="#2a3a33" stroke-width="1.5"/>
+<text x="50" y="354" fill="#e8efec" font-size="18" text-anchor="start" font-weight="700">Why one width per block instead of one per count</text>
+<text x="50" y="386" fill="#e8efec" font-size="16" text-anchor="start">With every count the same width, the 30th one sits exactly 30 × 3 bits in, so it can be read without decoding the 29 before it.</text>
+<text x="50" y="414" fill="#e8efec" font-size="16" text-anchor="start">The next block picks its own width: a block holding a count of 900 uses 10 bits, one holding only small counts uses 2.</text>
+<text x="50" y="442" fill="#e8efec" font-size="16" text-anchor="start">Sample numbers are packed the same way, written as gaps between samples, which stay small because samples are ordered by tissue.</text>
+<text x="50" y="470" fill="#9db3ab" font-size="13" text-anchor="start">Box widths drawn to scale. Counts illustrative, 8 of the block's 64 shown.</text>
+<rect x="30" y="512" width="1540" height="60" rx="10" fill="#17281f" stroke="#3ecfa2" stroke-width="1.5"/>
+<text x="50" y="549" fill="#e8efec" font-size="17" text-anchor="start">Result on GTEx: about 2.6 bytes per (sample, count) entry, the fragment itself included. Plain lists would need about 8.5.</text>
+</svg>

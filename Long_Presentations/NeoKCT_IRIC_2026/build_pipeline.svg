@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1620 330" width="1620" height="330" font-family="'Archivo', sans-serif">
+<rect x="0" y="0" width="1620" height="330" rx="14" fill="#151f1b"/>
+<defs><marker id="h" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#3ecfa2"/></marker></defs>
+<rect x="30" y="30" width="286" height="200" rx="10" fill="#1c2822" stroke="#2a3a33" stroke-width="1.5"/>
+<text x="50" y="64" fill="#3ecfa2" font-size="24" font-weight="700" font-family="'JetBrains Mono', monospace">1</text>
+<text x="50" y="98" fill="#e8efec" font-size="19" font-weight="700">Count, per wave</text>
+<text x="50" y="128" fill="#9db3ab" font-size="15">wave_size samples (default 100)</text>
+<text x="50" y="152" fill="#9db3ab" font-size="15">one sample in RAM at a time,</text>
+<text x="50" y="176" fill="#9db3ab" font-size="15">scattered by k-mer prefix into</text>
+<text x="50" y="200" fill="#9db3ab" font-size="15">256 shard files on local scratch</text>
+<path d="M318,130 L344,130" stroke="#3ecfa2" stroke-width="2.5" fill="none" marker-end="url(#h)"/>
+<rect x="346" y="30" width="286" height="200" rx="10" fill="#1c2822" stroke="#2a3a33" stroke-width="1.5"/>
+<text x="366" y="64" fill="#3ecfa2" font-size="24" font-weight="700" font-family="'JetBrains Mono', monospace">2</text>
+<text x="366" y="98" fill="#e8efec" font-size="19" font-weight="700">Fold each shard</text>
+<text x="366" y="128" fill="#9db3ab" font-size="15">sort by k-mer, collapse into</text>
+<text x="366" y="152" fill="#9db3ab" font-size="15">(sample, count) rows, dedup</text>
+<text x="366" y="176" fill="#9db3ab" font-size="15">identical rows within the</text>
+<text x="366" y="200" fill="#9db3ab" font-size="15">shard only</text>
+<path d="M634,130 L660,130" stroke="#3ecfa2" stroke-width="2.5" fill="none" marker-end="url(#h)"/>
+<rect x="662" y="30" width="286" height="200" rx="10" fill="#1c2822" stroke="#2a3a33" stroke-width="1.5"/>
+<text x="682" y="64" fill="#3ecfa2" font-size="24" font-weight="700" font-family="'JetBrains Mono', monospace">3</text>
+<text x="682" y="98" fill="#e8efec" font-size="19" font-weight="700">Hierarchical merge</text>
+<text x="682" y="128" fill="#9db3ab" font-size="15">merge_fanin (default 5) partials</text>
+<text x="682" y="152" fill="#9db3ab" font-size="15">combine as soon as ready,</text>
+<text x="682" y="176" fill="#9db3ab" font-size="15">interleaved with the waves,</text>
+<text x="682" y="200" fill="#9db3ab" font-size="15">disk stays O(merge_fanin)</text>
+<path d="M950,130 L976,130" stroke="#3ecfa2" stroke-width="2.5" fill="none" marker-end="url(#h)"/>
+<rect x="978" y="30" width="286" height="200" rx="10" fill="#1c2822" stroke="#f0b429" stroke-width="2"/>
+<text x="998" y="64" fill="#3ecfa2" font-size="24" font-weight="700" font-family="'JetBrains Mono', monospace">4</text>
+<text x="998" y="98" fill="#e8efec" font-size="19" font-weight="700">Adaptive reshard</text>
+<text x="998" y="128" fill="#9db3ab" font-size="15">split only shards over the cap</text>
+<text x="998" y="152" fill="#9db3ab" font-size="15">by 4 more prefix bits,</text>
+<text x="998" y="176" fill="#9db3ab" font-size="15">recursively, so every leaf</text>
+<text x="998" y="200" fill="#9db3ab" font-size="15">stays under 4 GB</text>
+<path d="M1266,130 L1292,130" stroke="#3ecfa2" stroke-width="2.5" fill="none" marker-end="url(#h)"/>
+<rect x="1294" y="30" width="286" height="200" rx="10" fill="#1c2822" stroke="#2a3a33" stroke-width="1.5"/>
+<text x="1314" y="64" fill="#3ecfa2" font-size="24" font-weight="700" font-family="'JetBrains Mono', monospace">5</text>
+<text x="1314" y="98" fill="#e8efec" font-size="19" font-weight="700">Streaming assembly</text>
+<text x="1314" y="128" fill="#9db3ab" font-size="15">merge each leaf across roots,</text>
+<text x="1314" y="152" fill="#9db3ab" font-size="15">pack 64-k-mer blocks, blob</text>
+<text x="1314" y="176" fill="#9db3ab" font-size="15">streams to disk, never</text>
+<text x="1314" y="200" fill="#9db3ab" font-size="15">held whole in RAM</text>
+<text x="30" y="270" fill="#9db3ab" font-size="15">seeds: an existing .kct can feed in as a ready-made level-0 partial, skipping its recount. Every stage marks itself done, so resume=true picks a killed build back up.</text>
+<text x="30" y="296" fill="#9db3ab" font-size="15">Peak memory is flat in cohort size through stages 1 to 4. Only assembly is cohort-sized, and stage 4 bounds how much of it any one worker holds.</text>
+</svg>

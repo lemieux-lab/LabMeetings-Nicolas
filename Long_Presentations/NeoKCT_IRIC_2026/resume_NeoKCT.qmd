@@ -1,0 +1,36 @@
+---
+title: "Ni approximation ni filtre : les k-mers exacts de GTEx pour cribler les antigènes tumoraux sans compromis"
+author:
+  - name: Nicolas Jacquin
+    affiliations:
+      - name: IRIC, Université de Montréal
+  - name: Sébastien Lemieux
+    affiliations:
+      - name: IRIC, Université de Montréal
+lang: fr
+format:
+  typst:
+    papersize: a4
+    margin:
+      x: 2cm
+      y: 1.8cm
+    fontsize: 10pt
+    keep-typ: false
+    include-in-header:
+      - text: |
+          #set text(hyphenate: false)
+---
+
+Les antigènes spécifiques aux tumeurs (TSA) présentés par le CMH de classe I sont des cibles de choix pour l'immunothérapie, et environ 90 % d'entre eux proviennent de régions considérées comme non codantes. Avant d'investir des mois dans un peptide identifié par spectrométrie de masse, il faut vérifier dans l'ARN-seq qu'il est exprimé dans la tumeur et absent des tissus sains. BamQuery, l'outil développé au laboratoire pour cette étape, relit les alignements de chaque échantillon à chaque nouvelle liste de peptides. Une liste d'environ 1 000 peptides contre GTEx (environ 2 500 échantillons, 50 tissus) coûte environ 730 heures-CPU, et les peptides que le génome de référence ne permet pas de placer ne sont pas comptés.
+
+NeoKCT renverse la démarche. Chaque lecture de chaque échantillon est découpée en fenêtres de 30 nucléotides (k-mers, k=30), traduites en fragments de 10 acides aminés (k=10) et comptées une seule fois, sans alignement ni annotation. Les deux brins sont comptés, ce qui convient aux banques non orientées comme celles de GTEx. On obtient un tableau qui donne, pour chaque k-mer, le nombre exact de lectures dans chaque échantillon. Pour GTEx, cela représente 62,6 milliards de k-mers distincts et 910 milliards de comptes, stockés en 2,15 Tio sur un seul serveur. Chaque k-mer ne garde que la liste des échantillons où il apparaît, comme l'index inversé d'un moteur de recherche. Ces listes sont compressées par blocs de 64 k-mers avec une largeur de bits ajustée à chaque bloc, et les k-mers triés sont encodés par différences (delta). Le fichier est projeté en mémoire (mmap), si bien que seuls l'index des k-mers et les blocs consultés occupent la RAM, environ 265 Go. La construction prend un peu moins de dix jours et n'est faite qu'une fois. Retrouver un k-mer prend ensuite environ 25 µs.
+
+Les index existants à cette échelle gagnent de la place en moyennant les comptes ou en les réduisant à présent ou absent. Pour juger de la sécurité d'une cible, le signal décisif est souvent un peptide vu à faible niveau dans un seul tissu sain, et c'est justement ce que la moyenne efface. Sur 200 échantillons GTEx, en comptant des k-mers d'ADN (k=31), NeoKCT retourne le compte exact dans 98,1 % des cas (100 % si l'on comptait aussi les lectures contenant un nucléotide N, seule source d'écart avec Jellyfish), contre 9,8 % pour REINDEER, l'index d'abondance de référence.
+
+Ce choix découle de l'idée centrale du projet : filtrer ou approximer à la construction introduit un biais. NeoKCT garde tout, y compris les k-mers vus une seule fois (65 % de la table), et les seuils se choisissent au moment de la requête. Croiser des tables de vraies données suffit à faire le tri : à 5 lectures ou plus, 82,5 % des peptides tumoraux publiés se retrouvent dans GTEx, contre 9,7 % des mêmes peptides mélangés et aucune séquence aléatoire.
+
+Sur 22 échantillons de cellules dendritiques et de mTEC analysés par les deux outils, les comptes de NeoKCT et de BamQuery sont sur la même échelle (corrélation de rang 0,89, rapport moyen de 1,0). Le seuil habituel de 8,55 lectures par cent millions s'applique donc sans ajustement, et les deux outils rendent le même verdict pour 337 des 351 peptides que BamQuery peut évaluer (96 %, kappa 0,89). NeoKCT compte aussi les 199 autres peptides de l'ensemble, que BamQuery ne pouvait pas placer dans le génome. Une nouvelle liste de peptides contre tout GTEx coûte au plus 12 heures-CPU, soit environ 46 minutes, chargement de l'index compris.
+
+Appliqué à 103 candidats publiés dans le cancer de l'ovaire, NeoKCT trouve un appui ARN dans leur propre tumeur pour 91 d'entre eux. Parmi ceux-ci, 17 restent spécifiques à la fois face à GTEx et face aux cellules dendritiques et mTEC, ce qui en fait une courte liste prête à être approfondie. Comparer les deux références saines est instructif : près de la moitié des candidats changent de verdict selon celle qu'on consulte, et certains passent GTEx tout en étant exprimés dans les mTEC du thymus ou dans les cellules dendritiques.
+
+NeoKCT peut ainsi remplacer BamQuery pour savoir si un peptide est exprimé et dans quels tissus sains, pour une fraction du coût et y compris pour les peptides que le génome de référence ne permet pas de placer. Comme il n'y a pas d'alignement, il ne dit pas de quel locus proviennent les lectures, et BamQuery reste l'outil pour cette question. Le code est disponible à github.com/lemieux-lab/NeoKCT.
