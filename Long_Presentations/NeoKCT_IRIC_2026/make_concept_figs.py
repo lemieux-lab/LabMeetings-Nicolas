@@ -1,4 +1,4 @@
-# Hand-built conceptual figures for the IRIC talk: tsa_sources, two_workflows, peptide_query,
+# Hand-built conceptual figures for the IRIC talk: tsa_therapy, tsa_sources, two_workflows, peptide_query,
 # posting_lists, delta_metaphor, packing_crates.
 # Same dark palette as every other figure in this repo. Counts in peptide_query are
 # illustrative, k-mer sequences are real translations (see NeoKCT/Figures/kct_overview.svg).
@@ -22,6 +22,41 @@ def t(o,x,y,s,col=I,fs=16,anchor='start',mono=False,bold=False):
     o.append(f'<text x="{x}" y="{y}" fill="{col}" font-size="{fs}" text-anchor="{anchor}"{BOLD if bold else ""}{M if mono else ""}>{s}</text>')
 def line(o,d,col=D,m='a',sw=2):
     o.append(f'<path d="{d}" stroke="{col}" stroke-width="{sw}" fill="none" marker-end="url(#{m})"/>')
+
+# ---------------- tsa_therapy.svg ----------------
+# Why TSAs are worth finding: a T cell kills the tumor cell that shows one and leaves healthy cells alone.
+# Purely conceptual, no numbers.
+def mhc(o,x,y,pep):
+    # MHC-I groove sitting on the membrane at (x,y), opening to the right, peptide inside
+    o.append(f'<path d="M{x},{y} L{x+22},{y}" stroke="{B}" stroke-width="5"/>')
+    o.append(f'<path d="M{x+44},{y-20} L{x+22},{y-20} L{x+22},{y+20} L{x+44},{y+20}" stroke="{B}" stroke-width="6" fill="none"/>')
+    o.append(f'<rect x="{x+26}" y="{y-9}" width="16" height="18" rx="3" fill="{pep}"/>')
+def tcell(o,cx,cy,stroke):
+    o.append(f'<circle cx="{cx}" cy="{cy}" r="62" fill="{PAN}" stroke="{stroke}" stroke-width="2.5"/>')
+    o.append(f'<path d="M{cx-62},{cy} L{cx-84},{cy} M{cx-84},{cy-14} L{cx-84},{cy+14}" stroke="{stroke}" stroke-width="5" fill="none"/>')
+    t(o,cx,cy+6,'CD8 T cell',I,16,'middle',bold=True)
+o=head(1090,500)
+for x0,title,cellcol,fill,pep,tc,res,rescol in ((30,'Tumor cell','#e58468','#2a1d19',R,G,['TSA on MHC-I is recognized,','the tumor cell is killed'],G),
+                                                (560,'Healthy cell',D,'#1a2420',D,BR,['only self peptides, nothing','to recognize, tissue is spared'],D)):
+    box(o,x0,30,500,440)
+    cx=x0+140
+    o.append(f'<circle cx="{cx}" cy="230" r="105" fill="{fill}" stroke="{cellcol}" stroke-width="2.5"/>')
+    t(o,cx,236,title,cellcol,19,'middle',bold=True)
+    mhc(o,cx+105,230,pep)
+    tcell(o,x0+400,230,tc if tc!=BR else D)
+    if pep==R:
+        t(o,cx+138,200,'TSA',R,15,'middle',bold=True)
+        o.append(f'<path d="M{x0+300},175 Q{x0+250},150 {cx+70},160" stroke="{G}" stroke-width="2.5" fill="none" stroke-dasharray="6 5" marker-end="url(#ag)"/>')
+        t(o,x0+300,150,'kill',G,15,'middle',bold=True)
+    else:
+        t(o,cx+138,200,'self',D,15,'middle')
+    for i,s in enumerate(res): t(o,x0+250,400+i*26,s,rescol,17,'middle')
+    # knife for the killer (mirrored left-right so the blade faces the tumor), ok hand for the bystander,
+    # both perched on the T cell's top-left
+    ex=x0+345
+    if pep==R: o.append(f'<text x="{ex}" y="182" font-size="40" text-anchor="middle" transform="matrix(-1,0,0,1,{2*ex},0)">\U0001F52A</text>')
+    else: t(o,ex,182,'\U0001F44C',I,40,'middle')
+o.append('</svg>'); open('tsa_therapy.svg','w').write('\n'.join(o))
 
 # ---------------- tsa_sources.svg ----------------
 # Where MHC-I peptides come from and why non-canonical ones are hard to trace back to RNA.

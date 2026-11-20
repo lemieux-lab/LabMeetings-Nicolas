@@ -2,13 +2,15 @@
 
 Speaker notes for presentation.qmd, slide by slide, in presentation order.
 
-## Overall timing (title slide)
+## Overall timing
 
 ~23.5 min total. Problem ~10 min, approach ~2.5 min, under the hood ~5 min, accuracy ~3 min, what it enables ~2.5 min, summary ~1 min. If running long, the gaps slide and the leading-zeros slide are the easiest to skip.
 
 ## Where MHC-I peptides come from
 
 ~1.5 min. Start from what everyone here does: peptides off MHC-I, identified by MS against a database built from the tumor's own RNA-seq. Canonical peptides have a gene model behind them. The non-canonical ones, which are most of the TSAs, don't, so tracing them back to their RNA is the hard part, and that is exactly the next question for any candidate.
+
+Cut from the slide, say it if useful: Most non-canonical proteins are found uniquely in either the proteome or the immunopeptidome (Ruiz Cuevas et al. 2021).
 
 ## The question behind every TSA project
 
@@ -18,17 +20,25 @@ Speaker notes for presentation.qmd, slide by slide, in presentation order.
 
 ~1 min. The full grid is 155 trillion values, 99.4% of them zero. Keeping only the non-zero values still gives 7.8 TB. Point at the dashed line and say the next slide explains why memory, and not disk space, is the limit that matters.
 
+Cut from the slide, say it if useful: Even written as plain lists, holding every count takes four times the memory of our largest server.
+
 ## Why it has to fit in memory
 
 ~1 min. Most of the audience won't have thought about this, keep it concrete. Disk is huge and cheap but every random visit is a trip downstairs. Memory is small and expensive but instant. Fast peptide lookup depends on two things: a layout that keeps related entries together, and keeping the randomly accessed parts in memory. That's why every tool on the next slide is really fighting to shrink what has to sit in memory.
+
+Cut from the slide, say it if useful: Disk is good at reading everything in order once, memory at jumping straight to any entry. The 17 ms vs 61 µs was measured on our own table. Leave the jumped-to parts on disk and every candidate pays the 17 ms trip many times over.
 
 ## What existing tools give up to fit in memory
 
 ~1.5 min. Frame each row as a deliberate trade, not a flaw: these are good tools that each chose what to drop so the data would fit. Gene tables drop everything outside annotation. BamQuery drops precomputation and pays per question instead. REINDEER merges counts of neighbouring k-mers into one value per unitig. Raptor keeps a bit per sample in Bloom-filter-like structures, which costs some false positives. Next slide says why none of them are safe for a TSA screen.
 
+Cut from the slide, say it if useful: Each trade exists to shrink what must sit in memory for queries to be fast. They are reasonable for many questions, just not this one.
+
 ## Why approximate isn't safe for TSAs
 
 ~1.5 min. This is what refusing approximations buys. The first row is the dangerous one: a silent zero. No reads from a gene table or an unplaceable peptide looks identical to "not expressed". The second row is the expensive one: losing a good candidate late. REINDEER can make both mistakes, Raptor the second and can't do thresholds at all, gene tables and BamQuery's unplaced peptides the first. Exact counts leave the biology as hard as it was, and stop the tool from adding errors of its own on top.
+
+Cut from the slide, say it if useful: Presence/absence can't even apply a threshold: one stray read and ten thousand reads look the same. With exact counts, 8.55 reads per hundred million means the same thing in every sample, and any wrong call comes from the biology or the sequencing.
 
 ## A closer look at BamQuery
 
@@ -38,6 +48,8 @@ Speaker notes for presentation.qmd, slide by slide, in presentation order.
 
 ~1 min. The main idea of the talk, say it slowly. The orange bars are what the naive versions cost. NeoKCT is 2.4 TB, right at the edge of the server's memory. The design splits it along the line from the previous slides: the randomly accessed index stays on the desk, and the counts are laid out so one basement trip serves many lookups (the library slide later shows this). Every project asks GTEx the same question with a different list, so paying for the build once is the right trade. Exact counts are the part we refused to trade away, hence the title.
 
+Cut from the slide, say it if useful: The table is built once from reads translated forward, so no reference genome is involved. The 265 GB index stays in memory, the counts sit on disk in sorted order so one trip brings back a peptide's neighbours.
+
 ## Cut every read into fragments, count them all
 
 ~2 min. Walk the figure left to right. Each read is cut into 30-nucleotide windows at every position, each window is translated into a 10-amino-acid fragment (stop codons drop the window), and we count how many times each fragment appears in each sample. No alignment, no annotation. The result is a giant table: rows are fragments, columns are samples. Most values are zero and cost nothing.
@@ -46,6 +58,8 @@ Speaker notes for presentation.qmd, slide by slide, in presentation order.
 
 ~1 min. Big numbers, but the takeaway is the last two rows: built once, then each lookup is microseconds.
 
+Cut from the slide, say it if useful: Build was 9 days 13 hours of wall time: 7 days 8 hours of counting and merging, then 2 days 6 hours of assembly.
+
 ## Store it like a search engine
 
 ~1.5 min. Everyone has used a search engine. It doesn't keep a giant grid of every word against every web page, it keeps, for each word, the short list of pages containing it. Our table is the same idea: for each fragment, the list of samples it was seen in, with the count. 99.4% of the fragment-by-sample grid is empty, so this alone is the difference between impossible and possible.
@@ -53,6 +67,8 @@ Speaker notes for presentation.qmd, slide by slide, in presentation order.
 ## Drop the leading zeros
 
 ~1 min. Counts are stored in blocks of 64 fragments. Each block looks at its largest count and gives every count in the block exactly that many bits, here 3 because the largest is 6. Same width for the whole block, so you can still jump straight to any entry. Net effect on the whole table: 7.8 TB as plain lists, 2.4 TB packed. The block is also the unit we read from disk, which comes back on the library slide.
+
+Cut from the slide, say it if useful: Nobody writes a count of 6 as 0000000006, but plain 32-bit numbers do: room for 4.3 billion every time, when most counts are 1, 2 or 3.
 
 ## Write down only the gaps
 
@@ -66,17 +82,25 @@ Speaker notes for presentation.qmd, slide by slide, in presentation order.
 
 ~1.5 min. This is the title of the talk, and it closes the loop on the existing-tools slide from the intro. The safety question is decided by rare, low, sample-specific expression. An index that averages counts over a unitig smears a single sample's 3 reads across its neighbors, or drops them. We chose to pay for exactness with engineering instead of with accuracy.
 
+Cut from the slide, say it if useful: Setup: same 200 GTEx samples, DNA 31-mers, Jellyfish as ground truth. Jellyfish keeps the k-mers on either side of an N, NeoKCT drops the whole read, which explains the 1.88% gap. The signal that matters is a low count in one healthy sample, exactly what averaging blurs.
+
 ## Does it agree with BamQuery?
 
 ~1.5 min. Same numbers on the same scale: the fitted ratio between the two tools is exactly 1, so the 8.55 rphm threshold carries over unchanged (a cross-validated threshold lands at 8.06). The 199 peptides BamQuery could not place are still queryable here. This is the evidence behind the next slide's claim.
+
+Cut from the slide, say it if useful: If asked: log-log slope 0.98, kappa 0.89, sensitivity 93.8% and specificity 96.7% with BamQuery as reference, 9 calls only NeoKCT and 5 only BamQuery. 351 of 550 peptides could be placed by BamQuery.
 
 ## Replacing BamQuery for expression screening
 
 ~1.5 min. This is the slide for the biochemists: what they would actually do with it, and the honest boundary. NeoKCT answers the screening question faster and for more peptides. It does not attribute reads to a genomic locus, because there is no alignment.
 
+Cut from the slide, say it if useful: Output is a peptide × sample matrix in reads per hundred million, labeled by tissue, ready for the 8.55 rphm threshold. NeoKCT ~46 min is ≤ 12.2 CPU-hours. Unplaceable peptides include fusions and unannotated junctions. NeoKCT only has coarse biotype annotation, no per-locus attribution.
+
 ## A tumor cohort through the same pipeline
 
 ~1 min. 17 candidates are both detected in their own tumors and specific against both references: that's the short list a biochemist would take forward.
+
+Cut from the slide, say it if useful: GSE131880 is the RNA-seq behind the published MS data, built into its own table.
 
 ## Summary
 

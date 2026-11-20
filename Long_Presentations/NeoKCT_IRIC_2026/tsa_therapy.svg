@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1090 500" width="1090" height="500" font-family="'Archivo', sans-serif">
+<rect x="0" y="0" width="1090" height="500" rx="14" fill="#151f1b"/>
+<defs><marker id="a" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#9db3ab"/></marker><marker id="ag" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#3ecfa2"/></marker><marker id="ar" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#e58468"/></marker><marker id="ak" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#f0b429"/></marker></defs>
+<rect x="30" y="30" width="500" height="440" rx="10" fill="#1c2822" stroke="#2a3a33" stroke-width="1.5"/>
+<circle cx="170" cy="230" r="105" fill="#2a1d19" stroke="#e58468" stroke-width="2.5"/>
+<text x="170" y="236" fill="#e58468" font-size="19" text-anchor="middle" font-weight="700">Tumor cell</text>
+<path d="M275,230 L297,230" stroke="#6f8fd8" stroke-width="5"/>
+<path d="M319,210 L297,210 L297,250 L319,250" stroke="#6f8fd8" stroke-width="6" fill="none"/>
+<rect x="301" y="221" width="16" height="18" rx="3" fill="#e58468"/>
+<circle cx="430" cy="230" r="62" fill="#1c2822" stroke="#3ecfa2" stroke-width="2.5"/>
+<path d="M368,230 L346,230 M346,216 L346,244" stroke="#3ecfa2" stroke-width="5" fill="none"/>
+<text x="430" y="236" fill="#e8efec" font-size="16" text-anchor="middle" font-weight="700">CD8 T cell</text>
+<text x="308" y="200" fill="#e58468" font-size="15" text-anchor="middle" font-weight="700">TSA</text>
+<path d="M330,175 Q280,150 240,160" stroke="#3ecfa2" stroke-width="2.5" fill="none" stroke-dasharray="6 5" marker-end="url(#ag)"/>
+<text x="330" y="150" fill="#3ecfa2" font-size="15" text-anchor="middle" font-weight="700">kill</text>
+<text x="280" y="400" fill="#3ecfa2" font-size="17" text-anchor="middle">TSA on MHC-I is recognized,</text>
+<text x="280" y="426" fill="#3ecfa2" font-size="17" text-anchor="middle">the tumor cell is killed</text>
+<text x="375" y="182" font-size="40" text-anchor="middle" transform="matrix(-1,0,0,1,750,0)">🔪</text>
+<rect x="560" y="30" width="500" height="440" rx="10" fill="#1c2822" stroke="#2a3a33" stroke-width="1.5"/>
+<circle cx="700" cy="230" r="105" fill="#1a2420" stroke="#9db3ab" stroke-width="2.5"/>
+<text x="700" y="236" fill="#9db3ab" font-size="19" text-anchor="middle" font-weight="700">Healthy cell</text>
+<path d="M805,230 L827,230" stroke="#6f8fd8" stroke-width="5"/>
+<path d="M849,210 L827,210 L827,250 L849,250" stroke="#6f8fd8" stroke-width="6" fill="none"/>
+<rect x="831" y="221" width="16" height="18" rx="3" fill="#9db3ab"/>
+<circle cx="960" cy="230" r="62" fill="#1c2822" stroke="#9db3ab" stroke-width="2.5"/>
+<path d="M898,230 L876,230 M876,216 L876,244" stroke="#9db3ab" stroke-width="5" fill="none"/>
+<text x="960" y="236" fill="#e8efec" font-size="16" text-anchor="middle" font-weight="700">CD8 T cell</text>
+<text x="838" y="200" fill="#9db3ab" font-size="15" text-anchor="middle">self</text>
+<text x="810" y="400" fill="#9db3ab" font-size="17" text-anchor="middle">only self peptides, nothing</text>
+<text x="810" y="426" fill="#9db3ab" font-size="17" text-anchor="middle">to recognize, tissue is spared</text>
+<text x="905" y="182" fill="#e8efec" font-size="40" text-anchor="middle">👌</text>
+</svg>

@@ -18,9 +18,15 @@ format:
 bibliography: references.bib
 ---
 
-# Approximate was never an option {background-color="#1a1a2e"}
+# Introduction {background-color="#1a1a2e"}
 
-GTEx's 62 billion k-mers with exact counts crammed in memory for reference-free antigen screening
+---
+
+## Why tumor-specific antigens matter
+
+![](tsa_therapy.svg){fig-align="center" width="75%"}
+
+<small>A tumor-specific antigen (TSA) is a peptide shown on MHC-I by the tumor and by no healthy cell, so T cells aimed at it hit the tumor and leave healthy tissue alone. That makes TSAs targets for vaccines and T cell therapies.</small>
 
 ---
 
@@ -28,73 +34,62 @@ GTEx's 62 billion k-mers with exact counts crammed in memory for reference-free 
 
 ![](tsa_sources.svg){fig-align="center" width="95%"}
 
-<small>Around 90% of the TSAs identified by @laumont2018 came from allegedly non-coding regions, and most non-canonical proteins are found uniquely in either the proteome or the immunopeptidome [@cuevas2021].</small>
+<small>~90% of the TSAs in @laumont2018 came from allegedly non-coding regions.</small>
 
 ---
 
 ## The question behind every TSA project
 
-You have a list of MHC-I peptides from mass spectrometry. Before anyone spends months on one of them, two questions need an answer:
+Two questions for every candidate from mass spectrometry:
 
 | Question | Why it matters |
 |---|---|
-| Is it expressed in the tumor? | The peptide has to come from somewhere in the tumor's RNA |
-| Is it absent from normal tissues? | Expression in healthy tissue means toxicity risk, or a T-cell repertoire already deleted by tolerance |
+| Is it expressed in the tumor? | it has to come from the tumor's RNA |
+| Is it absent from normal tissues? | toxicity risk, or T cells deleted by tolerance |
 
-Both are answered by counting RNA-seq reads, in the tumor and in thousands of healthy samples. For a peptide nobody has looked at before, any read in any sample could be one that codes for it.
+Both are answered by counting RNA-seq reads. For a new peptide, any read in any sample could be the one.
 
 ---
 
 ## How much data that is
 
-GTEx alone has 2,486 healthy samples from 50 tissues. Cut every read into 10-amino-acid fragments and you get 62.6 billion distinct fragments, spread over 909.7 billion (fragment, sample) combinations, each with its own count.
+GTEx: 2,486 healthy samples, 62.6 billion distinct 10-amino-acid fragments, 909.7 billion non-zero counts.
 
 ![](data_scale.svg){fig-align="center" width="85%"}
-
-Even written as plain lists, holding every count takes four times the memory of our largest server.
 
 ---
 
 ## Why it has to fit in memory
 
-A computer stores data in two places, and a peptide query cares a lot about which one.
-
 | | Disk | Memory (RAM) |
 |---|---|---|
 | Think of it as | the archive in the basement | your desk |
 | Size on our largest server | plenty | 1.9 TB |
-| Fetching one block of counts, measured on our table | ~17 ms | ~61 µs, about 300× faster |
-| Good at | reading everything in order, once | jumping straight to any entry |
+| Fetching one block of counts | ~17 ms | ~61 µs, about 300× faster |
 
-A peptide list sends you to scattered spots in the table, so the parts a query jumps around in have to be on the desk. Leave them in the basement and every candidate pays the 17 ms trip, many times over.
+A peptide query jumps around the table, so those parts have to be on the desk.
 
 ---
 
 ## What existing tools give up to fit in memory
 
-| Tool | To hold less, it keeps only | What that costs |
+| Tool | Keeps only | Cost |
 |---|---|---|
-| Gene expression tables (GTEx portal) | one number per gene | peptides outside gene models, most TSAs, are invisible |
-| BamQuery [@ruizcuevas2023] | nothing in memory: it re-reads the alignments from disk for every list, only where the genome places the peptide | ~730 CPU-hours per new list, and 199 of 550 peptides could not be placed |
-| REINDEER [@marchet2020] | one averaged count per stretch of fragments that tend to occur together | approximate counts, 9.8% exact in our benchmark |
-| Raptor [@seiler2021] | present or absent, in a compact probabilistic filter | no counts at all, and a small rate of false hits |
-
-Each of these trades exists to shrink what must sit in memory for queries to be fast. They are reasonable for many questions, but not for this one.
+| Gene expression tables (GTEx portal) | one number per gene | most TSAs are invisible |
+| BamQuery [@ruizcuevas2023] | nothing, re-reads the BAMs where the genome places the peptide | ~730 CPU-hours per list, 199 of 550 peptides unplaced |
+| REINDEER [@marchet2020] | averaged counts over stretches of fragments | 9.8% of counts exact |
+| Raptor [@seiler2021] | present or absent | no counts, some false hits |
 
 ---
 
 ## Why approximate isn't safe for TSAs
 
-A specificity screen can be wrong in two directions, and neither is cheap:
-
-| Mistake | How an approximation causes it | What it costs |
+| Mistake | Caused by | Cost |
 |---|---|---|
-| Called absent, but expressed in a healthy tissue | a few reads in one testis or brain sample get averaged away, or are never looked at because the peptide sits outside a gene or the genome can't place it | a candidate moves forward with a toxicity or tolerance problem nobody saw |
-| Called expressed, but absent | an averaged count borrowed from neighbouring fragments, or a filter's false hit, lands in a healthy sample | a real TSA gets dropped after months of MS and validation work |
+| Called absent, but expressed in a healthy tissue | low counts averaged away, or the peptide never looked at | a toxicity or tolerance problem goes unseen |
+| Called expressed, but absent | an averaged count or a false hit | a real TSA gets dropped |
 
-Presence/absence can't even apply a threshold: one stray read and ten thousand reads look the same. The decision lives at low counts in a handful of samples, which is exactly where approximations are least reliable.
-
-With exact counts, a threshold like 8.55 reads per hundred million means the same thing in every sample, and any wrong call comes from the biology or the sequencing, with nothing added by the index.
+The call is made at low counts in a few samples, exactly where approximations fail.
 
 ---
 
@@ -107,12 +102,10 @@ With exact counts, a threshold like 8.55 reads per hundred million means the sam
 ## No compromises
 
 ::: {style="font-size: 1.35em; line-height: 1.5;"}
-Keep every fragment of every sample with its exact count, and do the engineering needed to make that fit.
+Keep every fragment of every sample with its exact count, and make it fit.
 :::
 
 ![](storage.svg){fig-align="center" width="78%"}
-
-The table is built once, from reads translated forward, so no reference genome is involved. The part a lookup jumps around in, the 265 GB index of fragments, stays in memory. The counts sit on disk in sorted order, so one trip brings back a peptide's neighbours with it.
 
 ---
 
@@ -132,12 +125,10 @@ The table is built once, from reads translated forward, so no reference genome i
 |---|---|
 | Samples | 2,486 (50 tissues) |
 | Distinct 10-amino-acid fragments | 62.6 billion |
-| (sample, count) entries stored | 909.7 billion |
+| (sample, count) entries | 909.7 billion |
 | Size on disk | 2.15 TiB |
-| Build | one time, about 10 days on one server* |
+| Build | once, about 10 days on one server |
 | Finding one fragment | ~25 µs |
-
-<small>*9 days 13 hours of wall time: 7 days 8 hours of counting and merging, then 2 days 6 hours of assembly.</small>
 
 ---
 
@@ -153,8 +144,6 @@ The table is built once, from reads translated forward, so no reference genome i
 
 ## Drop the leading zeros
 
-Nobody writes a count of 6 as 0000000006, but a computer storing plain numbers does: every count gets room for 4.3 billion. Most counts in the table are 1, 2 or 3.
-
 ![](packing_crates.svg){fig-align="center" width="92%"}
 
 ---
@@ -165,48 +154,32 @@ Nobody writes a count of 6 as 0000000006, but a computer storing plain numbers d
 
 ---
 
-## A library, not a warehouse
-
-The card catalog (where every fragment is, 265 GB) sits on the desk, in memory. The books (2 TiB of counts) stay in the basement, on disk. A trip downstairs is slow, but you bring back the whole shelf section with it, and a peptide's fragments sit side by side in sorted order:
-
-![](mmap_access.svg){fig-align="center" width="92%"}
-
----
-
 # Does it give the right answer? {background-color="#1a1a2e"}
 
 ---
 
 ## Approximate was never an option
 
-First check: after all that packing, does every count come back exactly as it went in? Same samples through NeoKCT and REINDEER, compared against a standard k-mer counter.
-
-| Same 200 GTEx samples, DNA 31-mers, Jellyfish counts as ground truth | Exact count returned |
+| 200 GTEx samples, Jellyfish counts as ground truth | Exact counts returned |
 |---|---|
 | NeoKCT | **100%\*** |
-| REINDEER [@marchet2020], the reference abundance index | 9.82% |
+| REINDEER [@marchet2020] | 9.82% |
 
-For antigen screening, the signal that matters most is a peptide seen at a low count in one healthy sample. That is exactly what averaging blurs away.
-
-<small>\*98.12% as measured. The remaining differences all come from reads containing an N, which NeoKCT discards whole while Jellyfish keeps the k-mers on either side of the N.</small>
+<small>\*98.12% as measured, every difference comes from reads containing an N, which NeoKCT discards whole.</small>
 
 ---
 
 ## Does it agree with BamQuery?
 
-Both tools run on the same 22 public samples (blood dendritic cells and mTECs), same peptides:
+Same 22 samples (dendritic cells and mTECs), same peptides:
 
 | | Result |
 |---|---|
 | (peptide, sample) pairs compared | 7,722 |
 | Rank correlation of counts | 0.89 |
-| Count scale (NeoKCT ÷ BamQuery) | 1.0, log-log slope 0.98 |
-| Peptides BamQuery could place in the genome | 351 of 550 |
-| Same expressed / not-expressed call at 8.55 rphm | 337 of 351 (96%), kappa 0.89 |
-| Sensitivity / specificity, BamQuery as reference | 93.8% / 96.7% |
-| Called differently | 14 (9 only NeoKCT, 5 only BamQuery) |
-
-<small>Half of the 14 disagreements are peptides with several possible genomic origins, where an alignment-based count depends on which loci get considered.</small>
+| Count scale (NeoKCT ÷ BamQuery) | 1.0 |
+| Same call at 8.55 rphm | 337 of 351 placed peptides (96%) |
+| Called differently | 14, half with several genomic origins |
 
 ---
 
@@ -216,16 +189,14 @@ Both tools run on the same 22 public samples (blood dendritic cells and mTECs), 
 
 ## Replacing BamQuery for expression screening
 
-Give a list of peptides, get back a peptide × sample matrix in reads per hundred million, labeled by tissue, ready for the same 8.55 rphm threshold.
-
 | | BamQuery | NeoKCT |
 |---|---|---|
-| A new peptide list against GTEx | 729.6 CPU-hours | ≤ 12.2 CPU-hours, ~46 min |
+| A new peptide list against GTEx | 729.6 CPU-hours | ~46 min |
 | A new threshold or tissue grouping | rerun | re-filter the same matrix |
-| Peptides the genome can't place (fusions, unannotated junctions, ...) | not counted | counted like any other |
-| Which locus the reads came from | yes, per genomic location | no, coarse biotype annotation only |
+| Peptides the genome can't place | not counted | counted |
+| Which locus the reads came from | yes | no |
 
-For "is it expressed, and where in normal tissue", NeoKCT can take over. For "which gene or locus does it come from", BamQuery's alignment is still the tool.
+Expression screening moves to NeoKCT. Locus attribution stays with BamQuery.
 
 ---
 
@@ -233,23 +204,21 @@ For "is it expressed, and where in normal tissue", NeoKCT can take over. For "wh
 
 ![](candidate_breakdown.svg){fig-align="center" width="80%"}
 
-<small>9 ovarian tumor RNA-seq samples (GEO GSE131880, the samples behind the published MS data), built into their own table and queried with the same 103 candidates.</small>
+<small>9 ovarian tumor RNA-seq samples (GSE131880), queried with the same 103 candidates.</small>
 
 ---
 
 ## Summary
 
-Checking a peptide against healthy tissue used to mean a pipeline run per list, and it skipped every peptide the reference genome couldn't place. NeoKCT counts every 10-amino-acid fragment of GTEx once, exactly, and turns that check into a lookup.
-
 | Today | With NeoKCT |
 |---|---|
-| ~730 CPU-hours per peptide list, so screening gets rationed | every MS run's full candidate list, in under an hour |
-| 199 of 550 peptides never screened, the genome couldn't place them | every peptide counted, canonical or not |
-| a new threshold or tissue grouping means a rerun | re-filter the same matrix |
-| start from MS, then go check the RNA | also start from RNA: fragments present in a tumor and absent from every healthy sample, before any MS |
-| one healthy reference, queried one list at a time | more cohorts (TCGA, thymus) built once, and a shared table anyone in the lab can query |
+| ~730 CPU-hours per peptide list | any list in under an hour |
+| peptides the genome can't place go unscreened | every peptide counted |
+| a new threshold means a rerun | re-filter the same matrix |
+| start from MS, then check the RNA | also start from RNA: tumor fragments absent from every healthy sample |
+| one healthy reference | more cohorts (TCGA, thymus), one shared table for the lab |
 
-A manuscript on NeoKCT and these results is being finalised for submission before the end of 2026.
+Manuscript being finalised for submission before the end of 2026.
 
 ---
 
@@ -279,11 +248,9 @@ Thanks to Sébastien Lemieux and the Lemieux lab.
 | One peptide list against GTEx | 729.6 CPU-hours (published) [@ruizcuevas2023] |
 | Same on our server, scaled from 22 samples* | ~1,301.6 CPU-hours |
 | A second list, a new threshold, a new cohort | all of it again |
-| Peptides with no match in the reference genome | cannot be counted (199 of 550 in our test set) |
+| Peptides with no match in the reference genome | not counted (199 of 550) |
 
-<small>*extrapolated: BamQuery run directly on a 22-sample cohort, then scaled to GTEx size, not remeasured at full scale.</small>
-
-The bottleneck isn't any single run, it's that every question is a new run.
+<small>*extrapolated from a 22-sample run, not remeasured at full scale.</small>
 
 ---
 
@@ -291,7 +258,7 @@ The bottleneck isn't any single run, it's that every question is a new run.
 
 ![](cost.svg){fig-align="center" width="85%"}
 
-<small>*extrapolated from a 22-sample run, see previous table. **45.6 min on 16 threads, an upper bound, most of it is reading the index from disk. BamQuery figures are CPU-hours, NeoKCT bars are converted to CPU-hours from wall-clock times as upper bounds.</small>
+<small>*extrapolated from a 22-sample run. **45.6 min on 16 threads, an upper bound. NeoKCT bars converted to CPU-hours from wall-clock times.</small>
 
 ---
 
@@ -299,24 +266,22 @@ The bottleneck isn't any single run, it's that every question is a new run.
 
 ![](occupancy.svg){fig-align="center" width="78%"}
 
-103 published ovarian tumor MAPs [@zhao2020] against GTEx, with two controls of the same size. Shuffling a peptide's own residues keeps its composition and destroys its sequence: most shuffled peptides vanish. Random sequences essentially never appear.
+103 published ovarian tumor MAPs [@zhao2020] against GTEx. Shuffled peptides mostly vanish, random ones never appear.
 
 ---
 
 ## Two healthy references catch different things
 
-The same 103 ovarian candidates, screened against GTEx and against the 22-sample dendritic cell + mTEC cohort:
+The same 103 ovarian candidates against GTEx and against 22 dendritic cell + mTEC samples:
 
 | Call | Candidates |
 |---|---|
-| Specific under both references | 26 |
+| Specific under both | 26 |
 | Disqualified by both | 31 |
 | Pass GTEx, expressed in mTEC or DC* | 6 |
-| Pass DC/mTEC, expressed somewhere in GTEx | 40 |
+| Pass DC/mTEC, expressed in GTEx | 40 |
 
-<small>*thymic (AIRE-driven) expression suggests the matching T cells were deleted during tolerance, a risk a GTEx-only screen misses.</small>
-
-About 45% of candidates (46 of 103) get a different call depending on which reference you check. Adding a reference is one more table, then the same lookup.
+<small>*thymic expression suggests the matching T cells were deleted during tolerance.</small>
 
 ---
 
@@ -324,10 +289,10 @@ About 45% of candidates (46 of 103) get a different call depending on which refe
 
 | Direction | What it needs |
 |---|---|
-| Discovery before MS: fragments in tumor, absent from all normals | already supported, one pass comparing two tables |
-| More reference cohorts (TCGA tumors, more thymus) | a build per cohort, then the same lookups |
-| A shared table for the lab | one server-side copy, queried by anyone |
-| Paper | being finalised for submission before the end of 2026 |
+| Discovery before MS: tumor fragments absent from all normals | already supported, one pass comparing two tables |
+| More reference cohorts (TCGA, more thymus) | a build per cohort |
+| A shared table for the lab | one server-side copy |
+| Paper | submission before the end of 2026 |
 
 ---
 
@@ -335,7 +300,7 @@ About 45% of candidates (46 of 103) get a different call depending on which refe
 
 ![](build_pipeline.svg){fig-align="center" width="100%"}
 
-<small>Like sorting the exam papers of a 2,500-student class: each TA sorts one stack (a wave of 100 samples), stacks are merged five at a time, and the final pile is bound into the table. Nobody ever holds every paper at once.</small>
+<small>Like sorting a 2,500-student class's exams: each TA sorts one stack of 100, stacks are merged five at a time.</small>
 
 ---
 
@@ -343,7 +308,15 @@ About 45% of candidates (46 of 103) get a different call depending on which refe
 
 ![](prefix_tree_reshard.svg){fig-align="center" width="90%"}
 
-<small>Like a dictionary where the S volume is a hundred times thicker than X. Leucine and serine dominate amino-acid usage, so a fixed split by leading residues left a few work units ~200 GB while most were ~1 MB. Oversized units are split further until each is under 3.7 GiB.</small>
+<small>Like a dictionary where the S volume is a hundred times thicker than X. Oversized units are split until each is under 3.7 GiB.</small>
+
+---
+
+## A library, not a warehouse
+
+Catalog (265 GB index) on the desk, books (2 TiB of counts) in the basement. One trip brings back a whole shelf, and a peptide's fragments sit side by side.
+
+![](mmap_access.svg){fig-align="center" width="92%"}
 
 ---
 
@@ -357,5 +330,4 @@ About 45% of candidates (46 of 103) get a different call depending on which refe
 
 ![](double_strand_counting.svg){fig-align="center" width="90%"}
 
-GTEx libraries are unstranded: each read is equally likely to come from either strand. NeoKCT counts every read together with its reverse complement, so no evidence is lost whichever way a read was sequenced, and the same table works for stranded and unstranded libraries alike.
-
+GTEx libraries are unstranded, so every read is counted together with its reverse complement.
