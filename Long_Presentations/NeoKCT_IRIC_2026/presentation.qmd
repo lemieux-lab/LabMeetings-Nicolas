@@ -178,9 +178,9 @@ Same 22 samples (dendritic cells and mTECs), same peptides:
 | | Result |
 |---|---|
 | (peptide, sample) pairs compared | 7,722 |
-| Rank correlation of counts | 0.89 |
-| Same call at 8.55 rphm | 337 of 351 placed peptides (96%) |
-| Called differently | 14, half with several genomic origins |
+| Rank correlation of counts | 0.94 |
+| Same call at 8.55 rphm | 340 of 351 placed peptides (97%) |
+| Called differently | 11, 10 of them seen only by NeoKCT |
 :::
 ::: {.column width="55%"}
 ![](concordance.svg){fig-align="center" width="80%"}

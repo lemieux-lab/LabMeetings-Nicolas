@@ -5,6 +5,8 @@
 # the pairs in memory. Same inputs, same rphm denominator (manifest primary reads), same universe
 # (real peptides BamQuery could place). Also carries how many genomic positions BamQuery found
 # per peptide, since multi-origin peptides are where the two tools disagree most.
+# Since 2026-11-20 the NeoKCT side is the suffix-anchored rerun (peptide_counts anchor=:both,
+# paper/results/ds_suffix/), the version on the slide. Pass "prefix" to dump the old one.
 # Run: python3 export_c5_pairs.py
 import os
 from collections import defaultdict
@@ -14,10 +16,13 @@ PAPER = "/u/jacquinn/phd_stuff/Manuscripts/NeoKCT/paper"
 RESULTS = f"{PAPER}/results"
 MANIFEST = f"{RESULTS}/C3_neokct_sample_manifest.tsv"
 C1_PEPTIDES = f"{RESULTS}/C1_peptides.tsv"
-C4_SMALLCOHORT = f"{RESULTS}/C4_neokct_ds_smallcohort.tsv"
+import sys
+PREFIX_ONLY = "prefix" in sys.argv[1:]
+C4_SMALLCOHORT = (f"{RESULTS}/C4_neokct_ds_smallcohort.tsv" if PREFIX_ONLY
+                  else f"{RESULTS}/ds_suffix/C4_neokct_ds_smallcohort_suffix.tsv")
 BAMQUERY_XLSX = f"{PAPER}/data/output/res/C3_smallcohort_count_norm_info.xlsx"
 REAL_SETS = {"dlbcl_cta", "dlbcl_tsa", "mutated_ta", "ovarian_aeTSA", "ovarian_mTSA"}
-OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "c5_pairs_ds.tsv")
+OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "c5_pairs_ds_prefix.tsv" if PREFIX_ONLY else "c5_pairs_ds.tsv")
 
 sample_lib = {}
 with open(MANIFEST) as f:

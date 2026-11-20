@@ -159,9 +159,29 @@ def panel(x,title,sub,rows,res,reslabel,col):
     t(o,x+20,y+16,reslabel,col,16)
     for j,v in enumerate(res): t(o,x+300+j*48,y+16,str(v),col,17,'middle',mono=True,bold=True)
     return y+16
-y=panel(30,'Shorter than 10 (e.g. a 9-mer)',['every fragment that starts with it,','neighbors in the sorted table: add them up'],
-        [('AGLKVTSAPA',9,[3,0,1,0]),('AGLKVTSAPQ',9,[3,0,0,6]),('AGLKVTSAPS',9,[0,2,0,1])],[6,2,1,7],'AGLKVTSAP',G)
-t(o,50,y+60,'each read window that starts with the',D,14); t(o,50,y+80,'peptide counts once, whatever follows',D,14)
+# Shorter-than-10 panel is drawn by hand: two anchor groups (fragments starting with the peptide,
+# fragments ending with it), each summed, then the per-sample max. Matches peptide_counts'
+# default anchor=:both since 2026-11-20. The end-anchored group is what rescues a peptide whose
+# next codon is a stop, the old C-terminal blind spot.
+x=30
+box(o,x,70,500,500)
+t(o,x+20,104,'Shorter than 10 (e.g. a 9-mer)',G,19,bold=True)
+t(o,x+20,132,'fragments that start with it, and fragments',D,15); t(o,x+20,154,'that end with it: add each group, keep the larger',D,15)
+for j,c in enumerate(cols): t(o,x+300+j*48,200,c,'#8fb0e8',15,'middle',bold=True)
+def qrow(y,km,pre,vals):
+    if pre: t(o,x+20,y,km[:9],K,16,mono=True); t(o,x+20+9*9.6,y,km[9:],I,16,mono=True)
+    else: t(o,x+20,y,km[:1],I,16,mono=True); t(o,x+20+9.6,y,km[1:],K,16,mono=True)
+    for j,v in enumerate(vals): t(o,x+300+j*48,y,'·' if v==0 else str(v),D if v==0 else I,16,'middle',mono=True)
+def subtotal(y,label,vals,col=D,bold=False):
+    o.append(f'<path d="M{x+20},{y-20} L{x+480},{y-20}" stroke="{BR}" stroke-width="1.5"/>')
+    t(o,x+20,y,label,col,15 if not bold else 16,bold=bold)
+    for j,v in enumerate(vals): t(o,x+300+j*48,y,str(v),col,16 if not bold else 17,'middle',mono=True,bold=bold)
+for i,(km,v) in enumerate((('AGLKVTSAPA',[3,0,1,0]),('AGLKVTSAPQ',[3,0,0,6]),('AGLKVTSAPS',[0,2,0,1]))): qrow(232+i*30,km,True,v)
+subtotal(326,'starts with it',[6,2,1,7])
+for i,(km,v) in enumerate((('MAGLKVTSAP',[5,0,8,0]),('KAGLKVTSAP',[0,3,0,0]))): qrow(354+i*28,km,False,v)
+subtotal(414,'ends with it',[5,3,8,0])
+subtotal(452,'AGLKVTSAP',[6,3,8,7],G,True)
+t(o,x+20,500,'if the next codon is a stop, nothing starts with',D,14); t(o,x+20,520,'the peptide, but fragments still end with it',D,14)
 y=panel(550,'Exactly 10',['one fragment, one row:','read it directly'],
         [('MAGLKVTSAP',0,[5,0,8,0])],[5,0,8,0],'MAGLKVTSAP',G)
 y=panel(1070,'Longer than 10 (e.g. an 11-mer)',['two overlapping fragments:','keep the smaller count per sample'],

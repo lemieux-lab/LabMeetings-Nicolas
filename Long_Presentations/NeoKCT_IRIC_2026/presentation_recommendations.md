@@ -86,9 +86,9 @@ Cut from the slide, say it if useful: Setup: same 200 GTEx samples, DNA 31-mers,
 
 ## Does it agree with BamQuery?
 
-~1.5 min. Same numbers on the same scale: the fitted ratio between the two tools is exactly 1, so the 8.55 rphm threshold carries over unchanged (a cross-validated threshold lands at 8.06). The 199 peptides BamQuery could not place are still queryable here. This is the evidence behind the next slide's claim.
+~1.5 min. Same numbers on the same scale: the fitted ratio between the two tools is exactly 1, so the 8.55 rphm threshold carries over unchanged (a cross-validated threshold lands at 8.84). The 199 peptides BamQuery could not place are still queryable here. This is the evidence behind the next slide's claim.
 
-Cut from the slide, say it if useful: If asked: log-log slope 0.98, kappa 0.89, sensitivity 93.8% and specificity 96.7% with BamQuery as reference, 9 calls only NeoKCT and 5 only BamQuery. 351 of 550 peptides could be placed by BamQuery.
+Cut from the slide, say it if useful: If asked: log-log slope 0.99, kappa 0.92, sensitivity 98.8% and specificity 96.3% with BamQuery as reference, 10 calls only NeoKCT and 1 only BamQuery. 351 of 550 peptides could be placed by BamQuery. Most pairs (6,947 of 7,722) are zero in both tools, on pairs where both see reads the rank correlation is 0.98. These numbers use the suffix-anchored peptide query (see "Querying a peptide"), before that fix the correlation was 0.89 and 72 pairs had BamQuery reads but none in NeoKCT, mostly peptides followed by a stop codon.
 
 ## Replacing BamQuery for expression screening
 
@@ -128,7 +128,7 @@ Cut from the slide, say it if useful: GSE131880 is the RNA-seq behind the publis
 
 ## Querying a peptide
 
-For questions. MHC-I peptides are 8 to 11 long, the table holds 10-mers. Shorter peptides: every 10-mer that starts with the peptide sits next to the others in the sorted table, add them up. This mirrors BamQuery's requirement that a read spans the whole coding sequence. Longer: overlapping tiles, take the minimum. Only blind spot worth naming: a peptide at the very end of its protein has no room for the extra residues, about 0.85% of MAPs.
+For questions. MHC-I peptides are 8 to 11 long, the table holds 10-mers. Shorter peptides: every 10-mer that starts with the peptide sits next to the others in the sorted table, add them up. Do the same for the 10-mers that end with the peptide (20 lookups for a 9-mer, 400 for an 8-mer) and keep the larger of the two per sample. The second group exists because a peptide at the very end of its protein is followed by a stop codon, so no fragment starts with it. Before this fix RLATAPSEK, stop codon after it at 240 of its 246 genomic positions, read 11 rphm instead of BamQuery's 309. It now matches exactly. Longer: overlapping tiles, take the minimum. Remaining blind spot: a peptide that is a whole tiny ORF by itself, stop codons on both sides.
 
 ## Reads can come from either strand
 

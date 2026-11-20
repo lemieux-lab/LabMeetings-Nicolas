@@ -4,38 +4,62 @@
 <text x="30" y="44" fill="#e8efec" font-size="20" text-anchor="start" font-weight="700">The table stores 10-amino-acid fragments. MHC-I peptides are 8 to 11 long, so a query has three cases.</text>
 <rect x="30" y="70" width="500" height="500" rx="10" fill="#1c2822" stroke="#2a3a33" stroke-width="1.5"/>
 <text x="50" y="104" fill="#3ecfa2" font-size="19" text-anchor="start" font-weight="700">Shorter than 10 (e.g. a 9-mer)</text>
-<text x="50" y="132" fill="#9db3ab" font-size="15" text-anchor="start">every fragment that starts with it,</text>
-<text x="50" y="154" fill="#9db3ab" font-size="15" text-anchor="start">neighbors in the sorted table: add them up</text>
-<text x="330" y="210" fill="#8fb0e8" font-size="15" text-anchor="middle" font-weight="700">s1</text>
-<text x="378" y="210" fill="#8fb0e8" font-size="15" text-anchor="middle" font-weight="700">s2</text>
-<text x="426" y="210" fill="#8fb0e8" font-size="15" text-anchor="middle" font-weight="700">s3</text>
-<text x="474" y="210" fill="#8fb0e8" font-size="15" text-anchor="middle" font-weight="700">s4</text>
-<text x="50" y="246" fill="#f0b429" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">AGLKVTSAP</text>
-<text x="136.39999999999998" y="246" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">A</text>
-<text x="330" y="246" fill="#e8efec" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">3</text>
-<text x="378" y="246" fill="#9db3ab" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">·</text>
-<text x="426" y="246" fill="#e8efec" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">1</text>
-<text x="474" y="246" fill="#9db3ab" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">·</text>
-<text x="50" y="280" fill="#f0b429" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">AGLKVTSAP</text>
-<text x="136.39999999999998" y="280" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">Q</text>
-<text x="330" y="280" fill="#e8efec" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">3</text>
-<text x="378" y="280" fill="#9db3ab" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">·</text>
-<text x="426" y="280" fill="#9db3ab" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">·</text>
-<text x="474" y="280" fill="#e8efec" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">6</text>
-<text x="50" y="314" fill="#f0b429" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">AGLKVTSAP</text>
-<text x="136.39999999999998" y="314" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">S</text>
-<text x="330" y="314" fill="#9db3ab" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">·</text>
-<text x="378" y="314" fill="#e8efec" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">2</text>
-<text x="426" y="314" fill="#9db3ab" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">·</text>
-<text x="474" y="314" fill="#e8efec" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">1</text>
-<path d="M50,334 L510,334" stroke="#2a3a33" stroke-width="1.5"/>
-<text x="50" y="364" fill="#3ecfa2" font-size="16" text-anchor="start">AGLKVTSAP</text>
-<text x="330" y="364" fill="#3ecfa2" font-size="17" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', monospace">6</text>
-<text x="378" y="364" fill="#3ecfa2" font-size="17" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', monospace">2</text>
-<text x="426" y="364" fill="#3ecfa2" font-size="17" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', monospace">1</text>
-<text x="474" y="364" fill="#3ecfa2" font-size="17" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', monospace">7</text>
-<text x="50" y="424" fill="#9db3ab" font-size="14" text-anchor="start">each read window that starts with the</text>
-<text x="50" y="444" fill="#9db3ab" font-size="14" text-anchor="start">peptide counts once, whatever follows</text>
+<text x="50" y="132" fill="#9db3ab" font-size="15" text-anchor="start">fragments that start with it, and fragments</text>
+<text x="50" y="154" fill="#9db3ab" font-size="15" text-anchor="start">that end with it: add each group, keep the larger</text>
+<text x="330" y="200" fill="#8fb0e8" font-size="15" text-anchor="middle" font-weight="700">s1</text>
+<text x="378" y="200" fill="#8fb0e8" font-size="15" text-anchor="middle" font-weight="700">s2</text>
+<text x="426" y="200" fill="#8fb0e8" font-size="15" text-anchor="middle" font-weight="700">s3</text>
+<text x="474" y="200" fill="#8fb0e8" font-size="15" text-anchor="middle" font-weight="700">s4</text>
+<text x="50" y="232" fill="#f0b429" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">AGLKVTSAP</text>
+<text x="136.39999999999998" y="232" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">A</text>
+<text x="330" y="232" fill="#e8efec" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">3</text>
+<text x="378" y="232" fill="#9db3ab" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">·</text>
+<text x="426" y="232" fill="#e8efec" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">1</text>
+<text x="474" y="232" fill="#9db3ab" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">·</text>
+<text x="50" y="262" fill="#f0b429" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">AGLKVTSAP</text>
+<text x="136.39999999999998" y="262" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">Q</text>
+<text x="330" y="262" fill="#e8efec" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">3</text>
+<text x="378" y="262" fill="#9db3ab" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">·</text>
+<text x="426" y="262" fill="#9db3ab" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">·</text>
+<text x="474" y="262" fill="#e8efec" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">6</text>
+<text x="50" y="292" fill="#f0b429" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">AGLKVTSAP</text>
+<text x="136.39999999999998" y="292" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">S</text>
+<text x="330" y="292" fill="#9db3ab" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">·</text>
+<text x="378" y="292" fill="#e8efec" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">2</text>
+<text x="426" y="292" fill="#9db3ab" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">·</text>
+<text x="474" y="292" fill="#e8efec" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">1</text>
+<path d="M50,306 L510,306" stroke="#2a3a33" stroke-width="1.5"/>
+<text x="50" y="326" fill="#9db3ab" font-size="15" text-anchor="start">starts with it</text>
+<text x="330" y="326" fill="#9db3ab" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">6</text>
+<text x="378" y="326" fill="#9db3ab" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">2</text>
+<text x="426" y="326" fill="#9db3ab" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">1</text>
+<text x="474" y="326" fill="#9db3ab" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">7</text>
+<text x="50" y="354" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">M</text>
+<text x="59.6" y="354" fill="#f0b429" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">AGLKVTSAP</text>
+<text x="330" y="354" fill="#e8efec" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">5</text>
+<text x="378" y="354" fill="#9db3ab" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">·</text>
+<text x="426" y="354" fill="#e8efec" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">8</text>
+<text x="474" y="354" fill="#9db3ab" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">·</text>
+<text x="50" y="382" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">K</text>
+<text x="59.6" y="382" fill="#f0b429" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">AGLKVTSAP</text>
+<text x="330" y="382" fill="#9db3ab" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">·</text>
+<text x="378" y="382" fill="#e8efec" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">3</text>
+<text x="426" y="382" fill="#9db3ab" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">·</text>
+<text x="474" y="382" fill="#9db3ab" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">·</text>
+<path d="M50,394 L510,394" stroke="#2a3a33" stroke-width="1.5"/>
+<text x="50" y="414" fill="#9db3ab" font-size="15" text-anchor="start">ends with it</text>
+<text x="330" y="414" fill="#9db3ab" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">5</text>
+<text x="378" y="414" fill="#9db3ab" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">3</text>
+<text x="426" y="414" fill="#9db3ab" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">8</text>
+<text x="474" y="414" fill="#9db3ab" font-size="16" text-anchor="middle" font-family="'JetBrains Mono', monospace">0</text>
+<path d="M50,432 L510,432" stroke="#2a3a33" stroke-width="1.5"/>
+<text x="50" y="452" fill="#3ecfa2" font-size="16" text-anchor="start" font-weight="700">AGLKVTSAP</text>
+<text x="330" y="452" fill="#3ecfa2" font-size="17" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', monospace">6</text>
+<text x="378" y="452" fill="#3ecfa2" font-size="17" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', monospace">3</text>
+<text x="426" y="452" fill="#3ecfa2" font-size="17" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', monospace">8</text>
+<text x="474" y="452" fill="#3ecfa2" font-size="17" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', monospace">7</text>
+<text x="50" y="500" fill="#9db3ab" font-size="14" text-anchor="start">if the next codon is a stop, nothing starts with</text>
+<text x="50" y="520" fill="#9db3ab" font-size="14" text-anchor="start">the peptide, but fragments still end with it</text>
 <rect x="550" y="70" width="500" height="500" rx="10" fill="#1c2822" stroke="#2a3a33" stroke-width="1.5"/>
 <text x="570" y="104" fill="#3ecfa2" font-size="19" text-anchor="start" font-weight="700">Exactly 10</text>
 <text x="570" y="132" fill="#9db3ab" font-size="15" text-anchor="start">one fragment, one row:</text>

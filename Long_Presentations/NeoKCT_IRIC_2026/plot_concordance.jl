@@ -1,9 +1,9 @@
 # Scatter for "Does it agree with BamQuery?": every (peptide, sample) pair, BamQuery rphm vs.
 # NeoKCT rphm, 22 thymic samples x 351 peptides BamQuery could place = 7,722 pairs.
-# Data: c5_pairs_ds.tsv from export_c5_pairs.py, same join as the paper's C5_concordance_ds.py
-# (Spearman 0.888, log-log slope 0.978, fitted ratio 1.0 on single-origin pairs).
+# Data: c5_pairs_ds.tsv from export_c5_pairs.py, same join as the paper's C5_concordance_ds_suffix.py
+# (suffix-anchored peptide queries: Spearman 0.939, log-log slope 0.992 on single-origin pairs).
 #
-# Log axes can't show zeros, and zeros are most of the data (6,957 pairs are 0 in both tools),
+# Log axes can't show zeros, and zeros are most of the data (6,947 pairs are 0 in both tools),
 # so zeros get their own strip below/left of the log range instead of being dropped or log1p'd.
 # Smallest non-zero value is ~1.1 rphm (one read), so the log range starts at 1.
 # Run: julia --project=<LabMeetings root> plot_concordance.jl
