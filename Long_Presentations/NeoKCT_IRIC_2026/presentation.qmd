@@ -53,7 +53,7 @@ Both are answered by counting RNA-seq reads. For a new peptide, any read in any 
 
 ## How much data that is
 
-GTEx: 2,486 healthy samples, 62.6 billion distinct 10-amino-acid fragments, 909.7 billion non-zero counts.
+GTEx: RNA-Seq, 2,486 healthy samples, 62.6 billion distinct 10-amino-acid fragments.
 
 ![](data_scale.svg){fig-align="center" width="85%"}
 
