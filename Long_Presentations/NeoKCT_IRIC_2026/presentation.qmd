@@ -223,7 +223,6 @@ Same 22 samples (dendritic cells and mTECs), same peptides:
 | peptides the genome can't place go unscreened | every peptide counted |
 | a new threshold means a rerun | re-filter the same matrix |
 | start from MS, then check the RNA | also start from RNA: tumor fragments absent from every healthy sample |
-| one healthy reference | more cohorts (TCGA, thymus), one shared table for the lab |
 
 Manuscript being finalised for submission before the end of 2026.
 
