@@ -10,10 +10,10 @@
 <circle cx="430" cy="230" r="62" fill="#1c2822" stroke="#3ecfa2" stroke-width="2.5"/>
 <path d="M368,230 L346,230 M346,216 L346,244" stroke="#3ecfa2" stroke-width="5" fill="none"/>
 <text x="430" y="236" fill="#e8efec" font-size="16" text-anchor="middle" font-weight="700">CD8 T cell</text>
-<text x="308" y="200" fill="#e58468" font-size="15" text-anchor="middle" font-weight="700">TSA</text>
+<text x="318" y="276" fill="#e58468" font-size="15" text-anchor="middle" font-weight="700">non-self</text>
 <path d="M330,175 Q280,150 240,160" stroke="#3ecfa2" stroke-width="2.5" fill="none" stroke-dasharray="6 5" marker-end="url(#ag)"/>
 <text x="330" y="150" fill="#3ecfa2" font-size="15" text-anchor="middle" font-weight="700">kill</text>
-<text x="280" y="400" fill="#3ecfa2" font-size="17" text-anchor="middle">TSA on MHC-I is recognized,</text>
+<text x="280" y="400" fill="#3ecfa2" font-size="17" text-anchor="middle">non-self antigen on MHC-I is recognized,</text>
 <text x="280" y="426" fill="#3ecfa2" font-size="17" text-anchor="middle">the tumor cell is killed</text>
 <text x="375" y="182" font-size="40" text-anchor="middle" transform="matrix(-1,0,0,1,750,0)">🔪</text>
 <rect x="560" y="30" width="500" height="440" rx="10" fill="#1c2822" stroke="#2a3a33" stroke-width="1.5"/>
@@ -25,7 +25,7 @@
 <circle cx="960" cy="230" r="62" fill="#1c2822" stroke="#9db3ab" stroke-width="2.5"/>
 <path d="M898,230 L876,230 M876,216 L876,244" stroke="#9db3ab" stroke-width="5" fill="none"/>
 <text x="960" y="236" fill="#e8efec" font-size="16" text-anchor="middle" font-weight="700">CD8 T cell</text>
-<text x="838" y="200" fill="#9db3ab" font-size="15" text-anchor="middle">self</text>
+<text x="848" y="276" fill="#9db3ab" font-size="15" text-anchor="middle">self</text>
 <text x="810" y="400" fill="#9db3ab" font-size="17" text-anchor="middle">only self peptides, nothing</text>
 <text x="810" y="426" fill="#9db3ab" font-size="17" text-anchor="middle">to recognize, tissue is spared</text>
 <text x="905" y="182" fill="#e8efec" font-size="40" text-anchor="middle">👌</text>

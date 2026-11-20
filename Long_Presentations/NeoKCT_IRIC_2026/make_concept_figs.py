@@ -36,7 +36,7 @@ def tcell(o,cx,cy,stroke):
     o.append(f'<path d="M{cx-62},{cy} L{cx-84},{cy} M{cx-84},{cy-14} L{cx-84},{cy+14}" stroke="{stroke}" stroke-width="5" fill="none"/>')
     t(o,cx,cy+6,'CD8 T cell',I,16,'middle',bold=True)
 o=head(1090,500)
-for x0,title,cellcol,fill,pep,tc,res,rescol in ((30,'Tumor cell','#e58468','#2a1d19',R,G,['TSA on MHC-I is recognized,','the tumor cell is killed'],G),
+for x0,title,cellcol,fill,pep,tc,res,rescol in ((30,'Tumor cell','#e58468','#2a1d19',R,G,['non-self antigen on MHC-I is recognized,','the tumor cell is killed'],G),
                                                 (560,'Healthy cell',D,'#1a2420',D,BR,['only self peptides, nothing','to recognize, tissue is spared'],D)):
     box(o,x0,30,500,440)
     cx=x0+140
@@ -45,11 +45,11 @@ for x0,title,cellcol,fill,pep,tc,res,rescol in ((30,'Tumor cell','#e58468','#2a1
     mhc(o,cx+105,230,pep)
     tcell(o,x0+400,230,tc if tc!=BR else D)
     if pep==R:
-        t(o,cx+138,200,'TSA',R,15,'middle',bold=True)
+        t(o,cx+148,276,'non-self',R,15,'middle',bold=True)
         o.append(f'<path d="M{x0+300},175 Q{x0+250},150 {cx+70},160" stroke="{G}" stroke-width="2.5" fill="none" stroke-dasharray="6 5" marker-end="url(#ag)"/>')
         t(o,x0+300,150,'kill',G,15,'middle',bold=True)
     else:
-        t(o,cx+138,200,'self',D,15,'middle')
+        t(o,cx+148,276,'self',D,15,'middle')
     for i,s in enumerate(res): t(o,x0+250,400+i*26,s,rescol,17,'middle')
     # knife for the killer (mirrored left-right so the blade faces the tumor), ok hand for the bystander,
     # both perched on the T cell's top-left

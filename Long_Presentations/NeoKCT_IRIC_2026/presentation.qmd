@@ -165,7 +165,7 @@ Keep every fragment of every sample with its exact count, and make it fit.
 | NeoKCT | **100%** |
 | REINDEER [@marchet2020] | 9.82% |
 
-<small>98.12% as measured, every difference comes from reads containing an N, which NeoKCT discards whole.</small>
+<small>Reindeer averages its reads counts across unitigs</small>
 
 ---
 
@@ -199,12 +199,11 @@ Same 22 samples (dendritic cells and mTECs), same peptides:
 |---|---|---|
 | A new peptide list against GTEx | 729.6 CPU-hours | ~46 min |
 | A new threshold or tissue grouping | rerun | re-filter the same matrix |
-| Peptides the genome can't place | not counted | counted |
+| Peptides the genome can't place | not counted (199 of 550, 36%) | counted |
 | Which locus the reads came from | exact genomic position | biotype layer: protein-coding, lncRNA, intergenic, in-frame or not |
 
-Expression screening moves to NeoKCT, which also places each fragment by biotype.
 
-<small>An optional locus layer, storing exact genomic positions, may be added later for that purpose.</small>
+<small>An optional locus layer, storing exact genomic positions, is also planned. The KCT structure makes this easy.</small>
 
 ---
 
