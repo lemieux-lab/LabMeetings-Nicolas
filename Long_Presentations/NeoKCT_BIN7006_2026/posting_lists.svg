@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 640" width="1600" height="640" font-family="'Archivo', sans-serif">
+<rect x="0" y="0" width="1600" height="640" rx="14" fill="#151f1b"/>
+<defs><marker id="a" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#9db3ab"/></marker><marker id="ag" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#3ecfa2"/></marker><marker id="ar" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#e58468"/></marker><marker id="ak" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#f0b429"/></marker></defs>
+<text x="30" y="44" fill="#e8efec" font-size="20" text-anchor="start" font-weight="700">How a search engine finds pages: it never stores the full word × page grid</text>
+<rect x="30" y="70" width="560" height="400" rx="10" fill="#1c2822" stroke="#2a3a33" stroke-width="1.5"/>
+<text x="50" y="104" fill="#e58468" font-size="18" text-anchor="start" font-weight="700">The grid nobody stores</text>
+<text x="200" y="146" fill="#8fb0e8" font-size="15" text-anchor="middle">p1</text>
+<text x="252" y="146" fill="#8fb0e8" font-size="15" text-anchor="middle">p2</text>
+<text x="304" y="146" fill="#8fb0e8" font-size="15" text-anchor="middle">p3</text>
+<text x="356" y="146" fill="#8fb0e8" font-size="15" text-anchor="middle">p4</text>
+<text x="408" y="146" fill="#8fb0e8" font-size="15" text-anchor="middle">p5</text>
+<text x="460" y="146" fill="#8fb0e8" font-size="15" text-anchor="middle">p6</text>
+<text x="512" y="146" fill="#8fb0e8" font-size="15" text-anchor="middle">…</text>
+<text x="50" y="184" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">antigen</text>
+<rect x="182" y="164" width="36" height="30" rx="4" fill="#24302b" fill-opacity="1"/>
+<rect x="234" y="164" width="36" height="30" rx="4" fill="#3ecfa2" fill-opacity="1"/>
+<rect x="286" y="164" width="36" height="30" rx="4" fill="#24302b" fill-opacity="1"/>
+<rect x="338" y="164" width="36" height="30" rx="4" fill="#24302b" fill-opacity="1"/>
+<rect x="390" y="164" width="36" height="30" rx="4" fill="#3ecfa2" fill-opacity="1"/>
+<rect x="442" y="164" width="36" height="30" rx="4" fill="#24302b" fill-opacity="1"/>
+<text x="512" y="184" fill="#9db3ab" font-size="15" text-anchor="middle">…</text>
+<text x="50" y="230" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">thymus</text>
+<rect x="182" y="210" width="36" height="30" rx="4" fill="#24302b" fill-opacity="1"/>
+<rect x="234" y="210" width="36" height="30" rx="4" fill="#24302b" fill-opacity="1"/>
+<rect x="286" y="210" width="36" height="30" rx="4" fill="#24302b" fill-opacity="1"/>
+<rect x="338" y="210" width="36" height="30" rx="4" fill="#24302b" fill-opacity="1"/>
+<rect x="390" y="210" width="36" height="30" rx="4" fill="#3ecfa2" fill-opacity="1"/>
+<rect x="442" y="210" width="36" height="30" rx="4" fill="#24302b" fill-opacity="1"/>
+<text x="512" y="230" fill="#9db3ab" font-size="15" text-anchor="middle">…</text>
+<text x="50" y="276" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">tolerance</text>
+<rect x="182" y="256" width="36" height="30" rx="4" fill="#24302b" fill-opacity="1"/>
+<rect x="234" y="256" width="36" height="30" rx="4" fill="#24302b" fill-opacity="1"/>
+<rect x="286" y="256" width="36" height="30" rx="4" fill="#3ecfa2" fill-opacity="1"/>
+<rect x="338" y="256" width="36" height="30" rx="4" fill="#24302b" fill-opacity="1"/>
+<rect x="390" y="256" width="36" height="30" rx="4" fill="#3ecfa2" fill-opacity="1"/>
+<rect x="442" y="256" width="36" height="30" rx="4" fill="#24302b" fill-opacity="1"/>
+<text x="512" y="276" fill="#9db3ab" font-size="15" text-anchor="middle">…</text>
+<text x="50" y="322" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">kinase</text>
+<rect x="182" y="302" width="36" height="30" rx="4" fill="#3ecfa2" fill-opacity="1"/>
+<rect x="234" y="302" width="36" height="30" rx="4" fill="#24302b" fill-opacity="1"/>
+<rect x="286" y="302" width="36" height="30" rx="4" fill="#24302b" fill-opacity="1"/>
+<rect x="338" y="302" width="36" height="30" rx="4" fill="#24302b" fill-opacity="1"/>
+<rect x="390" y="302" width="36" height="30" rx="4" fill="#24302b" fill-opacity="1"/>
+<rect x="442" y="302" width="36" height="30" rx="4" fill="#24302b" fill-opacity="1"/>
+<text x="512" y="322" fill="#9db3ab" font-size="15" text-anchor="middle">…</text>
+<text x="50" y="368" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">…</text>
+<text x="200" y="368" fill="#9db3ab" font-size="15" text-anchor="middle">…</text>
+<text x="252" y="368" fill="#9db3ab" font-size="15" text-anchor="middle">…</text>
+<text x="304" y="368" fill="#9db3ab" font-size="15" text-anchor="middle">…</text>
+<text x="356" y="368" fill="#9db3ab" font-size="15" text-anchor="middle">…</text>
+<text x="408" y="368" fill="#9db3ab" font-size="15" text-anchor="middle">…</text>
+<text x="460" y="368" fill="#9db3ab" font-size="15" text-anchor="middle">…</text>
+<text x="512" y="368" fill="#9db3ab" font-size="15" text-anchor="middle">…</text>
+<text x="50" y="440" fill="#9db3ab" font-size="15" text-anchor="start">billions of words × billions of pages, almost all empty</text>
+<rect x="620" y="70" width="460" height="400" rx="10" fill="#1c2822" stroke="#3ecfa2" stroke-width="1.5"/>
+<text x="640" y="104" fill="#3ecfa2" font-size="18" text-anchor="start" font-weight="700">What it stores: one list per word</text>
+<text x="640" y="160" fill="#e8efec" font-size="17" text-anchor="start" font-family="'JetBrains Mono', monospace">antigen</text>
+<text x="800" y="160" fill="#3ecfa2" font-size="17" text-anchor="start" font-family="'JetBrains Mono', monospace">→ p2, p5</text>
+<text x="640" y="210" fill="#e8efec" font-size="17" text-anchor="start" font-family="'JetBrains Mono', monospace">thymus</text>
+<text x="800" y="210" fill="#3ecfa2" font-size="17" text-anchor="start" font-family="'JetBrains Mono', monospace">→ p5</text>
+<text x="640" y="260" fill="#e8efec" font-size="17" text-anchor="start" font-family="'JetBrains Mono', monospace">tolerance</text>
+<text x="800" y="260" fill="#3ecfa2" font-size="17" text-anchor="start" font-family="'JetBrains Mono', monospace">→ p3, p5</text>
+<text x="640" y="310" fill="#e8efec" font-size="17" text-anchor="start" font-family="'JetBrains Mono', monospace">kinase</text>
+<text x="800" y="310" fill="#3ecfa2" font-size="17" text-anchor="start" font-family="'JetBrains Mono', monospace">→ p1</text>
+<text x="640" y="390" fill="#9db3ab" font-size="15" text-anchor="start">a search for "antigen" reads one short list,</text>
+<text x="640" y="412" fill="#9db3ab" font-size="15" text-anchor="start">never the grid</text>
+<rect x="1110" y="70" width="460" height="400" rx="10" fill="#1c2822" stroke="#f0b429" stroke-width="2"/>
+<text x="1130" y="104" fill="#f0b429" font-size="18" text-anchor="start" font-weight="700">NeoKCT: one list per fragment</text>
+<text x="1130" y="160" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">MAGLKVTSAP</text>
+<text x="1260" y="160" fill="#3ecfa2" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">→ (s1, 5) (s3, 8)</text>
+<text x="1130" y="210" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace"></text>
+<text x="1260" y="210" fill="#3ecfa2" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">   (s2486, 2)</text>
+<text x="1130" y="260" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">AGLKVTSAPQ</text>
+<text x="1260" y="260" fill="#3ecfa2" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">→ (s1, 3) (s4, 6)</text>
+<text x="1130" y="310" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">KTVAEQLSMG</text>
+<text x="1260" y="310" fill="#3ecfa2" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">→ (s2, 12) (s3, 7)</text>
+<text x="1130" y="390" fill="#9db3ab" font-size="15" text-anchor="start">fragment → (sample, count) pairs,</text>
+<text x="1130" y="412" fill="#9db3ab" font-size="15" text-anchor="start">only for samples where it was seen</text>
+<rect x="30" y="495" width="1540" height="120" rx="10" fill="#2a2414" stroke="#f0b429" stroke-width="1.5"/>
+<text x="50" y="530" fill="#e8efec" font-size="18" text-anchor="start">GTEx: 62.6 billion fragments × 2,486 samples = 155 trillion values. Only 909.7 billion are non-zero: 0.58%.</text>
+<text x="50" y="562" fill="#e8efec" font-size="18" text-anchor="start">Stored as a grid, that is 622 TB. Stored as lists, the counts are a small fraction of that (next slide).</text>
+<text x="50" y="594" fill="#9db3ab" font-size="13" text-anchor="start">Words, pages and counts above are illustrative. Table sizes are from the GTEx build.</text>
+</svg>

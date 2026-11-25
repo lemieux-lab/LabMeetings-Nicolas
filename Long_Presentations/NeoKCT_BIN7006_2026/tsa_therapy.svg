@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1090 500" width="1090" height="500" font-family="'Archivo', sans-serif">
+<rect x="0" y="0" width="1090" height="500" rx="14" fill="#151f1b"/>
+<defs><marker id="a" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#9db3ab"/></marker><marker id="ag" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#3ecfa2"/></marker><marker id="ar" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#e58468"/></marker><marker id="ak" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#f0b429"/></marker></defs>
+<rect x="30" y="30" width="500" height="440" rx="10" fill="#1c2822" stroke="#2a3a33" stroke-width="1.5"/>
+<circle cx="170" cy="230" r="105" fill="#2a1d19" stroke="#e58468" stroke-width="2.5"/>
+<text x="170" y="236" fill="#e58468" font-size="19" text-anchor="middle" font-weight="700">Tumor cell</text>
+<path d="M275,230 L297,230" stroke="#6f8fd8" stroke-width="5"/>
+<path d="M319,210 L297,210 L297,250 L319,250" stroke="#6f8fd8" stroke-width="6" fill="none"/>
+<rect x="301" y="221" width="16" height="18" rx="3" fill="#e58468"/>
+<path d="M368,230 L346,230 M346,216 L346,244" stroke="#3ecfa2" stroke-width="5" fill="none"/>
+<path d="M378.0,200.0 L368.5,194.5 M368.5,194.5 L365.0,186.7 M368.5,194.5 L360.0,195.3" stroke="#3ecfa2" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+<path d="M404.6,175.6 L400.0,165.7 M400.0,165.7 L401.6,157.2 M400.0,165.7 L392.5,161.4" stroke="#3ecfa2" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+<path d="M440.4,170.9 L442.3,160.1 M442.3,160.1 L448.5,154.1 M442.3,160.1 L438.6,152.3" stroke="#3ecfa2" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+<path d="M472.4,187.6 L480.2,179.8 M480.2,179.8 L488.7,178.4 M480.2,179.8 L481.6,171.3" stroke="#3ecfa2" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+<path d="M489.1,219.6 L499.9,217.7 M499.9,217.7 L507.7,221.4 M499.9,217.7 L505.9,211.5" stroke="#3ecfa2" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+<path d="M484.4,255.4 L494.3,260.0 M494.3,260.0 L498.6,267.5 M494.3,260.0 L502.8,258.4" stroke="#3ecfa2" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+<path d="M375.6,255.4 L365.7,260.0 M365.7,260.0 L357.2,258.4 M365.7,260.0 L361.4,267.5" stroke="#3ecfa2" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+<path d="M370.9,219.6 L360.1,217.7 M360.1,217.7 L354.1,211.5 M360.1,217.7 L352.3,221.4" stroke="#3ecfa2" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+<circle cx="430" cy="230" r="60" fill="#1f3a31" stroke="#3ecfa2" stroke-width="3"/>
+<circle cx="446.8" cy="251.0" r="18.0" fill="#25463b"/>
+<ellipse cx="404.0" cy="220.0" rx="4.5" ry="5" fill="#e8efec"/>
+<path d="M397.0,204.0 L411.0,211.0" stroke="#3ecfa2" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+<ellipse cx="430.0" cy="220.0" rx="4.5" ry="5" fill="#e8efec"/>
+<path d="M437.0,204.0 L423.0,211.0" stroke="#3ecfa2" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+<text x="409.0" y="267.2" fill="#9db3ab" font-size="15" text-anchor="middle" font-weight="700">CD8</text>
+<text x="318" y="276" fill="#e58468" font-size="15" text-anchor="middle" font-weight="700">non-self</text>
+<path d="M330,175 Q280,150 240,160" stroke="#3ecfa2" stroke-width="2.5" fill="none" stroke-dasharray="6 5" marker-end="url(#ag)"/>
+<text x="330" y="150" fill="#3ecfa2" font-size="15" text-anchor="middle" font-weight="700">kill</text>
+<text x="280" y="400" fill="#3ecfa2" font-size="17" text-anchor="middle">non-self antigen on MHC-I is recognized,</text>
+<text x="280" y="426" fill="#3ecfa2" font-size="17" text-anchor="middle">the tumor cell is killed</text>
+<text x="375" y="182" font-size="40" text-anchor="middle" transform="matrix(-1,0,0,1,750,0)">🔪</text>
+<rect x="560" y="30" width="500" height="440" rx="10" fill="#1c2822" stroke="#2a3a33" stroke-width="1.5"/>
+<circle cx="700" cy="230" r="105" fill="#1a2420" stroke="#9db3ab" stroke-width="2.5"/>
+<text x="700" y="236" fill="#9db3ab" font-size="19" text-anchor="middle" font-weight="700">Healthy cell</text>
+<path d="M805,230 L827,230" stroke="#6f8fd8" stroke-width="5"/>
+<path d="M849,210 L827,210 L827,250 L849,250" stroke="#6f8fd8" stroke-width="6" fill="none"/>
+<rect x="831" y="221" width="16" height="18" rx="3" fill="#9db3ab"/>
+<path d="M898,230 L876,230 M876,216 L876,244" stroke="#3ecfa2" stroke-width="5" fill="none"/>
+<path d="M908.0,200.0 L898.5,194.5 M898.5,194.5 L895.0,186.7 M898.5,194.5 L890.0,195.3" stroke="#3ecfa2" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+<path d="M934.6,175.6 L930.0,165.7 M930.0,165.7 L931.6,157.2 M930.0,165.7 L922.5,161.4" stroke="#3ecfa2" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+<path d="M970.4,170.9 L972.3,160.1 M972.3,160.1 L978.5,154.1 M972.3,160.1 L968.6,152.3" stroke="#3ecfa2" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+<path d="M1002.4,187.6 L1010.2,179.8 M1010.2,179.8 L1018.7,178.4 M1010.2,179.8 L1011.6,171.3" stroke="#3ecfa2" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+<path d="M1019.1,219.6 L1029.9,217.7 M1029.9,217.7 L1037.7,221.4 M1029.9,217.7 L1035.9,211.5" stroke="#3ecfa2" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+<path d="M1014.4,255.4 L1024.3,260.0 M1024.3,260.0 L1028.6,267.5 M1024.3,260.0 L1032.8,258.4" stroke="#3ecfa2" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+<path d="M905.6,255.4 L895.7,260.0 M895.7,260.0 L887.2,258.4 M895.7,260.0 L891.4,267.5" stroke="#3ecfa2" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+<path d="M900.9,219.6 L890.1,217.7 M890.1,217.7 L884.1,211.5 M890.1,217.7 L882.3,221.4" stroke="#3ecfa2" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+<circle cx="960" cy="230" r="60" fill="#1f3a31" stroke="#3ecfa2" stroke-width="3"/>
+<circle cx="976.8" cy="251.0" r="18.0" fill="#25463b"/>
+<ellipse cx="934.0" cy="220.0" rx="4.5" ry="6.5" fill="#e8efec"/>
+<ellipse cx="960.0" cy="220.0" rx="4.5" ry="6.5" fill="#e8efec"/>
+<text x="939.0" y="267.2" fill="#9db3ab" font-size="15" text-anchor="middle" font-weight="700">CD8</text>
+<text x="848" y="276" fill="#9db3ab" font-size="15" text-anchor="middle">self</text>
+<text x="810" y="400" fill="#9db3ab" font-size="17" text-anchor="middle">only self peptides, nothing</text>
+<text x="810" y="426" fill="#9db3ab" font-size="17" text-anchor="middle">to recognize, tissue is spared</text>
+<text x="905" y="182" fill="#e8efec" font-size="40" text-anchor="middle">👌</text>
+</svg>

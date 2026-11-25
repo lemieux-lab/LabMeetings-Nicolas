@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 220" width="240" height="220" font-family="'Archivo', sans-serif">
+<path d="M68.0,100.0 L58.5,94.5 M58.5,94.5 L55.0,86.7 M58.5,94.5 L50.0,95.3" stroke="#3ecfa2" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+<path d="M94.6,75.6 L90.0,65.7 M90.0,65.7 L91.6,57.2 M90.0,65.7 L82.5,61.4" stroke="#3ecfa2" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+<path d="M130.4,70.9 L132.3,60.1 M132.3,60.1 L138.5,54.1 M132.3,60.1 L128.6,52.3" stroke="#3ecfa2" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+<path d="M162.4,87.6 L170.2,79.8 M170.2,79.8 L178.7,78.4 M170.2,79.8 L171.6,71.3" stroke="#3ecfa2" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+<path d="M179.1,119.6 L189.9,117.7 M189.9,117.7 L197.7,121.4 M189.9,117.7 L195.9,111.5" stroke="#3ecfa2" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+<path d="M174.4,155.4 L184.3,160.0 M184.3,160.0 L188.6,167.5 M184.3,160.0 L192.8,158.4" stroke="#3ecfa2" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+<path d="M65.6,155.4 L55.7,160.0 M55.7,160.0 L47.2,158.4 M55.7,160.0 L51.4,167.5" stroke="#3ecfa2" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+<path d="M60.9,119.6 L50.1,117.7 M50.1,117.7 L44.1,111.5 M50.1,117.7 L42.3,121.4" stroke="#3ecfa2" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+<circle cx="120" cy="130" r="60" fill="#1f3a31" stroke="#3ecfa2" stroke-width="3"/>
+<circle cx="136.8" cy="151.0" r="18.0" fill="#25463b"/>
+<path d="M91.8,114.9 Q97.8,105.9 103.8,114.9" stroke="#e8efec" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M117.8,114.9 Q123.8,105.9 129.8,114.9" stroke="#e8efec" stroke-width="3" fill="none" stroke-linecap="round"/>
+<text x="99.0" y="167.2" fill="#9db3ab" font-size="15" text-anchor="middle" font-weight="700">CD8</text>
+</svg>

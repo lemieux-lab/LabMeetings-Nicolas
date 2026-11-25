@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 780" width="1500" height="780" font-family="'Archivo', sans-serif">
+<rect x="0" y="0" width="1500" height="780" rx="14" fill="#151f1b"/>
+<defs><marker id="a" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#9db3ab"/></marker><marker id="ag" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#3ecfa2"/></marker><marker id="ar" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#e58468"/></marker><marker id="ak" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#f0b429"/></marker></defs>
+<rect x="30" y="30" width="220" height="200" rx="10" fill="#1c2822" stroke="#2a3a33" stroke-width="1.5"/>
+<text x="140" y="62" fill="#e8efec" font-size="18" text-anchor="middle" font-weight="700">RNA-seq read</text>
+<text x="48" y="100" fill="#3ecfa2" font-size="14" text-anchor="start" font-family="'JetBrains Mono', monospace">ATGGCTGGTCTGAAAGT</text>
+<text x="48" y="122" fill="#3ecfa2" font-size="14" text-anchor="start" font-family="'JetBrains Mono', monospace">TACCTCTGCTCCGCAG</text>
+<text x="48" y="160" fill="#9db3ab" font-size="15" text-anchor="start">no alignment,</text>
+<text x="48" y="182" fill="#9db3ab" font-size="15" text-anchor="start">no reference filter</text>
+<path d="M250,130 L318,130" stroke="#9db3ab" stroke-width="2" fill="none" marker-end="url(#a)"/>
+<text x="284" y="118" fill="#9db3ab" font-size="13" text-anchor="middle">k-merize</text>
+<text x="284" y="152" fill="#9db3ab" font-size="13" text-anchor="middle">K = 30 nt</text>
+<rect x="320" y="30" width="360" height="200" rx="10" fill="#1c2822" stroke="#2a3a33" stroke-width="1.5"/>
+<text x="500" y="62" fill="#e8efec" font-size="18" text-anchor="middle" font-weight="700">30-nt windows, one per offset</text>
+<text x="338" y="98" fill="#e8efec" font-size="13" text-anchor="start" font-family="'JetBrains Mono', monospace">+0 ATGGCTGGTCTGAAAGTTACCTCT…</text>
+<text x="338" y="128" fill="#9db3ab" font-size="13" text-anchor="start" font-family="'JetBrains Mono', monospace">+1 TGGCTGGTCTGAAAGTTACCTCTG…</text>
+<text x="338" y="158" fill="#e8efec" font-size="13" text-anchor="start" font-family="'JetBrains Mono', monospace">+2 GGCTGGTCTGAAAGTTACCTCTGC…</text>
+<text x="338" y="188" fill="#e8efec" font-size="13" text-anchor="start" font-family="'JetBrains Mono', monospace">+3 GCTGGTCTGAAAGTTACCTCTGCT…</text>
+<path d="M680,130 L748,130" stroke="#9db3ab" stroke-width="2" fill="none" marker-end="url(#a)"/>
+<text x="714" y="118" fill="#9db3ab" font-size="13" text-anchor="middle">translate</text>
+<text x="714" y="152" fill="#9db3ab" font-size="13" text-anchor="middle">per window</text>
+<rect x="750" y="30" width="310" height="200" rx="10" fill="#1c2822" stroke="#2a3a33" stroke-width="1.5"/>
+<text x="905" y="62" fill="#e8efec" font-size="18" text-anchor="middle" font-weight="700">Amino-acid 10-mers</text>
+<text x="770" y="98" fill="#3ecfa2" font-size="15" text-anchor="start" font-family="'JetBrains Mono', monospace">MAGLKVTSAP</text>
+<text x="770" y="128" fill="#e58468" font-size="14" text-anchor="start" font-family="'JetBrains Mono', monospace">WLV* stop codon: dropped</text>
+<text x="770" y="158" fill="#3ecfa2" font-size="15" text-anchor="start" font-family="'JetBrains Mono', monospace">GWSESYLCSA</text>
+<text x="770" y="188" fill="#3ecfa2" font-size="15" text-anchor="start" font-family="'JetBrains Mono', monospace">AGLKVTSAPQ</text>
+<text x="770" y="218" fill="#9db3ab" font-size="13" text-anchor="start">double_strand: reverse complement too</text>
+<path d="M1060,130 L1128,130" stroke="#9db3ab" stroke-width="2" fill="none" marker-end="url(#a)"/>
+<text x="1094" y="118" fill="#9db3ab" font-size="13" text-anchor="middle">count per</text>
+<text x="1094" y="152" fill="#9db3ab" font-size="13" text-anchor="middle">sample</text>
+<rect x="1130" y="30" width="340" height="200" rx="10" fill="#1c2822" stroke="#f0b429" stroke-width="2"/>
+<text x="1300" y="70" fill="#f0b429" font-size="26" text-anchor="middle" font-weight="700">KCT</text>
+<text x="1300" y="100" fill="#e8efec" font-size="17" text-anchor="middle">K-mer Count Table</text>
+<text x="1300" y="140" fill="#9db3ab" font-size="15" text-anchor="middle">sorted k-mers</text>
+<text x="1300" y="166" fill="#9db3ab" font-size="15" text-anchor="middle">+ per-sample counts</text>
+<text x="1300" y="192" fill="#9db3ab" font-size="15" text-anchor="middle">+ optional biotype layer</text>
+<rect x="30" y="260" width="1440" height="260" rx="10" fill="#1c2822" stroke="#2a3a33" stroke-width="1.5"/>
+<text x="50" y="294" fill="#8fb0e8" font-size="16" text-anchor="start" font-weight="700">AA k-mer, sorted</text>
+<text x="280" y="294" fill="#8fb0e8" font-size="16" text-anchor="start" font-weight="700">sample 1</text>
+<text x="395" y="294" fill="#8fb0e8" font-size="16" text-anchor="start" font-weight="700">sample 2</text>
+<text x="510" y="294" fill="#8fb0e8" font-size="16" text-anchor="start" font-weight="700">sample 3</text>
+<text x="625" y="294" fill="#8fb0e8" font-size="16" text-anchor="start" font-weight="700">sample 4</text>
+<text x="740" y="294" fill="#8fb0e8" font-size="16" text-anchor="start" font-weight="700">…</text>
+<text x="815" y="294" fill="#8fb0e8" font-size="16" text-anchor="start" font-weight="700">sample N</text>
+<text x="930" y="294" fill="#8fb0e8" font-size="16" text-anchor="start" font-weight="700">biotype layer (optional)</text>
+<text x="50" y="338" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">AGLKVTSAPQ</text>
+<text x="310" y="338" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">3</text>
+<text x="425" y="338" fill="#9db3ab" font-size="20" text-anchor="start">·</text>
+<text x="540" y="338" fill="#9db3ab" font-size="20" text-anchor="start">·</text>
+<text x="655" y="338" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">6</text>
+<text x="746" y="338" fill="#9db3ab" font-size="16" text-anchor="start">…</text>
+<text x="845" y="338" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">4</text>
+<text x="930" y="338" fill="#3ecfa2" font-size="15" text-anchor="start">canonical, in-frame CDS</text>
+<text x="50" y="378" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">GWSESYLCSA</text>
+<text x="310" y="378" fill="#9db3ab" font-size="20" text-anchor="start">·</text>
+<text x="425" y="378" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">2</text>
+<text x="540" y="378" fill="#9db3ab" font-size="20" text-anchor="start">·</text>
+<text x="655" y="378" fill="#9db3ab" font-size="20" text-anchor="start">·</text>
+<text x="746" y="378" fill="#9db3ab" font-size="16" text-anchor="start">…</text>
+<text x="845" y="378" fill="#9db3ab" font-size="20" text-anchor="start">·</text>
+<text x="930" y="378" fill="#e58468" font-size="15" text-anchor="start">non-canonical, out of frame</text>
+<text x="50" y="418" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">KTVAEQLSMG</text>
+<text x="310" y="418" fill="#9db3ab" font-size="20" text-anchor="start">·</text>
+<text x="425" y="418" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">12</text>
+<text x="540" y="418" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">7</text>
+<text x="655" y="418" fill="#9db3ab" font-size="20" text-anchor="start">·</text>
+<text x="746" y="418" fill="#9db3ab" font-size="16" text-anchor="start">…</text>
+<text x="845" y="418" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">3</text>
+<text x="930" y="418" fill="#e58468" font-size="15" text-anchor="start">non-canonical, intergenic</text>
+<text x="50" y="458" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">MAGLKVTSAP</text>
+<text x="310" y="458" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">5</text>
+<text x="425" y="458" fill="#9db3ab" font-size="20" text-anchor="start">·</text>
+<text x="540" y="458" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">8</text>
+<text x="655" y="458" fill="#9db3ab" font-size="20" text-anchor="start">·</text>
+<text x="746" y="458" fill="#9db3ab" font-size="16" text-anchor="start">…</text>
+<text x="845" y="458" fill="#e8efec" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">2</text>
+<text x="930" y="458" fill="#3ecfa2" font-size="15" text-anchor="start">canonical, in-frame CDS</text>
+<text x="50" y="504" fill="#9db3ab" font-size="14" text-anchor="start">· = absent, not stored. Only present (sample, count) pairs are kept, so the empty part of the matrix costs nothing.</text>
+<rect x="30" y="545" width="700" height="205" rx="10" fill="#1c2822" stroke="#2a3a33" stroke-width="1.5"/>
+<text x="50" y="577" fill="#e8efec" font-size="18" text-anchor="start" font-weight="700">What the logical table holds</text>
+<text x="50" y="609" fill="#9db3ab" font-size="15" text-anchor="start">rows: every distinct k-mer in the cohort (62.6 billion on GTEx)</text>
+<text x="50" y="637" fill="#9db3ab" font-size="15" text-anchor="start">columns: samples (2,486 on GTEx)</text>
+<text x="50" y="665" fill="#9db3ab" font-size="15" text-anchor="start">one row as stored, a sparse posting list:</text>
+<text x="50" y="706" fill="#3ecfa2" font-size="16" text-anchor="start" font-family="'JetBrains Mono', monospace">MAGLKVTSAP → (s1, 5) (s3, 8) (sN, 2)</text>
+<rect x="760" y="545" width="710" height="205" rx="10" fill="#1c2822" stroke="#2a3a33" stroke-width="1.5"/>
+<text x="780" y="577" fill="#e8efec" font-size="18" text-anchor="start" font-weight="700">How it stays small and fast</text>
+<text x="780" y="612" fill="#e8efec" font-size="16" text-anchor="start">Delta-encoded sorted k-mers</text>
+<text x="780" y="632" fill="#9db3ab" font-size="14" text-anchor="start">UInt64 checkpoints + UInt32 deltas, about half the storage</text>
+<text x="780" y="658" fill="#e8efec" font-size="16" text-anchor="start">Sparse posting lists, bit-packed</text>
+<text x="780" y="678" fill="#9db3ab" font-size="14" text-anchor="start">64 k-mers per block, memory-mapped on load</text>
+<text x="780" y="704" fill="#e8efec" font-size="16" text-anchor="start">Prefix-indexed lookup</text>
+<text x="780" y="724" fill="#9db3ab" font-size="14" text-anchor="start">jump to the prefix bucket, scan only within it</text>
+</svg>

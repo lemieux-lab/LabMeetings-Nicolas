@@ -1,0 +1,18 @@
+<script>
+// Left click = next slide, right click = previous. Lets a plain mouse act as a presenter clicker.
+// Clicks on links, buttons, media, the slide menu or in overview mode keep their normal behaviour.
+window.addEventListener("load", () => {
+  const ignore = (e) =>
+    Reveal.isOverview() ||
+    e.target.closest("a, button, input, textarea, select, video, audio, .controls, .slide-menu-wrapper, .slide-menu-button");
+  document.addEventListener("click", (e) => {
+    if (e.button !== 0 || ignore(e) || window.getSelection().toString()) return;
+    Reveal.next();
+  });
+  document.addEventListener("contextmenu", (e) => {
+    if (ignore(e)) return;
+    e.preventDefault();
+    Reveal.prev();
+  });
+});
+</script>

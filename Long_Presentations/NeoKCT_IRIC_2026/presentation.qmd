@@ -15,6 +15,7 @@ format:
     transition: slide
     footer: "NeoKCT · Nicolas Jacquin · IRIC"
     scrollable: true
+    include-after-body: ../click_nav.html
 bibliography: references.bib
 ---
 
@@ -107,8 +108,6 @@ Keep every fragment of every sample with its exact count, and make it fit.
 
 ![](storage.svg){fig-align="center" width="78%"}
 
----
-
 # Our approach: count once, look up forever {background-color="#1a1a2e"}
 
 ---
@@ -130,8 +129,6 @@ Keep every fragment of every sample with its exact count, and make it fit.
 | Build | once, about 10 days on one server |
 | Finding one fragment | ~25 µs |
 
----
-
 # Under the hood: 155 trillion values on one server {background-color="#1a1a2e"}
 
 ---
@@ -151,8 +148,6 @@ Keep every fragment of every sample with its exact count, and make it fit.
 ## Drop the leading zeros
 
 ![](packing_crates.svg){fig-align="center" width="92%"}
-
----
 
 # Does it give the right answer? {background-color="#1a1a2e"}
 
@@ -186,8 +181,6 @@ Same 22 samples (dendritic cells and mTECs), same peptides:
 ![](concordance.svg){fig-align="center" width="80%"}
 :::
 ::::
-
----
 
 # What this enables {background-color="#1a1a2e"}
 
@@ -226,8 +219,6 @@ Same 22 samples (dendritic cells and mTECs), same peptides:
 
 Manuscript being finalised for submission before the end of 2026.
 
----
-
 # Questions? {background-color="#1a1a2e"}
 
 `github.com/lemieux-lab/NeoKCT`
@@ -241,13 +232,11 @@ Thanks to Sébastien Lemieux and the Lemieux lab.
 ::: {#refs}
 :::
 
----
-
-# Appendix {background-color="#1a1a2e"}
+# Appendix {background-color="#1a1a2e" visibility="uncounted"}
 
 ---
 
-## What that costs in practice
+## What that costs in practice {visibility="uncounted"}
 
 | | Alignment-based check |
 |---|---|
@@ -260,7 +249,7 @@ Thanks to Sébastien Lemieux and the Lemieux lab.
 
 ---
 
-## Cost of a new question
+## Cost of a new question {visibility="uncounted"}
 
 ![](cost.svg){fig-align="center" width="85%"}
 
@@ -268,7 +257,7 @@ Thanks to Sébastien Lemieux and the Lemieux lab.
 
 ---
 
-## Is the signal real?
+## Is the signal real? {visibility="uncounted"}
 
 ![](occupancy.svg){fig-align="center" width="78%"}
 
@@ -276,7 +265,7 @@ Thanks to Sébastien Lemieux and the Lemieux lab.
 
 ---
 
-## Two healthy references catch different things
+## Two healthy references catch different things {visibility="uncounted"}
 
 The same 103 ovarian candidates against GTEx and against 22 dendritic cell + mTEC samples:
 
@@ -291,7 +280,7 @@ The same 103 ovarian candidates against GTEx and against 22 dendritic cell + mTE
 
 ---
 
-## Where this goes next
+## Where this goes next {visibility="uncounted"}
 
 | Direction | What it needs |
 |---|---|
@@ -302,7 +291,7 @@ The same 103 ovarian candidates against GTEx and against 22 dendritic cell + mTE
 
 ---
 
-## How the table is built
+## How the table is built {visibility="uncounted"}
 
 ![](build_pipeline.svg){fig-align="center" width="100%"}
 
@@ -310,7 +299,7 @@ The same 103 ovarian candidates against GTEx and against 22 dendritic cell + mTE
 
 ---
 
-## Uneven fragments and adaptive resharding
+## Uneven fragments and adaptive resharding {visibility="uncounted"}
 
 ![](prefix_tree_reshard.svg){fig-align="center" width="90%"}
 
@@ -318,7 +307,7 @@ The same 103 ovarian candidates against GTEx and against 22 dendritic cell + mTE
 
 ---
 
-## A library, not a warehouse
+## A library, not a warehouse {visibility="uncounted"}
 
 Catalog (265 GB index) on the desk, books (2 TiB of counts) in the basement. One trip brings back a whole shelf, and a peptide's fragments sit side by side.
 
@@ -326,13 +315,13 @@ Catalog (265 GB index) on the desk, books (2 TiB of counts) in the basement. One
 
 ---
 
-## Querying a peptide
+## Querying a peptide {visibility="uncounted"}
 
 ![](peptide_query.svg){fig-align="center" width="100%"}
 
 ---
 
-## Reads can come from either strand
+## Reads can come from either strand {visibility="uncounted"}
 
 ![](double_strand_counting.svg){fig-align="center" width="90%"}
 

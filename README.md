@@ -1,8 +1,8 @@
 ## Project Presentation
 
-> Ongoing presentation of my main PhD project: K-meromics with the NeoKCT; a reference-free k-mer count table for aeTSA discovery.
+> Most up to date presentation of my main PhD project: NeoKCT, a reference-free k-mer count table for aeTSA discovery.
 
-### <a href="https://lemieux-lab.github.io/LabMeetings-Nicolas/Project_Presentation/project_presentation.html">K-meromics Project Presentation</a>
+### <a href="https://lemieux-lab.github.io/LabMeetings-Nicolas/Long_Presentations/NeoKCT_IRIC_2026/presentation.html">Approximate was never an option (IRIC, 2026)</a>
 
 ---
 
@@ -24,6 +24,7 @@
 <details>
     <summary><h3>Long Presentations<h3></summary>
     <li><a href = https://lemieux-lab.github.io/LabMeetings-Nicolas/Long_Presentations/NeoKCT_IRIC_2026/presentation.html> Approximate was never an option (IRIC, 2026)</a></li>
+    <li><a href = https://lemieux-lab.github.io/LabMeetings-Nicolas/Long_Presentations/NeoKCT_BIN7006_2026/presentation.html> Neither approximation nor filter (BIN7006, 2026)</a></li>
 </details>
 
 <details>
