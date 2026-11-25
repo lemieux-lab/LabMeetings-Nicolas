@@ -78,7 +78,7 @@ def tcell(o,cx,cy,stroke,mood='neutral'):
     mascot(o,cx,cy,look=(-1,0),mood=mood)
 o=head(1090,500)
 for x0,title,cellcol,fill,pep,tc,res,rescol in ((30,'Tumor cell','#e58468','#2a1d19',R,G,['non-self antigen on MHC-I is recognized,','the tumor cell is killed'],G),
-                                                (560,'Healthy cell',D,'#1a2420',D,BR,['only self peptides, nothing','to recognize, tissue is spared'],D)):
+                                                (560,'Healthy cell',D,'#1a2420',D,BR,['only self peptides,','the cell is spared'],D)):
     box(o,x0,30,500,440)
     cx=x0+140
     o.append(f'<circle cx="{cx}" cy="230" r="105" fill="{fill}" stroke="{cellcol}" stroke-width="2.5"/>')
@@ -435,3 +435,62 @@ for x,y,g,rot in ((112,150,'\U0001F4D5',84),(128,118,'\U0001F4D8',97),(114,86,'\
 for sx in (-1,1):
     o.append(f'<path d="M{120+sx*56},30 q{sx*8},10 0,20 M{120+sx*64},24 q{sx*9},14 0,30" stroke="{D}" stroke-width="2.5" fill="none" stroke-linecap="round"/>')
 o.append('</svg>'); open('mascot_books.svg','w').write('\n'.join(o))
+
+# ---------------- summary_takehome.svg ----------------
+# Summary slide: one headline, then three before -> after cards with the talk's own numbers.
+# 730 CPU-h is BamQuery's published cost for one list against GTEx, 46 min is NeoKCT's 1,245
+# peptides x 2,486 samples with table loading. 351/550 placed is C5. 18.0% / 98.5% exact are
+# the B4 REINDEER rescore and NeoKCT on the same truth set.
+o=head(1600,660)
+t(o,800,70,'Count every fragment once, exactly.',I,40,'middle',bold=True)
+t(o,800,118,'After that, every new question is a lookup.',G,32,'middle',bold=True)
+cards=[('A new peptide list vs. GTEx','730 CPU-h','46 min','BamQuery rerun','one server, loading included'),
+       ('Peptides that get screened','351 / 550','550 / 550','genome must place them','counted from the reads'),
+       ('Counts that are exact','18%','98.5%','REINDEER (approximate)','NeoKCT')]
+x=40
+for title,old,new,oldcap,newcap in cards:
+    box(o,x,160,490,330,stroke=BR)
+    t(o,x+245,205,title,I,22,'middle',bold=True)
+    t(o,x+245,290,old,R,46,'middle',bold=True)
+    hw=len(old)*14+10  # half the strike length, ~0.6 em per glyph at 46 px
+    o.append(f'<line x1="{x+245-hw}" y1="274" x2="{x+245+hw}" y2="274" stroke="{R}" stroke-width="3" opacity="0.8"/>')
+    t(o,x+245,320,oldcap,D,16,'middle')
+    line(o,f'M{x+245},338 L{x+245},372',G,'ag',2.5)
+    t(o,x+245,438,new,G,58,'middle',bold=True)
+    t(o,x+245,470,newcap,D,16,'middle')
+    x+=520
+# perspective: lookup cost grows with the list, not the cohort (B4: 0.5 s for 1,245 peptides on
+# 16 threads after a ~45 min load, so ~0.4 ms per peptide across all 2,486 samples)
+box(o,40,516,1520,110,stroke=G,fill='#17281f',sw=2)
+t(o,800,556,'Exact TSA screening that scales to assays of thousands of peptides, and far beyond',I,25,'middle',bold=True)
+t(o,800,594,'load the table once (~45 min), then ~0.4 ms per peptide across all 2,486 samples: a million candidates in ~7 min',G,19,'middle')
+o.append('</svg>'); open('summary_takehome.svg','w').write('\n'.join(o))
+
+# ---------------- approx_risk.svg ----------------
+# "Why approximate isn't safe": the two ways an approximate count flips a TSA call, each as a
+# truth bar vs an approximate bar for one healthy sample, then the consequence. Read counts are
+# illustrative (a handful of reads, the range where the call is actually made).
+o=head(1600,600)
+def bars(o,x,y,truth,approx,tcol,acol,tnote,anote):
+    unit=46
+    for k,(lab,v,col,note) in enumerate((('Truth',truth,tcol,tnote),('Approximate',approx,acol,anote))):
+        yy=y+k*62
+        t(o,x,yy+27,lab,D,17)
+        if v: o.append(f'<rect x="{x+150}" y="{yy+6}" width="{v*unit}" height="30" rx="5" fill="{col}"/>')
+        else: o.append(f'<rect x="{x+150}" y="{yy+6}" width="4" height="30" fill="{col}"/>')
+        t(o,x+160+max(v*unit,4),yy+28,note,col,18,bold=True)
+panels=[(40,'Called absent, but expressed in healthy tissue',3,0,G,R,'3 reads','0, averaged away or dropped',
+         'Looks tumor-specific','Causes auto-immunity'),
+        (820,'Called expressed, but absent from healthy tissue',0,4,G,R,'0 reads','4, from neighbouring fragments',
+         'Looks unsafe, gets dropped','A good candidate TSA is lost')]
+for x,title,tv,av,tc,ac,tn,an,c1,c2 in panels:
+    box(o,x,40,740,400,stroke=R,sw=2)
+    t(o,x+370,88,title,I,23,'middle',bold=True)
+    t(o,x+40,132,'one healthy sample, same peptide',D,16)
+    bars(o,x+40,150,tv,av,tc,ac,tn,an)
+    line(o,f'M{x+370},292 L{x+370},330',R,'ar',2.5)
+    t(o,x+370,372,c1,I,22,'middle',bold=True)
+    t(o,x+370,408,c2,R,22,'middle',bold=True)
+box(o,40,470,1520,92,stroke=K,fill='#2a2615')
+t(o,800,526,'This call is sometimes made with just a few reads',K,26,'middle',bold=True)
+o.append('</svg>'); open('approx_risk.svg','w').write('\n'.join(o))

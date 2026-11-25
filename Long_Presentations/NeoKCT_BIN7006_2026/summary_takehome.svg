@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 660" width="1600" height="660" font-family="'Archivo', sans-serif">
+<rect x="0" y="0" width="1600" height="660" rx="14" fill="#151f1b"/>
+<defs><marker id="a" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#9db3ab"/></marker><marker id="ag" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#3ecfa2"/></marker><marker id="ar" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#e58468"/></marker><marker id="ak" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#f0b429"/></marker></defs>
+<text x="800" y="70" fill="#e8efec" font-size="40" text-anchor="middle" font-weight="700">Count every fragment once, exactly.</text>
+<text x="800" y="118" fill="#3ecfa2" font-size="32" text-anchor="middle" font-weight="700">After that, every new question is a lookup.</text>
+<rect x="40" y="160" width="490" height="330" rx="10" fill="#1c2822" stroke="#2a3a33" stroke-width="1.5"/>
+<text x="285" y="205" fill="#e8efec" font-size="22" text-anchor="middle" font-weight="700">A new peptide list vs. GTEx</text>
+<text x="285" y="290" fill="#e58468" font-size="46" text-anchor="middle" font-weight="700">730 CPU-h</text>
+<line x1="149" y1="274" x2="421" y2="274" stroke="#e58468" stroke-width="3" opacity="0.8"/>
+<text x="285" y="320" fill="#9db3ab" font-size="16" text-anchor="middle">BamQuery rerun</text>
+<path d="M285,338 L285,372" stroke="#3ecfa2" stroke-width="2.5" fill="none" marker-end="url(#ag)"/>
+<text x="285" y="438" fill="#3ecfa2" font-size="58" text-anchor="middle" font-weight="700">46 min</text>
+<text x="285" y="470" fill="#9db3ab" font-size="16" text-anchor="middle">one server, loading included</text>
+<rect x="560" y="160" width="490" height="330" rx="10" fill="#1c2822" stroke="#2a3a33" stroke-width="1.5"/>
+<text x="805" y="205" fill="#e8efec" font-size="22" text-anchor="middle" font-weight="700">Peptides that get screened</text>
+<text x="805" y="290" fill="#e58468" font-size="46" text-anchor="middle" font-weight="700">351 / 550</text>
+<line x1="669" y1="274" x2="941" y2="274" stroke="#e58468" stroke-width="3" opacity="0.8"/>
+<text x="805" y="320" fill="#9db3ab" font-size="16" text-anchor="middle">genome must place them</text>
+<path d="M805,338 L805,372" stroke="#3ecfa2" stroke-width="2.5" fill="none" marker-end="url(#ag)"/>
+<text x="805" y="438" fill="#3ecfa2" font-size="58" text-anchor="middle" font-weight="700">550 / 550</text>
+<text x="805" y="470" fill="#9db3ab" font-size="16" text-anchor="middle">counted from the reads</text>
+<rect x="1080" y="160" width="490" height="330" rx="10" fill="#1c2822" stroke="#2a3a33" stroke-width="1.5"/>
+<text x="1325" y="205" fill="#e8efec" font-size="22" text-anchor="middle" font-weight="700">Counts that are exact</text>
+<text x="1325" y="290" fill="#e58468" font-size="46" text-anchor="middle" font-weight="700">18%</text>
+<line x1="1273" y1="274" x2="1377" y2="274" stroke="#e58468" stroke-width="3" opacity="0.8"/>
+<text x="1325" y="320" fill="#9db3ab" font-size="16" text-anchor="middle">REINDEER (approximate)</text>
+<path d="M1325,338 L1325,372" stroke="#3ecfa2" stroke-width="2.5" fill="none" marker-end="url(#ag)"/>
+<text x="1325" y="438" fill="#3ecfa2" font-size="58" text-anchor="middle" font-weight="700">98.5%</text>
+<text x="1325" y="470" fill="#9db3ab" font-size="16" text-anchor="middle">NeoKCT</text>
+<rect x="40" y="516" width="1520" height="110" rx="10" fill="#17281f" stroke="#3ecfa2" stroke-width="2"/>
+<text x="800" y="556" fill="#e8efec" font-size="25" text-anchor="middle" font-weight="700">Exact TSA screening that scales to assays of thousands of peptides, and far beyond</text>
+<text x="800" y="594" fill="#3ecfa2" font-size="19" text-anchor="middle">load the table once (~45 min), then ~0.4 ms per peptide across all 2,486 samples: a million candidates in ~7 min</text>
+</svg>

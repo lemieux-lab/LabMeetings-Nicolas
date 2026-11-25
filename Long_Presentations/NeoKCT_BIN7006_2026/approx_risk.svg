@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 600" width="1600" height="600" font-family="'Archivo', sans-serif">
+<rect x="0" y="0" width="1600" height="600" rx="14" fill="#151f1b"/>
+<defs><marker id="a" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#9db3ab"/></marker><marker id="ag" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#3ecfa2"/></marker><marker id="ar" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#e58468"/></marker><marker id="ak" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#f0b429"/></marker></defs>
+<rect x="40" y="40" width="740" height="400" rx="10" fill="#1c2822" stroke="#e58468" stroke-width="2"/>
+<text x="410" y="88" fill="#e8efec" font-size="23" text-anchor="middle" font-weight="700">Called absent, but expressed in healthy tissue</text>
+<text x="80" y="132" fill="#9db3ab" font-size="16" text-anchor="start">one healthy sample, same peptide</text>
+<text x="80" y="177" fill="#9db3ab" font-size="17" text-anchor="start">Truth</text>
+<rect x="230" y="156" width="138" height="30" rx="5" fill="#3ecfa2"/>
+<text x="378" y="178" fill="#3ecfa2" font-size="18" text-anchor="start" font-weight="700">3 reads</text>
+<text x="80" y="239" fill="#9db3ab" font-size="17" text-anchor="start">Approximate</text>
+<rect x="230" y="218" width="4" height="30" fill="#e58468"/>
+<text x="244" y="240" fill="#e58468" font-size="18" text-anchor="start" font-weight="700">0, averaged away or dropped</text>
+<path d="M410,292 L410,330" stroke="#e58468" stroke-width="2.5" fill="none" marker-end="url(#ar)"/>
+<text x="410" y="372" fill="#e8efec" font-size="22" text-anchor="middle" font-weight="700">Looks tumor-specific</text>
+<text x="410" y="408" fill="#e58468" font-size="22" text-anchor="middle" font-weight="700">Causes auto-immunity</text>
+<rect x="820" y="40" width="740" height="400" rx="10" fill="#1c2822" stroke="#e58468" stroke-width="2"/>
+<text x="1190" y="88" fill="#e8efec" font-size="23" text-anchor="middle" font-weight="700">Called expressed, but absent from healthy tissue</text>
+<text x="860" y="132" fill="#9db3ab" font-size="16" text-anchor="start">one healthy sample, same peptide</text>
+<text x="860" y="177" fill="#9db3ab" font-size="17" text-anchor="start">Truth</text>
+<rect x="1010" y="156" width="4" height="30" fill="#3ecfa2"/>
+<text x="1024" y="178" fill="#3ecfa2" font-size="18" text-anchor="start" font-weight="700">0 reads</text>
+<text x="860" y="239" fill="#9db3ab" font-size="17" text-anchor="start">Approximate</text>
+<rect x="1010" y="218" width="184" height="30" rx="5" fill="#e58468"/>
+<text x="1204" y="240" fill="#e58468" font-size="18" text-anchor="start" font-weight="700">4, from neighbouring fragments</text>
+<path d="M1190,292 L1190,330" stroke="#e58468" stroke-width="2.5" fill="none" marker-end="url(#ar)"/>
+<text x="1190" y="372" fill="#e8efec" font-size="22" text-anchor="middle" font-weight="700">Looks unsafe, gets dropped</text>
+<text x="1190" y="408" fill="#e58468" font-size="22" text-anchor="middle" font-weight="700">A good candidate TSA is lost</text>
+<rect x="40" y="470" width="1520" height="92" rx="10" fill="#2a2615" stroke="#f0b429" stroke-width="1.5"/>
+<text x="800" y="526" fill="#f0b429" font-size="26" text-anchor="middle" font-weight="700">This call is sometimes made with just a few reads</text>
+</svg>

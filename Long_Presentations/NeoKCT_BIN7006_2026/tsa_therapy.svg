@@ -50,7 +50,7 @@
 <ellipse cx="960.0" cy="220.0" rx="4.5" ry="6.5" fill="#e8efec"/>
 <text x="939.0" y="267.2" fill="#9db3ab" font-size="15" text-anchor="middle" font-weight="700">CD8</text>
 <text x="848" y="276" fill="#9db3ab" font-size="15" text-anchor="middle">self</text>
-<text x="810" y="400" fill="#9db3ab" font-size="17" text-anchor="middle">only self peptides, nothing</text>
-<text x="810" y="426" fill="#9db3ab" font-size="17" text-anchor="middle">to recognize, tissue is spared</text>
+<text x="810" y="400" fill="#9db3ab" font-size="17" text-anchor="middle">only self peptides,</text>
+<text x="810" y="426" fill="#9db3ab" font-size="17" text-anchor="middle">the cell is spared</text>
 <text x="905" y="182" fill="#e8efec" font-size="40" text-anchor="middle">👌</text>
 </svg>
